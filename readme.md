@@ -2,7 +2,7 @@
 
 > **과제 목표**: Docker, Linux CLI, Git/GitHub, VS Code를 활용한 개발 환경 구축
 > **환경**: Windows 11 + WSL2 (Ubuntu) + Docker Desktop + VS Code
-
+ 12
 ---
 
 ## 📊 평가표 항목 매핑
