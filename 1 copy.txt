@@ -1,0 +1,12 @@
+bwmin696907@c4r10s5 docker-practice % FROM nginx:latest                                
+zsh: command not found: FROM
+bwmin696907@c4r10s5 docker-practice % COPY index.html /usr/share/nginx/html/index/html
+zsh: command not found: COPY
+bwmin696907@c4r10s5 docker-practice % nginx:latest 
+zsh: command not found: nginx:latest
+bwmin696907@c4r10s5 docker-practice % docker run -d -p 8080:80 --name webserver:1.0
+docker: 'docker run' requires at least 1 argument
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+See 'docker run --help' for more information

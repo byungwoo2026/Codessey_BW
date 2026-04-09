@@ -238,9 +238,10 @@ ls -al permission-test.txt
 ```
 
 ```bash
-# 755 적용 (실행 권한 추가)
-chmod 755 permission-test.txt
+# 755 적용 (실행 권한 추가)ㅎ
+chmod 755 permission-test.txt // chamod 는 파일이나 디렉토리 접근 권한 통제 
 ls -al permission-test.txt
+
 ```
 ```
 -rwxr-xr-x 1 user user 0 Jan 1 00:00 permission-test.txt
@@ -286,7 +287,7 @@ Docker version 26.0.0, build aa7e414 ✅
 docker info
 ```
 ```
-Client: Docker Engine - Community
+Client: Docker Engine - Community ....
  Version: 26.0.0
 Server:
  Containers: 0
