@@ -181,7 +181,7 @@ pwd
 ```
 
 ```bash
-# 파일 생성 → 내용 작성 → 확인
+# 파일 생성 → 내용 작성 → 확인 j
 touch hello.txt
 echo "나의 첫 Linux CLI 실습" > hello.txt
 cat hello.txt
