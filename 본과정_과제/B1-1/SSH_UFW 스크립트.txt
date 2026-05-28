@@ -1,0 +1,64 @@
+
+
+# ListenAddress.
+#
+# For changes to take effect, run:
+#
+#   systemctl daemon-reload
+#   systemctl restart ssh.socket
+#
+#Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+
+# For changes to take effect, run:
+#
+#   systemctl daemon-reload
+#   systemctl restart ssh.socket
+#
+Port 20022
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+
+#LoginGraceTime 2m
+#PermitRootLogin prohibit-password
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+
+#LoginGraceTime 2m
+PermitRootLogin no
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# ufw allow 20022/tcp
+Rules updated     
+Rules updated (v6)
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# ufw allow 15034/tcp
+Rules updated
+Rules updated (v6)
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# ufw enable
+Firewall is active and enabled on system startup
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+20022/tcp                  ALLOW IN    Anywhere
+15034/tcp                  ALLOW IN    Anywhere
+20022/tcp (v6)             ALLOW IN    Anywhere (v6)
+15034/tcp (v6)             ALLOW IN    Anywhere (v6)
+
+
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# /mnt/c/Users/user/codyssey/본과정_과제/monitor.sh
+root@DESKTOP-DL43C44:/mnt/c/Users/user/codyssey# cat /var/log/agent-app/monitor.log
+[2026-05-15 16:37:17] [WARNING(MEM)] CPU:4.8% | MEM:11.5% | DISK:1%
