@@ -9,7 +9,7 @@
     권한: 750 (rwxr-x---)
     cron 실행 계정: agent-admin (agent-admin은 agent-core에 포함되어 실행 가능해야 함)
 
-  ![파일위치권한](images\4-1.파일위치권한정책.png)   
+  ![파일위치권한](./images/4-1.파일위치권한정책.png)   
 
 ■ Health Check(실패 시 종료)
 
