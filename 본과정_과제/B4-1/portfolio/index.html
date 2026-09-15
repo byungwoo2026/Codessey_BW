@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>병우 | Developer Portfolio</title>
+  <meta name="description" content="Python 기반 AI 개발자 병우의 포트폴리오입니다." />
+
+  <!-- 웹 폰트 (허용된 외부 리소스) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ================= HEADER / NAV ================= -->
+  <header class="site-header" id="site-header">
+    <nav class="navbar" aria-label="주 메뉴">
+      <a href="#hero" class="logo">
+        <span class="logo-bracket">&lt;</span>byungwoo<span class="logo-bracket">/&gt;</span>
+      </a>
+
+      <button
+        class="hamburger"
+        id="hamburger-btn"
+        aria-label="메뉴 열기"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li>
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="다크 모드 전환"
+            aria-pressed="false"
+          >
+            <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+      <div class="container hero-inner">
+        <p class="eyebrow mono">console.log("hello world")</p>
+        <h1 class="hero-title">
+          안녕하세요,<br />
+          <span class="accent-text">병우</span>입니다<span class="cursor" aria-hidden="true">_</span>
+        </h1>
+        <p class="hero-subtitle" id="hero-subtitle">
+          Python으로 데이터를 다루고, 스스로 판단을 돕는 도구를 만드는 개발자입니다.
+        </p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="#contact" class="btn btn-outline">Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="section" id="about">
+      <div class="container">
+        <p class="section-eyebrow mono">about</p>
+        <h2 class="section-title reveal">자기소개</h2>
+
+        <div class="about-grid">
+          <div class="about-photo reveal">
+            <img
+              src="images/avatar.svg"
+              alt="병우의 프로필 아바타 일러스트"
+              width="260"
+              height="260"
+            />
+          </div>
+
+          <div class="about-content reveal">
+            <p>
+              안녕하세요, Python을 중심으로 데이터와 자동화에 관심이 많은 개발자
+              병우입니다. 현재는 시장 데이터를 분석하고 판단을 돕는
+              <strong>AI 주식 에이전트</strong>를 개인 프로젝트로 만들어가고 있으며,
+              이번 미션에서는 그 경험을 바탕으로 저를 소개하는 웹페이지를
+              순수 HTML/CSS/JavaScript만으로 처음부터 완성했습니다.
+            </p>
+            <p>
+              복잡한 프레임워크 뒤에 숨겨진 "이벤트 → 상태 변경 → 화면 갱신"의
+              흐름을 직접 눈으로 확인하는 것을 좋아하고, 작은 도구라도
+              끝까지 완성해서 실제로 배포까지 해보는 과정을 중요하게 생각합니다.
+            </p>
+            <ul class="about-facts mono">
+              <li><span>role</span> Individual Developer</li>
+              <li><span>focus</span> Python · Data · Automation</li>
+              <li><span>based</span> Seoul, KR</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SKILLS ================= -->
+    <section class="section section-alt" id="skills">
+      <div class="container">
+        <p class="section-eyebrow mono">skills</p>
+        <h2 class="section-title reveal">기술 스택</h2>
+
+        <div class="skills-grid reveal">
+          <div class="skill-group">
+            <h3 class="skill-group-title mono">LANGUAGE</h3>
+            <ul class="skill-tags">
+              <li>Python</li>
+              <li>JavaScript</li>
+              <li>HTML / CSS</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3 class="skill-group-title mono">DATA &amp; APP</h3>
+            <ul class="skill-tags">
+              <li>Pandas</li>
+              <li>Streamlit</li>
+              <li>REST API</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3 class="skill-group-title mono">TOOLS</h3>
+            <ul class="skill-tags">
+              <li>Git &amp; GitHub</li>
+              <li>VS Code</li>
+              <li>PowerShell</li>
+            </ul>
+          </div>
+        </div>
+        <p class="skills-note mono">※ 실제 보유 기술에 맞게 자유롭게 수정하세요.</p>
+      </div>
+    </section>
+
+    <!-- ================= PROJECTS ================= -->
+    <section class="section" id="projects">
+      <div class="container">
+        <p class="section-eyebrow mono">projects</p>
+        <h2 class="section-title reveal">GitHub 프로젝트</h2>
+        <p class="section-desc reveal">
+          아래 카드는 GitHub API에서 실시간으로 가져온 저장소 목록입니다.
+        </p>
+
+        <div
+          id="project-filters"
+          class="project-filters reveal"
+          role="group"
+          aria-label="언어별 프로젝트 필터"
+        ></div>
+
+        <div
+          id="projects-status"
+          class="projects-status"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <div id="projects-grid" class="projects-grid reveal"></div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="section section-alt" id="contact">
+      <div class="container">
+        <p class="section-eyebrow mono">contact</p>
+        <h2 class="section-title reveal">문의하기</h2>
+        <p class="section-desc reveal">
+          궁금한 점이나 협업 제안이 있다면 아래 폼으로 편하게 남겨주세요.
+        </p>
+
+        <form
+          id="contact-form"
+          class="contact-form reveal"
+          novalidate
+          aria-describedby="form-success-message"
+        >
+          <div class="form-field">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" aria-describedby="name-error" />
+            <span class="field-error" id="name-error" role="alert"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="email">이메일</label>
+            <input type="text" id="email" name="email" aria-describedby="email-error" />
+            <span class="field-error" id="email-error" role="alert"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="message">메시지</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              aria-describedby="message-error"
+            ></textarea>
+            <span class="field-error" id="message-error" role="alert"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Send</button>
+
+          <p
+            class="form-success"
+            id="form-success-message"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER (status bar 시그니처) ================= -->
+  <footer class="site-footer mono">
+    <div class="container status-bar">
+      <span class="status-item">© 2026 병우</span>
+      <span class="status-item" id="status-theme">THEME: LIGHT</span>
+      <span class="status-item status-links">
+        <a href="https://github.com/byungwoo2026" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </span>
+    </div>
+  </footer>
+
+  <button id="scroll-top-btn" class="scroll-top-btn" aria-label="맨 위로 이동" type="button">
+    ↑
+  </button>
+
+  <script src="js/main.js" defer></script>
+  <script src="js/github.js" defer></script>
+  <script src="js/form.js" defer></script>
+</body>
+</html>

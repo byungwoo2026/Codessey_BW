@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" width="260" height="260" role="img" aria-label="프로필 아바타 placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12181f"/>
+      <stop offset="100%" stop-color="#1f2a33"/>
+    </linearGradient>
+  </defs>
+  <rect width="260" height="260" rx="20" fill="url(#bg)"/>
+  <circle cx="130" cy="105" r="42" fill="#2fbf71" opacity="0.9"/>
+  <path d="M50 220 C50 165 210 165 210 220 Z" fill="#2fbf71" opacity="0.9"/>
+  <text x="130" y="245" text-anchor="middle" font-family="monospace" font-size="14" fill="#8b98a3">
+    replace: images/avatar.svg
+  </text>
+</svg>

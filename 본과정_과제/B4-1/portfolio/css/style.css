@@ -1,0 +1,802 @@
+/* ==========================================================================
+   0. CSS 변수 (디자인 토큰) — 라이트 모드 기본값
+   ========================================================================== */
+:root {
+  /* color */
+  --color-bg: #f6f7f5;
+  --color-surface: #ffffff;
+  --color-text: #12181f;
+  --color-muted: #5b6570;
+  --color-border: #e1e5e1;
+  --color-accent: #1f9d5c;       /* 시그널 그린 (라이트 모드에서는 약간 진하게, 대비 확보) */
+  --color-accent-contrast: #ffffff;
+  --color-accent-alt: #c97f1e;   /* 앰버 포인트 */
+  --color-danger: #d1373d;
+  --color-success: #1f9d5c;
+
+  /* type */
+  --font-display: "Space Grotesk", "Pretendard", sans-serif;
+  --font-body: "Inter", "Pretendard", sans-serif;
+  --font-mono: "JetBrains Mono", "D2Coding", monospace;
+
+  /* layout */
+  --header-height: 64px;
+  --radius: 10px;
+  --shadow-card: 0 4px 16px rgba(18, 24, 31, 0.06);
+  --shadow-card-hover: 0 10px 28px rgba(18, 24, 31, 0.12);
+  --transition-fast: 160ms ease;
+  --transition-base: 260ms ease;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0b0f14;
+  --color-surface: #131a20;
+  --color-text: #e7edf0;
+  --color-muted: #8b98a3;
+  --color-border: #232d35;
+  --color-accent: #3ed88a;       /* 어두운 배경에서는 더 밝은 그린 */
+  --color-accent-contrast: #0b0f14;
+  --color-accent-alt: #e8a33d;
+  --color-danger: #ff6b70;
+  --color-success: #3ed88a;
+  --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 10px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ==========================================================================
+   1. 리셋 &amp; 기본 스타일
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.container {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 시맨틱 섹션은 헤더 높이만큼 스크롤 여백 확보 (앵커 이동 시 헤더에 가려지지 않도록) */
+section[id] {
+  scroll-margin-top: var(--header-height);
+}
+
+.accent-text {
+  color: var(--color-accent);
+}
+
+/* 키보드 포커스 표시 (접근성) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   2. 버튼
+   ========================================================================== */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   3. 헤더 / 네비게이션 (Flexbox)
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 100;
+  background-color: transparent;
+  transition: background-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+/* 스크롤 60px 이상 시 배경/그림자 부여 (JS에서 클래스 토글) */
+.site-header.is-scrolled {
+  background-color: var(--color-surface);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.navbar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.logo-bracket {
+  color: var(--color-accent);
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: transform var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: rotate(20deg);
+}
+
+/* 햄버거 버튼 — 기본(데스크톱)에서는 숨김 */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-text);
+  border-radius: 2px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   4. 히어로
+   ========================================================================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: var(--header-height);
+  background:
+    radial-gradient(circle at 85% 20%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 55%),
+    var(--color-bg);
+}
+
+.hero-inner {
+  max-width: 720px;
+}
+
+.eyebrow {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.cursor {
+  display: inline-block;
+  color: var(--color-accent);
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--color-muted);
+  max-width: 52ch;
+  margin-bottom: 32px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   5. 공용 섹션 스타일
+   ========================================================================== */
+.section {
+  padding: 96px 0;
+}
+
+.section-alt {
+  background-color: var(--color-surface);
+}
+
+.section-eyebrow {
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  margin-bottom: 16px;
+}
+
+.section-desc {
+  color: var(--color-muted);
+  max-width: 60ch;
+  margin-bottom: 40px;
+}
+
+/* 스크롤 등장 애니메이션 (JS의 IntersectionObserver가 is-visible 클래스를 부여) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .cursor {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ==========================================================================
+   6. About
+   ========================================================================== */
+.about-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+
+.about-photo img {
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+}
+
+.about-content p {
+  margin: 0 0 16px;
+}
+
+.about-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-top: 20px;
+}
+
+.about-facts span {
+  color: var(--color-accent);
+  margin-right: 10px;
+}
+
+/* ==========================================================================
+   7. Skills
+   ========================================================================== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.skill-group-title {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tags li {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  font-size: 0.9rem;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.skill-tags li:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.skills-note {
+  margin-top: 28px;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* ==========================================================================
+   8. Projects (Grid, auto-fit/minmax)
+   ========================================================================== */
+.project-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.filter-btn {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.filter-btn.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.projects-status {
+  min-height: 24px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.projects-status .status-error {
+  color: var(--color-danger);
+}
+
+.retry-btn {
+  margin-left: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-danger);
+  background: transparent;
+  color: var(--color-danger);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background-color: var(--color-danger);
+  color: #fff;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.project-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.project-card h3 {
+  font-size: 1.05rem;
+}
+
+.project-card p {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.project-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.lang-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.project-card .project-link {
+  color: var(--color-accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* 스켈레톤(로딩) 카드 */
+.skeleton-card {
+  height: 150px;
+  border-radius: var(--radius);
+  background: linear-gradient(
+    100deg,
+    var(--color-surface) 30%,
+    var(--color-border) 50%,
+    var(--color-surface) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   9. Contact Form
+   ========================================================================== */
+.contact-form {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form-field input,
+.form-field textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  resize: vertical;
+  transition: border-color var(--transition-fast);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.form-field.has-error input,
+.form-field.has-error textarea {
+  border-color: var(--color-danger);
+}
+
+.field-error {
+  min-height: 18px;
+  font-size: 0.8rem;
+  color: var(--color-danger);
+}
+
+.form-success {
+  min-height: 20px;
+  color: var(--color-success);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   10. Footer — status bar 시그니처 요소
+   ========================================================================== */
+.site-footer {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  font-size: 0.8rem;
+}
+
+[data-theme="dark"] .site-footer {
+  background-color: #070a0d;
+}
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 20px;
+}
+
+.status-item {
+  opacity: 0.85;
+}
+
+.status-links a {
+  margin-left: 14px;
+  opacity: 0.85;
+}
+
+.status-links a:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   11. Scroll-to-top 버튼
+   ========================================================================== */
+.scroll-top-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-card-hover);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+  z-index: 90;
+}
+
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   12. 반응형 — 태블릿(768px) / 데스크톱(1024px)
+   ========================================================================== */
+
+/* 모바일 기본: 네비게이션 메뉴 숨김 + 햄버거 노출 */
+.nav-menu {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 18px;
+  border-bottom: 1px solid var(--color-border);
+  transform: translateY(-140%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform var(--transition-base), opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.nav-menu.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.hamburger {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+
+  .nav-menu {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    background-color: transparent;
+    border-bottom: none;
+    padding: 0;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+  }
+
+  .about-grid {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 56px;
+  }
+
+  .about-photo {
+    flex: 0 0 260px;
+  }
+
+  .about-content {
+    flex: 1;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: 128px 0;
+  }
+
+  .hero-title {
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+  }
+}
