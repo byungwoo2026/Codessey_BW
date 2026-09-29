@@ -1,5 +1,0 @@
-2026-07-08 15:16:46,269 DEBUG call BudgetService.list_categories()
-2026-07-08 15:16:46,304 DEBUG done BudgetService.list_categories()
-2026-07-08 15:17:20,964 DEBUG call BudgetService.add_transaction()
-2026-07-08 15:17:20,972 DEBUG time BudgetService.add_transaction() 7.16ms
-2026-07-08 15:17:20,973 DEBUG done BudgetService.add_transaction()
