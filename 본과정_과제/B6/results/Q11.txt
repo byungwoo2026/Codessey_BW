@@ -1,0 +1,26 @@
+==============================================================================
+Q11. [집계 · SUM + HAVING] 연체료 합계가 1,500원 이상인 회원  (많은 순)
+==============================================================================
+
+[SQL]
+--      WHERE = 묶기 "전"에 행을 거른다 (연체료가 있는 기록만)
+--      HAVING = 묶은 "후"에 그룹을 거른다 (합계가 1,500원 이상인 회원만)
+SELECT m.member_id, m.name,
+       COUNT(*)        AS late_count,
+       SUM(r.late_fee) AS total_late_fee
+FROM rental AS r
+INNER JOIN member AS m ON m.member_id = r.member_id
+WHERE r.late_fee > 0
+GROUP BY m.member_id, m.name
+HAVING SUM(r.late_fee) >= 1500
+ORDER BY total_late_fee DESC;
+
+[실행 결과]
++-----------+--------+------------+----------------+
+| member_id | name   | late_count | total_late_fee |
++-----------+--------+------------+----------------+
+|         6 | 강도윤 |          2 |           4800 |
+|         3 | 박지호 |          1 |           2100 |
+|         1 | 김민준 |          1 |           1500 |
++-----------+--------+------------+----------------+
+(3행)

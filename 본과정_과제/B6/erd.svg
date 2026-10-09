@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 700" width="1240" height="700" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+<title>도서 대여 DB ERD (category · book · rental · member)</title>
+<rect width="1240" height="700" fill="#f6f8fc"/>
+<text x="20" y="26" font-size="19" font-weight="700" fill="#1b2433">ERD · 도서 대여 데이터베이스</text>
+<line x1="310" y1="123.0" x2="440" y2="123.0" stroke="#e0662e" stroke-width="2.4"/>
+<circle cx="328" cy="107.0" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="328" y="111.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">1</text>
+<circle cx="422" cy="107.0" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="422" y="111.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">N</text>
+<text x="375.0" y="147.0" font-size="12.5" fill="#b8430f" text-anchor="middle">category_id</text>
+<text x="375.0" y="163.0" font-size="12" fill="#6b7790" text-anchor="middle">한 분류 → 여러 권</text>
+<line x1="665.0" y1="288" x2="665.0" y2="370" stroke="#e0662e" stroke-width="2.4"/>
+<circle cx="647.0" cy="304" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="647.0" y="308.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">1</text>
+<circle cx="647.0" cy="354" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="647.0" y="358.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">N</text>
+<text x="679.0" y="327.0" font-size="12.5" fill="#b8430f">book_id</text>
+<text x="679.0" y="343.0" font-size="12" fill="#6b7790">한 책 → 여러 건</text>
+<line x1="770" y1="453.0" x2="910" y2="453.0" stroke="#e0662e" stroke-width="2.4"/>
+<circle cx="892" cy="437.0" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="892" y="441.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">1</text>
+<circle cx="788" cy="437.0" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="788" y="441.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">N</text>
+<text x="840.0" y="477.0" font-size="12.5" fill="#b8430f" text-anchor="middle">member_id</text>
+<text x="840.0" y="493.0" font-size="12" fill="#6b7790" text-anchor="middle">한 회원 → 여러 건</text>
+<g>
+<rect x="20" y="70" width="290" height="98" rx="8" fill="#ffffff" stroke="#3b4a66" stroke-width="1.6"/>
+<path d="M20,108 V78 a8,8 0 0 1 8,-8 H302 a8,8 0 0 1 8,8 V108 Z" fill="#26344f"/>
+<text x="34" y="95" font-size="17" font-weight="700" fill="#ffffff" font-family="Consolas, 'D2Coding', monospace">category</text>
+<text x="296" y="95" font-size="13" fill="#c9d4ea" text-anchor="end">도서 분류</text>
+<text x="34" y="128.0" font-size="14.5" font-weight="700" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">category_id</text>
+<text x="150" y="128.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="272" y="114" width="28" height="18" rx="4" fill="#ffe3a3"/>
+<text x="286.0" y="127" font-size="11" font-weight="700" fill="#7a4a00" text-anchor="middle" font-family="Arial, sans-serif">PK</text>
+<line x1="20" y1="138" x2="310" y2="138" stroke="#d5dbe8" stroke-width="1"/>
+<text x="34" y="158.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">name</text>
+<text x="150" y="158.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(50)</text>
+<rect x="272" y="144" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="286.0" y="157" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<rect x="240" y="144" width="28" height="18" rx="4" fill="#ecd9ff"/>
+<text x="254.0" y="157" font-size="11" font-weight="700" fill="#5b1d8f" text-anchor="middle" font-family="Arial, sans-serif">UQ</text>
+</g>
+<g>
+<rect x="440" y="40" width="330" height="248" rx="8" fill="#ffffff" stroke="#3b4a66" stroke-width="1.6"/>
+<path d="M440,78 V48 a8,8 0 0 1 8,-8 H762 a8,8 0 0 1 8,8 V78 Z" fill="#26344f"/>
+<text x="454" y="65" font-size="17" font-weight="700" fill="#ffffff" font-family="Consolas, 'D2Coding', monospace">book</text>
+<text x="756" y="65" font-size="13" fill="#c9d4ea" text-anchor="end">도서</text>
+<text x="454" y="98.0" font-size="14.5" font-weight="700" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">book_id</text>
+<text x="590" y="98.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="84" width="28" height="18" rx="4" fill="#ffe3a3"/>
+<text x="746.0" y="97" font-size="11" font-weight="700" fill="#7a4a00" text-anchor="middle" font-family="Arial, sans-serif">PK</text>
+<line x1="440" y1="108" x2="770" y2="108" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="128.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">category_id</text>
+<text x="590" y="128.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="114" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="127" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<rect x="700" y="114" width="28" height="18" rx="4" fill="#cfe1ff"/>
+<text x="714.0" y="127" font-size="11" font-weight="700" fill="#0b3d91" text-anchor="middle" font-family="Arial, sans-serif">FK</text>
+<line x1="440" y1="138" x2="770" y2="138" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="158.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">title</text>
+<text x="590" y="158.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(200)</text>
+<rect x="732" y="144" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="157" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="168" x2="770" y2="168" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="188.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">author</text>
+<text x="590" y="188.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(100)</text>
+<rect x="732" y="174" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="187" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="198" x2="770" y2="198" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="218.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">isbn</text>
+<text x="590" y="218.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(20)</text>
+<rect x="732" y="204" width="28" height="18" rx="4" fill="#ecd9ff"/>
+<text x="746.0" y="217" font-size="11" font-weight="700" fill="#5b1d8f" text-anchor="middle" font-family="Arial, sans-serif">UQ</text>
+<line x1="440" y1="228" x2="770" y2="228" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="248.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">price</text>
+<text x="590" y="248.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="234" width="28" height="18" rx="4" fill="#cdf0d8"/>
+<text x="746.0" y="247" font-size="11" font-weight="700" fill="#0b5c2a" text-anchor="middle" font-family="Arial, sans-serif">CK</text>
+<rect x="700" y="234" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="714.0" y="247" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="258" x2="770" y2="258" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="278.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">published_year</text>
+<text x="590" y="278.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+</g>
+<g>
+<rect x="440" y="370" width="330" height="278" rx="8" fill="#ffffff" stroke="#3b4a66" stroke-width="1.6"/>
+<path d="M440,408 V378 a8,8 0 0 1 8,-8 H762 a8,8 0 0 1 8,8 V408 Z" fill="#26344f"/>
+<text x="454" y="395" font-size="17" font-weight="700" fill="#ffffff" font-family="Consolas, 'D2Coding', monospace">rental</text>
+<text x="756" y="395" font-size="13" fill="#c9d4ea" text-anchor="end">대여 기록</text>
+<text x="454" y="428.0" font-size="14.5" font-weight="700" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">rental_id</text>
+<text x="570" y="428.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="414" width="28" height="18" rx="4" fill="#ffe3a3"/>
+<text x="746.0" y="427" font-size="11" font-weight="700" fill="#7a4a00" text-anchor="middle" font-family="Arial, sans-serif">PK</text>
+<line x1="440" y1="438" x2="770" y2="438" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="458.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">member_id</text>
+<text x="570" y="458.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="444" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="457" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<rect x="700" y="444" width="28" height="18" rx="4" fill="#cfe1ff"/>
+<text x="714.0" y="457" font-size="11" font-weight="700" fill="#0b3d91" text-anchor="middle" font-family="Arial, sans-serif">FK</text>
+<line x1="440" y1="468" x2="770" y2="468" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="488.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">book_id</text>
+<text x="570" y="488.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="474" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="487" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<rect x="700" y="474" width="28" height="18" rx="4" fill="#cfe1ff"/>
+<text x="714.0" y="487" font-size="11" font-weight="700" fill="#0b3d91" text-anchor="middle" font-family="Arial, sans-serif">FK</text>
+<line x1="440" y1="498" x2="770" y2="498" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="518.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">rented_at</text>
+<text x="570" y="518.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">DATE</text>
+<rect x="732" y="504" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="746.0" y="517" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="528" x2="770" y2="528" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="548.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">due_date</text>
+<text x="570" y="548.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">DATE</text>
+<rect x="732" y="534" width="28" height="18" rx="4" fill="#cdf0d8"/>
+<text x="746.0" y="547" font-size="11" font-weight="700" fill="#0b5c2a" text-anchor="middle" font-family="Arial, sans-serif">CK</text>
+<rect x="700" y="534" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="714.0" y="547" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="558" x2="770" y2="558" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="578.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">returned_at</text>
+<text x="570" y="578.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">DATE</text>
+<line x1="440" y1="588" x2="770" y2="588" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="608.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">status</text>
+<text x="570" y="608.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(10)</text>
+<rect x="732" y="594" width="28" height="18" rx="4" fill="#cdf0d8"/>
+<text x="746.0" y="607" font-size="11" font-weight="700" fill="#0b5c2a" text-anchor="middle" font-family="Arial, sans-serif">CK</text>
+<rect x="700" y="594" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="714.0" y="607" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="440" y1="618" x2="770" y2="618" stroke="#d5dbe8" stroke-width="1"/>
+<text x="454" y="638.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">late_fee</text>
+<text x="570" y="638.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="732" y="624" width="28" height="18" rx="4" fill="#cdf0d8"/>
+<text x="746.0" y="637" font-size="11" font-weight="700" fill="#0b5c2a" text-anchor="middle" font-family="Arial, sans-serif">CK</text>
+<rect x="700" y="624" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="714.0" y="637" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+</g>
+<g>
+<rect x="910" y="400" width="310" height="188" rx="8" fill="#ffffff" stroke="#3b4a66" stroke-width="1.6"/>
+<path d="M910,438 V408 a8,8 0 0 1 8,-8 H1212 a8,8 0 0 1 8,8 V438 Z" fill="#26344f"/>
+<text x="924" y="425" font-size="17" font-weight="700" fill="#ffffff" font-family="Consolas, 'D2Coding', monospace">member</text>
+<text x="1206" y="425" font-size="13" fill="#c9d4ea" text-anchor="end">회원</text>
+<text x="924" y="458.0" font-size="14.5" font-weight="700" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">member_id</text>
+<text x="1040" y="458.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">INTEGER</text>
+<rect x="1182" y="444" width="28" height="18" rx="4" fill="#ffe3a3"/>
+<text x="1196.0" y="457" font-size="11" font-weight="700" fill="#7a4a00" text-anchor="middle" font-family="Arial, sans-serif">PK</text>
+<line x1="910" y1="468" x2="1220" y2="468" stroke="#d5dbe8" stroke-width="1"/>
+<text x="924" y="488.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">name</text>
+<text x="1040" y="488.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(50)</text>
+<rect x="1182" y="474" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="1196.0" y="487" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<line x1="910" y1="498" x2="1220" y2="498" stroke="#d5dbe8" stroke-width="1"/>
+<text x="924" y="518.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">email</text>
+<text x="1040" y="518.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(100)</text>
+<rect x="1182" y="504" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="1196.0" y="517" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<rect x="1150" y="504" width="28" height="18" rx="4" fill="#ecd9ff"/>
+<text x="1164.0" y="517" font-size="11" font-weight="700" fill="#5b1d8f" text-anchor="middle" font-family="Arial, sans-serif">UQ</text>
+<line x1="910" y1="528" x2="1220" y2="528" stroke="#d5dbe8" stroke-width="1"/>
+<text x="924" y="548.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">phone</text>
+<text x="1040" y="548.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">VARCHAR(20)</text>
+<line x1="910" y1="558" x2="1220" y2="558" stroke="#d5dbe8" stroke-width="1"/>
+<text x="924" y="578.0" font-size="14.5" font-weight="500" fill="#1b2433" font-family="Consolas, 'D2Coding', monospace">joined_at</text>
+<text x="1040" y="578.0" font-size="12.5" fill="#6b7790" font-family="Consolas, 'D2Coding', monospace">DATE</text>
+<rect x="1182" y="564" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="1196.0" y="577" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+</g>
+<text x="20" y="520" font-size="13" font-weight="700" fill="#1b2433">범례</text>
+<rect x="20" y="531" width="28" height="18" rx="4" fill="#ffe3a3"/>
+<text x="34" y="544" font-size="11" font-weight="700" fill="#7a4a00" text-anchor="middle" font-family="Arial, sans-serif">PK</text>
+<text x="58" y="544" font-size="12.5" fill="#33405a">기본키 (행 1개를 식별하는 번호)</text>
+<rect x="20" y="555" width="28" height="18" rx="4" fill="#cfe1ff"/>
+<text x="34" y="568" font-size="11" font-weight="700" fill="#0b3d91" text-anchor="middle" font-family="Arial, sans-serif">FK</text>
+<text x="58" y="568" font-size="12.5" fill="#33405a">외래키 (다른 테이블의 PK 를 가리킴)</text>
+<rect x="20" y="579" width="28" height="18" rx="4" fill="#ecd9ff"/>
+<text x="34" y="592" font-size="11" font-weight="700" fill="#5b1d8f" text-anchor="middle" font-family="Arial, sans-serif">UQ</text>
+<text x="58" y="592" font-size="12.5" fill="#33405a">UNIQUE (중복 불가)</text>
+<rect x="20" y="603" width="28" height="18" rx="4" fill="#e3e3e3"/>
+<text x="34" y="616" font-size="11" font-weight="700" fill="#3b3b3b" text-anchor="middle" font-family="Arial, sans-serif">NN</text>
+<text x="58" y="616" font-size="12.5" fill="#33405a">NOT NULL (빈 값 불가)</text>
+<rect x="20" y="627" width="28" height="18" rx="4" fill="#cdf0d8"/>
+<text x="34" y="640" font-size="11" font-weight="700" fill="#0b5c2a" text-anchor="middle" font-family="Arial, sans-serif">CK</text>
+<text x="58" y="640" font-size="12.5" fill="#33405a">CHECK (조건을 만족해야 함)</text>
+<circle cx="34" cy="670" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="34" y="674.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">1</text>
+<circle cx="62" cy="670" r="11" fill="#fff" stroke="#e0662e" stroke-width="1.6"/><text x="62" y="674.5" font-size="13" font-weight="700" fill="#b8430f" text-anchor="middle" font-family="Arial, sans-serif">N</text>
+<text x="82" y="674" font-size="12.5" fill="#33405a">1 : N 관계 (1 쪽 = 부모, N 쪽 = 자식)</text>
+</svg>

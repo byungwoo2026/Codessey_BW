@@ -1,0 +1,108 @@
+■ 데이터 입력 직후 (01, 02 실행 후 / 03 실행 전)
+======================================================================
+
+PRAGMA foreign_keys 값 : 1   (1 = FK 검사 켜짐)
+
+[테이블별 행 수]  요구사항 : 각 테이블 10행 이상
++----------+------+------------+
+| table    | rows | 10행 이상? |
++----------+------+------------+
+| category |   10 | OK         |
+| member   |   12 | OK         |
+| book     |   24 | OK         |
+| rental   |   38 | OK         |
++----------+------+------------+
+
+[외래키(FK) 목록]  자식 테이블.컬럼 → 부모 테이블.컬럼
++-------------+--------------+--------------+---------------+-----------+
+| child_table | child_column | parent_table | parent_column | on_delete |
++-------------+--------------+--------------+---------------+-----------+
+| book        | category_id  | category     | category_id   | RESTRICT  |
+| rental      | book_id      | book         | book_id       | RESTRICT  |
+| rental      | member_id    | member       | member_id     | RESTRICT  |
++-------------+--------------+--------------+---------------+-----------+
+
+[PRAGMA foreign_key_check] FK 를 어기고 있는 행 : 0건  → 데이터 정합성 OK
+
+[rental 테이블의 인덱스 목록]
+(없음 : 아직 CREATE INDEX 를 실행하기 전)
+
+[제약조건이 실제로 동작하는지 확인]  잘못된 입력을 일부러 시도 → 모두 거부되어야 한다 (시도 후 자동 롤백)
+
+(1) FK : 존재하지 않는 회원(999번)으로 대여 기록 입력
+    SQL   : INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (999, 1, '2026-10-08', '2026-10-22')
+    결과  : 거부됨 → IntegrityError: FOREIGN KEY constraint failed
+
+(2) FK : 존재하지 않는 도서(999번)로 대여 기록 입력
+    SQL   : INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (1, 999, '2026-10-08', '2026-10-22')
+    결과  : 거부됨 → IntegrityError: FOREIGN KEY constraint failed
+
+(3) FK : 존재하지 않는 분류(99번)로 도서 입력
+    SQL   : INSERT INTO book (category_id, title, author, price) VALUES (99, '유령 책', '아무개', 10000)
+    결과  : 거부됨 → IntegrityError: FOREIGN KEY constraint failed
+
+(4) FK(RESTRICT) : 대여 기록이 남아 있는 도서(1번) 삭제
+    SQL   : DELETE FROM book WHERE book_id = 1
+    결과  : 거부됨 → IntegrityError: FOREIGN KEY constraint failed
+
+(5) FK(RESTRICT) : 대여 기록이 남아 있는 회원(1번) 삭제
+    SQL   : DELETE FROM member WHERE member_id = 1
+    결과  : 거부됨 → IntegrityError: FOREIGN KEY constraint failed
+
+(6) NOT NULL : 이름 없이 회원 입력
+    SQL   : INSERT INTO member (name, email, joined_at) VALUES (NULL, 'null.name@example.com', '2026-10-08')
+    결과  : 거부됨 → IntegrityError: NOT NULL constraint failed: member.name
+
+(7) UNIQUE : 이미 있는 이메일로 회원 입력
+    SQL   : INSERT INTO member (name, email, joined_at) VALUES ('중복', 'minjun.kim@example.com', '2026-10-08')
+    결과  : 거부됨 → IntegrityError: UNIQUE constraint failed: member.email
+
+(8) UNIQUE : 이미 있는 분류 이름 입력
+    SQL   : INSERT INTO category (name) VALUES ('소설')
+    결과  : 거부됨 → IntegrityError: UNIQUE constraint failed: category.name
+
+(9) CHECK : 음수 가격으로 도서 입력
+    SQL   : INSERT INTO book (category_id, title, author, price) VALUES (1, '음수 책', '아무개', -1)
+    결과  : 거부됨 → IntegrityError: CHECK constraint failed: ck_book_price
+
+(10) CHECK : 허용되지 않은 상태값('LOST')으로 대여 기록 입력
+    SQL   : INSERT INTO rental (member_id, book_id, rented_at, due_date, status) VALUES (1, 1, '2026-10-08', '2026-10-22', 'LOST')
+    결과  : 거부됨 → IntegrityError: CHECK constraint failed: ck_rental_status
+
+[참고 · 대조 실험] PRAGMA foreign_keys = OFF 로 끄면 어떻게 될까?  (SQLite 는 이걸 켜야 FK 가 동작한다)
+    SQL   : INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (999, 1, '2026-10-08', '2026-10-22')
+    결과  : 성공 (!)   ← 검사를 껐더니 없는 회원 번호가 그냥 들어간다 (시도 후 롤백)
+
+
+■ 쿼리 실행 후 (03 까지 모두 실행한 최종 상태)
+======================================================================
+
+PRAGMA foreign_keys 값 : 1   (1 = FK 검사 켜짐)
+
+[테이블별 행 수]  요구사항 : 각 테이블 10행 이상
++----------+------+------------+
+| table    | rows | 10행 이상? |
++----------+------+------------+
+| category |   10 | OK         |
+| member   |   11 | OK         |
+| book     |   24 | OK         |
+| rental   |   38 | OK         |
++----------+------+------------+
+
+[외래키(FK) 목록]  자식 테이블.컬럼 → 부모 테이블.컬럼
++-------------+--------------+--------------+---------------+-----------+
+| child_table | child_column | parent_table | parent_column | on_delete |
++-------------+--------------+--------------+---------------+-----------+
+| book        | category_id  | category     | category_id   | RESTRICT  |
+| rental      | book_id      | book         | book_id       | RESTRICT  |
+| rental      | member_id    | member       | member_id     | RESTRICT  |
++-------------+--------------+--------------+---------------+-----------+
+
+[PRAGMA foreign_key_check] FK 를 어기고 있는 행 : 0건  → 데이터 정합성 OK
+
+[rental 테이블의 인덱스 목록]
++----------------------+-------------+
+| index_name           | unique(1/0) |
++----------------------+-------------+
+| idx_rental_member_id |           0 |
++----------------------+-------------+

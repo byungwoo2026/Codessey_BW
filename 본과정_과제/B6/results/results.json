@@ -1,0 +1,1093 @@
+{
+ "verify_after_load": {
+  "label": "데이터 입력 직후 (01, 02 실행 후 / 03 실행 전)",
+  "foreign_keys_pragma": 1,
+  "row_counts": {
+   "category": 10,
+   "member": 12,
+   "book": 24,
+   "rental": 38
+  },
+  "fk_list": [
+   [
+    "book",
+    "category_id",
+    "category",
+    "category_id",
+    "RESTRICT"
+   ],
+   [
+    "rental",
+    "book_id",
+    "book",
+    "book_id",
+    "RESTRICT"
+   ],
+   [
+    "rental",
+    "member_id",
+    "member",
+    "member_id",
+    "RESTRICT"
+   ]
+  ],
+  "fk_check_violations": [],
+  "indexes": [],
+  "tests": [
+   {
+    "title": "FK : 존재하지 않는 회원(999번)으로 대여 기록 입력",
+    "sql": "INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (999, 1, '2026-10-08', '2026-10-22')",
+    "result": "거부됨 → IntegrityError: FOREIGN KEY constraint failed"
+   },
+   {
+    "title": "FK : 존재하지 않는 도서(999번)로 대여 기록 입력",
+    "sql": "INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (1, 999, '2026-10-08', '2026-10-22')",
+    "result": "거부됨 → IntegrityError: FOREIGN KEY constraint failed"
+   },
+   {
+    "title": "FK : 존재하지 않는 분류(99번)로 도서 입력",
+    "sql": "INSERT INTO book (category_id, title, author, price) VALUES (99, '유령 책', '아무개', 10000)",
+    "result": "거부됨 → IntegrityError: FOREIGN KEY constraint failed"
+   },
+   {
+    "title": "FK(RESTRICT) : 대여 기록이 남아 있는 도서(1번) 삭제",
+    "sql": "DELETE FROM book WHERE book_id = 1",
+    "result": "거부됨 → IntegrityError: FOREIGN KEY constraint failed"
+   },
+   {
+    "title": "FK(RESTRICT) : 대여 기록이 남아 있는 회원(1번) 삭제",
+    "sql": "DELETE FROM member WHERE member_id = 1",
+    "result": "거부됨 → IntegrityError: FOREIGN KEY constraint failed"
+   },
+   {
+    "title": "NOT NULL : 이름 없이 회원 입력",
+    "sql": "INSERT INTO member (name, email, joined_at) VALUES (NULL, 'null.name@example.com', '2026-10-08')",
+    "result": "거부됨 → IntegrityError: NOT NULL constraint failed: member.name"
+   },
+   {
+    "title": "UNIQUE : 이미 있는 이메일로 회원 입력",
+    "sql": "INSERT INTO member (name, email, joined_at) VALUES ('중복', 'minjun.kim@example.com', '2026-10-08')",
+    "result": "거부됨 → IntegrityError: UNIQUE constraint failed: member.email"
+   },
+   {
+    "title": "UNIQUE : 이미 있는 분류 이름 입력",
+    "sql": "INSERT INTO category (name) VALUES ('소설')",
+    "result": "거부됨 → IntegrityError: UNIQUE constraint failed: category.name"
+   },
+   {
+    "title": "CHECK : 음수 가격으로 도서 입력",
+    "sql": "INSERT INTO book (category_id, title, author, price) VALUES (1, '음수 책', '아무개', -1)",
+    "result": "거부됨 → IntegrityError: CHECK constraint failed: ck_book_price"
+   },
+   {
+    "title": "CHECK : 허용되지 않은 상태값('LOST')으로 대여 기록 입력",
+    "sql": "INSERT INTO rental (member_id, book_id, rented_at, due_date, status) VALUES (1, 1, '2026-10-08', '2026-10-22', 'LOST')",
+    "result": "거부됨 → IntegrityError: CHECK constraint failed: ck_rental_status"
+   }
+  ],
+  "pragma_off_experiment": {
+   "sql": "INSERT INTO rental (member_id, book_id, rented_at, due_date) VALUES (999, 1, '2026-10-08', '2026-10-22')",
+   "result": "성공 (!)"
+  }
+ },
+ "verify_after_queries": {
+  "label": "쿼리 실행 후 (03 까지 모두 실행한 최종 상태)",
+  "foreign_keys_pragma": 1,
+  "row_counts": {
+   "category": 10,
+   "member": 11,
+   "book": 24,
+   "rental": 38
+  },
+  "fk_list": [
+   [
+    "book",
+    "category_id",
+    "category",
+    "category_id",
+    "RESTRICT"
+   ],
+   [
+    "rental",
+    "book_id",
+    "book",
+    "book_id",
+    "RESTRICT"
+   ],
+   [
+    "rental",
+    "member_id",
+    "member",
+    "member_id",
+    "RESTRICT"
+   ]
+  ],
+  "fk_check_violations": [],
+  "indexes": [
+   [
+    "idx_rental_member_id",
+    0
+   ]
+  ],
+  "tests": [],
+  "pragma_off_experiment": null
+ },
+ "queries": [
+  {
+   "id": "Q1",
+   "tag": "기본 조회",
+   "title": "정가 20,000원 이상인 도서를 비싼 순서로 5권만 보기  (WHERE + ORDER BY + LIMIT)",
+   "statements": [
+    {
+     "sql": "SELECT book_id, title, author, price\nFROM book\nWHERE price >= 20000\nORDER BY price DESC, title\nLIMIT 5;",
+     "columns": [
+      "book_id",
+      "title",
+      "author",
+      "price"
+     ],
+     "rows": [
+      [
+       14,
+       "이것이 취업을 위한 코딩 테스트다",
+       "나동빈",
+       34000
+      ],
+      [
+       12,
+       "클린 코드",
+       "로버트 C. 마틴",
+       33000
+      ],
+      [
+       13,
+       "SQL 첫걸음",
+       "아사이 아쓰시",
+       28000
+      ],
+      [
+       16,
+       "총, 균, 쇠",
+       "재레드 다이아몬드",
+       28000
+      ],
+      [
+       15,
+       "사피엔스",
+       "유발 하라리",
+       22000
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q2",
+   "tag": "기본 조회",
+   "title": "제목에 '파이썬'이 들어간 도서 검색  (LIKE 와 % 와일드카드)",
+   "statements": [
+    {
+     "sql": "SELECT book_id, title, author, price\nFROM book\nWHERE title LIKE '%파이썬%'\nORDER BY title;",
+     "columns": [
+      "book_id",
+      "title",
+      "author",
+      "price"
+     ],
+     "rows": [
+      [
+       11,
+       "점프 투 파이썬",
+       "박응용",
+       19800
+      ],
+      [
+       10,
+       "혼자 공부하는 파이썬",
+       "윤인성",
+       18000
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q3",
+   "tag": "기본 조회",
+   "title": "최근 30일(기준일 2026-10-08) 안에 시작된 대여 기록을 최신순으로 10건  (날짜 조건)",
+   "statements": [
+    {
+     "sql": "-- [SQLite 전용] date('2026-10-08', '-30 day') = 기준일에서 30일 전 날짜\n--               (실제 서비스라면 오늘 날짜를 뜻하는 'now' 를 쓴다 : date('now', '-30 day'))\nSELECT rental_id, member_id, book_id, rented_at, status\nFROM rental\nWHERE rented_at >= date('2026-10-08', '-30 day')\nORDER BY rented_at DESC, rental_id DESC\nLIMIT 10;",
+     "columns": [
+      "rental_id",
+      "member_id",
+      "book_id",
+      "rented_at",
+      "status"
+     ],
+     "rows": [
+      [
+       38,
+       8,
+       3,
+       "2026-10-07",
+       "RENTED"
+      ],
+      [
+       37,
+       7,
+       10,
+       "2026-10-06",
+       "RENTED"
+      ],
+      [
+       36,
+       5,
+       1,
+       "2026-10-05",
+       "RENTED"
+      ],
+      [
+       35,
+       6,
+       17,
+       "2026-10-04",
+       "RENTED"
+      ],
+      [
+       34,
+       9,
+       22,
+       "2026-10-03",
+       "RENTED"
+      ],
+      [
+       33,
+       3,
+       20,
+       "2026-10-02",
+       "RENTED"
+      ],
+      [
+       32,
+       2,
+       12,
+       "2026-10-01",
+       "RENTED"
+      ],
+      [
+       31,
+       1,
+       11,
+       "2026-09-30",
+       "RENTED"
+      ],
+      [
+       30,
+       5,
+       13,
+       "2026-09-22",
+       "RENTED"
+      ],
+      [
+       29,
+       10,
+       15,
+       "2026-09-20",
+       "RENTED"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q4",
+   "tag": "기본 조회",
+   "title": "지금 '대여 중(RENTED)'인 기록을 반납 예정일이 빠른 순으로 5건  (곧 반납해야 할 순서)",
+   "statements": [
+    {
+     "sql": "SELECT rental_id, member_id, book_id, rented_at, due_date\nFROM rental\nWHERE status = 'RENTED'\nORDER BY due_date, rental_id\nLIMIT 5;",
+     "columns": [
+      "rental_id",
+      "member_id",
+      "book_id",
+      "rented_at",
+      "due_date"
+     ],
+     "rows": [
+      [
+       28,
+       4,
+       14,
+       "2026-09-18",
+       "2026-10-02"
+      ],
+      [
+       29,
+       10,
+       15,
+       "2026-09-20",
+       "2026-10-04"
+      ],
+      [
+       30,
+       5,
+       13,
+       "2026-09-22",
+       "2026-10-06"
+      ],
+      [
+       31,
+       1,
+       11,
+       "2026-09-30",
+       "2026-10-14"
+      ],
+      [
+       32,
+       2,
+       12,
+       "2026-10-01",
+       "2026-10-15"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q5",
+   "tag": "INNER JOIN",
+   "title": "도서 목록에 분류 이름을 붙여서 보기  (book + category)",
+   "statements": [
+    {
+     "sql": "--     INNER JOIN = 양쪽 테이블에 짝이 있는 행만 남긴다.\nSELECT b.book_id, b.title, c.name AS category, b.price\nFROM book AS b\nINNER JOIN category AS c ON c.category_id = b.category_id\nORDER BY c.category_id, b.book_id;",
+     "columns": [
+      "book_id",
+      "title",
+      "category",
+      "price"
+     ],
+     "rows": [
+      [
+       1,
+       "아몬드",
+       "소설",
+       14000
+      ],
+      [
+       2,
+       "82년생 김지영",
+       "소설",
+       13000
+      ],
+      [
+       3,
+       "불편한 편의점",
+       "소설",
+       14000
+      ],
+      [
+       4,
+       "진달래꽃",
+       "시",
+       8000
+      ],
+      [
+       5,
+       "하늘과 바람과 별과 시",
+       "시",
+       9000
+      ],
+      [
+       6,
+       "언어의 온도",
+       "에세이",
+       14800
+      ],
+      [
+       7,
+       "죽고 싶지만 떡볶이는 먹고 싶어",
+       "에세이",
+       13800
+      ],
+      [
+       8,
+       "코스모스",
+       "과학",
+       19800
+      ],
+      [
+       9,
+       "이기적 유전자",
+       "과학",
+       20000
+      ],
+      [
+       10,
+       "혼자 공부하는 파이썬",
+       "IT",
+       18000
+      ],
+      [
+       11,
+       "점프 투 파이썬",
+       "IT",
+       19800
+      ],
+      [
+       12,
+       "클린 코드",
+       "IT",
+       33000
+      ],
+      [
+       13,
+       "SQL 첫걸음",
+       "IT",
+       28000
+      ],
+      [
+       14,
+       "이것이 취업을 위한 코딩 테스트다",
+       "IT",
+       34000
+      ],
+      [
+       15,
+       "사피엔스",
+       "역사",
+       22000
+      ],
+      [
+       16,
+       "총, 균, 쇠",
+       "역사",
+       28000
+      ],
+      [
+       17,
+       "돈의 속성",
+       "경제",
+       17800
+      ],
+      [
+       18,
+       "넛지",
+       "경제",
+       18000
+      ],
+      [
+       19,
+       "아주 작은 습관의 힘",
+       "자기계발",
+       16000
+      ],
+      [
+       20,
+       "미움받을 용기",
+       "자기계발",
+       15900
+      ],
+      [
+       21,
+       "슬램덩크 1권",
+       "만화",
+       5500
+      ],
+      [
+       22,
+       "미생 1권",
+       "만화",
+       12000
+      ],
+      [
+       23,
+       "어린 왕자",
+       "아동",
+       9800
+      ],
+      [
+       24,
+       "마당을 나온 암탉",
+       "아동",
+       11000
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q6",
+   "tag": "INNER JOIN · 3개 테이블",
+   "title": "현재 대여 중인 책 목록 : 누가 · 어떤 책을 · 언제까지  (rental + member + book)",
+   "statements": [
+    {
+     "sql": "SELECT r.rental_id, m.name AS member_name, b.title, r.rented_at, r.due_date\nFROM rental AS r\nINNER JOIN member AS m ON m.member_id = r.member_id\nINNER JOIN book   AS b ON b.book_id   = r.book_id\nWHERE r.status = 'RENTED'\nORDER BY r.due_date, r.rental_id;",
+     "columns": [
+      "rental_id",
+      "member_name",
+      "title",
+      "rented_at",
+      "due_date"
+     ],
+     "rows": [
+      [
+       28,
+       "최수빈",
+       "이것이 취업을 위한 코딩 테스트다",
+       "2026-09-18",
+       "2026-10-02"
+      ],
+      [
+       29,
+       "한지우",
+       "사피엔스",
+       "2026-09-20",
+       "2026-10-04"
+      ],
+      [
+       30,
+       "정하은",
+       "SQL 첫걸음",
+       "2026-09-22",
+       "2026-10-06"
+      ],
+      [
+       31,
+       "김민준",
+       "점프 투 파이썬",
+       "2026-09-30",
+       "2026-10-14"
+      ],
+      [
+       32,
+       "이서연",
+       "클린 코드",
+       "2026-10-01",
+       "2026-10-15"
+      ],
+      [
+       33,
+       "박지호",
+       "미움받을 용기",
+       "2026-10-02",
+       "2026-10-16"
+      ],
+      [
+       34,
+       "장예린",
+       "미생 1권",
+       "2026-10-03",
+       "2026-10-17"
+      ],
+      [
+       35,
+       "강도윤",
+       "돈의 속성",
+       "2026-10-04",
+       "2026-10-18"
+      ],
+      [
+       36,
+       "정하은",
+       "아몬드",
+       "2026-10-05",
+       "2026-10-19"
+      ],
+      [
+       37,
+       "조아라",
+       "혼자 공부하는 파이썬",
+       "2026-10-06",
+       "2026-10-20"
+      ],
+      [
+       38,
+       "윤태양",
+       "불편한 편의점",
+       "2026-10-07",
+       "2026-10-21"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q7",
+   "tag": "LEFT JOIN",
+   "title": "한 번도 대여된 적 없는 도서 찾기  (book 기준 LEFT JOIN + 짝이 없으면 NULL)",
+   "statements": [
+    {
+     "sql": "--     LEFT JOIN = 왼쪽(book)은 전부 남기고, 오른쪽(rental)에 짝이 없으면 NULL 로 채운다.\n--     그래서 \"r.rental_id IS NULL\" = 짝이 없다 = 한 번도 안 빌려졌다.\nSELECT b.book_id, b.title, b.author\nFROM book AS b\nLEFT JOIN rental AS r ON r.book_id = b.book_id\nWHERE r.rental_id IS NULL\nORDER BY b.book_id;",
+     "columns": [
+      "book_id",
+      "title",
+      "author"
+     ],
+     "rows": [
+      [
+       4,
+       "진달래꽃",
+       "김소월"
+      ],
+      [
+       5,
+       "하늘과 바람과 별과 시",
+       "윤동주"
+      ],
+      [
+       9,
+       "이기적 유전자",
+       "리처드 도킨스"
+      ],
+      [
+       18,
+       "넛지",
+       "리처드 탈러"
+      ],
+      [
+       24,
+       "마당을 나온 암탉",
+       "황선미"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q8",
+   "tag": "LEFT JOIN + COUNT",
+   "title": "회원별 대여 횟수  (대여 기록이 0건인 회원도 함께 표시)",
+   "statements": [
+    {
+     "sql": "--     ※ COUNT(*) 가 아니라 COUNT(r.rental_id) 를 쓴 이유 : 짝이 없는 회원도 행이 1줄 생기는데,\n--       COUNT(*) 는 그 줄을 1건으로 세어 버리고 COUNT(컬럼) 은 NULL 을 빼고 세어서 0 이 나온다.\nSELECT m.member_id, m.name, COUNT(r.rental_id) AS rental_count\nFROM member AS m\nLEFT JOIN rental AS r ON r.member_id = m.member_id\nGROUP BY m.member_id, m.name\nORDER BY rental_count DESC, m.member_id;",
+     "columns": [
+      "member_id",
+      "name",
+      "rental_count"
+     ],
+     "rows": [
+      [
+       5,
+       "정하은",
+       5
+      ],
+      [
+       6,
+       "강도윤",
+       5
+      ],
+      [
+       1,
+       "김민준",
+       4
+      ],
+      [
+       2,
+       "이서연",
+       4
+      ],
+      [
+       3,
+       "박지호",
+       4
+      ],
+      [
+       4,
+       "최수빈",
+       4
+      ],
+      [
+       7,
+       "조아라",
+       3
+      ],
+      [
+       8,
+       "윤태양",
+       3
+      ],
+      [
+       9,
+       "장예린",
+       3
+      ],
+      [
+       10,
+       "한지우",
+       3
+      ],
+      [
+       11,
+       "오세훈",
+       0
+      ],
+      [
+       12,
+       "신나래",
+       0
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q9",
+   "tag": "집계 · COUNT, AVG",
+   "title": "분류별 도서 수와 평균 가격  (많은 분류 순)",
+   "statements": [
+    {
+     "sql": "SELECT c.name AS category,\n       COUNT(b.book_id)                  AS book_count,\n       CAST(ROUND(AVG(b.price)) AS INTEGER) AS avg_price\nFROM category AS c\nINNER JOIN book AS b ON b.category_id = c.category_id\nGROUP BY c.category_id, c.name\nORDER BY book_count DESC, avg_price DESC;",
+     "columns": [
+      "category",
+      "book_count",
+      "avg_price"
+     ],
+     "rows": [
+      [
+       "IT",
+       5,
+       26560
+      ],
+      [
+       "소설",
+       3,
+       13667
+      ],
+      [
+       "역사",
+       2,
+       25000
+      ],
+      [
+       "과학",
+       2,
+       19900
+      ],
+      [
+       "경제",
+       2,
+       17900
+      ],
+      [
+       "자기계발",
+       2,
+       15950
+      ],
+      [
+       "에세이",
+       2,
+       14300
+      ],
+      [
+       "아동",
+       2,
+       10400
+      ],
+      [
+       "만화",
+       2,
+       8750
+      ],
+      [
+       "시",
+       2,
+       8500
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q10",
+   "tag": "집계 · COUNT",
+   "title": "가장 많이 대여된 인기 도서 TOP 5  (JOIN + GROUP BY + ORDER BY + LIMIT)",
+   "statements": [
+    {
+     "sql": "SELECT b.title, COUNT(*) AS rental_count\nFROM rental AS r\nINNER JOIN book AS b ON b.book_id = r.book_id\nGROUP BY b.book_id, b.title\nORDER BY rental_count DESC, b.title\nLIMIT 5;",
+     "columns": [
+      "title",
+      "rental_count"
+     ],
+     "rows": [
+      [
+       "혼자 공부하는 파이썬",
+       5
+      ],
+      [
+       "아몬드",
+       4
+      ],
+      [
+       "점프 투 파이썬",
+       4
+      ],
+      [
+       "아주 작은 습관의 힘",
+       3
+      ],
+      [
+       "클린 코드",
+       3
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q11",
+   "tag": "집계 · SUM + HAVING",
+   "title": "연체료 합계가 1,500원 이상인 회원  (많은 순)",
+   "statements": [
+    {
+     "sql": "--      WHERE = 묶기 \"전\"에 행을 거른다 (연체료가 있는 기록만)\n--      HAVING = 묶은 \"후\"에 그룹을 거른다 (합계가 1,500원 이상인 회원만)\nSELECT m.member_id, m.name,\n       COUNT(*)        AS late_count,\n       SUM(r.late_fee) AS total_late_fee\nFROM rental AS r\nINNER JOIN member AS m ON m.member_id = r.member_id\nWHERE r.late_fee > 0\nGROUP BY m.member_id, m.name\nHAVING SUM(r.late_fee) >= 1500\nORDER BY total_late_fee DESC;",
+     "columns": [
+      "member_id",
+      "name",
+      "late_count",
+      "total_late_fee"
+     ],
+     "rows": [
+      [
+       6,
+       "강도윤",
+       2,
+       4800
+      ],
+      [
+       3,
+       "박지호",
+       1,
+       2100
+      ],
+      [
+       1,
+       "김민준",
+       1,
+       1500
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q12",
+   "tag": "서브쿼리",
+   "title": "대여 기록이 한 건도 없는 회원 찾기  (WHERE ... NOT IN (SELECT ...))",
+   "statements": [
+    {
+     "sql": "--      안쪽 쿼리 : 대여 기록에 한 번이라도 등장한 회원 번호 목록\n--      바깥 쿼리 : 그 목록에 \"없는\" 회원만 출력\n--      (rental.member_id 는 NOT NULL 이라 NOT IN 이 안전하다. NULL 이 섞이면 NOT IN 은 결과가 비어 버린다.)\nSELECT member_id, name, email, joined_at\nFROM member\nWHERE member_id NOT IN (SELECT member_id FROM rental)\nORDER BY member_id;",
+     "columns": [
+      "member_id",
+      "name",
+      "email",
+      "joined_at"
+     ],
+     "rows": [
+      [
+       11,
+       "오세훈",
+       "sehun.oh@example.com",
+       "2026-09-15"
+      ],
+      [
+       12,
+       "신나래",
+       "narae.shin@example.com",
+       "2026-09-28"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q13",
+   "tag": "UPDATE",
+   "title": "반납 예정일이 지났는데 아직 '대여 중'인 기록을 '연체(OVERDUE)'로 바꾸고 연체료(하루 300원) 계산",
+   "statements": [
+    {
+     "sql": "-- (1) 변경 전 : 상태별 건수\nSELECT status, COUNT(*) AS cnt\nFROM rental\nGROUP BY status\nORDER BY status;",
+     "columns": [
+      "status",
+      "cnt"
+     ],
+     "rows": [
+      [
+       "OVERDUE",
+       1
+      ],
+      [
+       "RENTED",
+       11
+      ],
+      [
+       "RETURNED",
+       26
+      ]
+     ],
+     "rowcount": null
+    },
+    {
+     "sql": "-- (2) 변경 : 조건에 맞는 행만 수정한다.  ※ WHERE 를 빼먹으면 모든 행이 바뀐다!\n-- [SQLite 전용] julianday() = 날짜를 숫자로 바꿔 날짜 차이(일수)를 계산\nUPDATE rental\nSET status   = 'OVERDUE',\n    late_fee = CAST(julianday('2026-10-08') - julianday(due_date) AS INTEGER) * 300\nWHERE status = 'RENTED'\n  AND due_date < '2026-10-08';",
+     "columns": [],
+     "rows": [],
+     "rowcount": 3
+    },
+    {
+     "sql": "-- (3) 변경 후 : 상태별 건수\nSELECT status, COUNT(*) AS cnt\nFROM rental\nGROUP BY status\nORDER BY status;",
+     "columns": [
+      "status",
+      "cnt"
+     ],
+     "rows": [
+      [
+       "OVERDUE",
+       4
+      ],
+      [
+       "RENTED",
+       8
+      ],
+      [
+       "RETURNED",
+       26
+      ]
+     ],
+     "rowcount": null
+    },
+    {
+     "sql": "-- (4) 방금 연체로 바뀐 기록 확인\nSELECT rental_id, member_id, book_id, due_date, status, late_fee\nFROM rental\nWHERE status = 'OVERDUE'\nORDER BY rental_id;",
+     "columns": [
+      "rental_id",
+      "member_id",
+      "book_id",
+      "due_date",
+      "status",
+      "late_fee"
+     ],
+     "rows": [
+      [
+       27,
+       6,
+       19,
+       "2026-09-26",
+       "OVERDUE",
+       3600
+      ],
+      [
+       28,
+       4,
+       14,
+       "2026-10-02",
+       "OVERDUE",
+       1800
+      ],
+      [
+       29,
+       10,
+       15,
+       "2026-10-04",
+       "OVERDUE",
+       1200
+      ],
+      [
+       30,
+       5,
+       13,
+       "2026-10-06",
+       "OVERDUE",
+       600
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q14",
+   "tag": "DELETE",
+   "title": "가입만 하고 대여 기록이 없는 12번 회원(신나래)을 탈퇴 처리(삭제)",
+   "statements": [
+    {
+     "sql": "-- (1) 삭제 전 회원 수\nSELECT COUNT(*) AS member_count_before\nFROM member;",
+     "columns": [
+      "member_count_before"
+     ],
+     "rows": [
+      [
+       12
+      ]
+     ],
+     "rowcount": null
+    },
+    {
+     "sql": "-- (2) 삭제 : NOT EXISTS 조건 = \"대여 기록이 있는 회원은 지우지 않는다\"는 안전장치 (FK 에러 방지)\nDELETE FROM member\nWHERE member_id = 12\n  AND NOT EXISTS (SELECT 1 FROM rental AS r WHERE r.member_id = member.member_id);",
+     "columns": [],
+     "rows": [],
+     "rowcount": 1
+    },
+    {
+     "sql": "-- (3) 삭제 후 회원 수\nSELECT COUNT(*) AS member_count_after\nFROM member;",
+     "columns": [
+      "member_count_after"
+     ],
+     "rows": [
+      [
+       11
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  },
+  {
+   "id": "Q15",
+   "tag": "인덱스",
+   "title": "rental.member_id 에 인덱스를 만들고, 조회 방식이 바뀌는 것을 확인",
+   "statements": [
+    {
+     "sql": "--      적용 이유 : rental 은 계속 쌓이는 테이블이고 \"특정 회원의 대여 기록\"을 자주 찾는다(JOIN·WHERE 에 member_id 사용).\n--                  인덱스가 없으면 전체 행을 처음부터 끝까지 읽고(SCAN), 있으면 책 뒤 색인처럼 바로 찾아간다(SEARCH).\n-- [SQLite 전용] EXPLAIN QUERY PLAN = 쿼리가 어떤 방식으로 실행되는지 보여 준다.\n--               (MySQL/PostgreSQL 은 EXPLAIN 만 쓴다)\n-- (1) 인덱스 만들기 전\nEXPLAIN QUERY PLAN\nSELECT * FROM rental WHERE member_id = 3;",
+     "columns": [
+      "plan"
+     ],
+     "rows": [
+      [
+       "SCAN rental"
+      ]
+     ],
+     "rowcount": null
+    },
+    {
+     "sql": "-- (2) 인덱스 생성\nCREATE INDEX idx_rental_member_id ON rental (member_id);",
+     "columns": [],
+     "rows": [],
+     "rowcount": -1
+    },
+    {
+     "sql": "-- (3) 인덱스 만든 후 : 같은 쿼리인데 실행 방식이 SCAN → SEARCH 로 바뀐다\nEXPLAIN QUERY PLAN\nSELECT * FROM rental WHERE member_id = 3;",
+     "columns": [
+      "plan"
+     ],
+     "rows": [
+      [
+       "SEARCH rental USING INDEX idx_rental_member_id (member_id=?)"
+      ]
+     ],
+     "rowcount": null
+    }
+   ]
+  }
+ ]
+}

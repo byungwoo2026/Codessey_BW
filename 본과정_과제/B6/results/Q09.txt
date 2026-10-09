@@ -1,0 +1,29 @@
+==============================================================================
+Q9. [집계 · COUNT, AVG] 분류별 도서 수와 평균 가격  (많은 분류 순)
+==============================================================================
+
+[SQL]
+SELECT c.name AS category,
+       COUNT(b.book_id)                  AS book_count,
+       CAST(ROUND(AVG(b.price)) AS INTEGER) AS avg_price
+FROM category AS c
+INNER JOIN book AS b ON b.category_id = c.category_id
+GROUP BY c.category_id, c.name
+ORDER BY book_count DESC, avg_price DESC;
+
+[실행 결과]
++----------+------------+-----------+
+| category | book_count | avg_price |
++----------+------------+-----------+
+| IT       |          5 |     26560 |
+| 소설     |          3 |     13667 |
+| 역사     |          2 |     25000 |
+| 과학     |          2 |     19900 |
+| 경제     |          2 |     17900 |
+| 자기계발 |          2 |     15950 |
+| 에세이   |          2 |     14300 |
+| 아동     |          2 |     10400 |
+| 만화     |          2 |      8750 |
+| 시       |          2 |      8500 |
++----------+------------+-----------+
+(10행)
