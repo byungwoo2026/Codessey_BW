@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동료평가 질문 답변</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --text: #1b2230;
+    --muted: #596273;
+    --line: #dce1e9;
+    --accent: #2b6cdf;
+    --accent-soft: #e7efff;
+    --ok: #1b7f49;
+    --ok-soft: #e4f5ea;
+    --bad: #b3261e;
+    --bad-soft: #fdeceb;
+    --warn: #8a5300;
+    --warn-soft: #fff3de;
+    --code-bg: #f0f2f6;
+    --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141b;
+      --surface: #171d27;
+      --text: #e6eaf0;
+      --muted: #9ba6b6;
+      --line: #2a3342;
+      --accent: #7ba9ff;
+      --accent-soft: #1b2a47;
+      --ok: #62d18f;
+      --ok-soft: #12301f;
+      --bad: #ff8d85;
+      --bad-soft: #3a1b19;
+      --warn: #f2b066;
+      --warn-soft: #382612;
+      --code-bg: #10161f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141b;
+    --surface: #171d27;
+    --text: #e6eaf0;
+    --muted: #9ba6b6;
+    --line: #2a3342;
+    --accent: #7ba9ff;
+    --accent-soft: #1b2a47;
+    --ok: #62d18f;
+    --ok-soft: #12301f;
+    --bad: #ff8d85;
+    --bad-soft: #3a1b19;
+    --warn: #f2b066;
+    --warn-soft: #382612;
+    --code-bg: #10161f;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+
+  header.hero { padding: 40px 0 20px; }
+  header.hero h1 { font-size: 1.7rem; line-height: 1.35; margin: 0 0 8px; }
+  header.hero p { margin: 0; color: var(--muted); }
+  .chip {
+    display: inline-block; font-size: .78rem; font-weight: 600;
+    padding: 2px 10px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); margin-bottom: 10px;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    margin: 0 -16px; padding: 8px 16px;
+    display: flex; gap: 6px; overflow-x: auto; white-space: nowrap;
+  }
+  nav.top a {
+    flex: none; text-decoration: none; color: var(--muted);
+    font-size: .88rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  nav.top a:hover { color: var(--accent); border-color: var(--accent); }
+
+  h2 { font-size: 1.35rem; line-height: 1.4; margin: 0 0 4px; }
+  h3 { font-size: 1.02rem; margin: 26px 0 8px; }
+  section.q {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px 22px; margin-top: 24px;
+  }
+  .qnum {
+    display: inline-block; font-weight: 700; font-size: .8rem;
+    color: var(--accent); letter-spacing: .04em; margin-bottom: 4px;
+  }
+  .qtext { color: var(--muted); font-size: .92rem; margin: 0 0 14px; }
+
+  .answer {
+    border-left: 4px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; font-weight: 600;
+  }
+  .analogy {
+    border-left: 4px solid var(--warn); background: var(--warn-soft);
+    padding: 10px 16px; border-radius: 0 8px 8px 0; margin-top: 12px; font-size: .95rem;
+  }
+  .analogy b { color: var(--warn); }
+  .script {
+    border: 1px dashed var(--accent); border-radius: 10px;
+    padding: 12px 16px; margin-top: 8px; background: var(--surface);
+  }
+  .script p { margin: 0; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code-bg); font-weight: 600; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; margin: 10px 0; }
+  .scroll table.wide { min-width: 560px; }
+  tr.hl td { background: var(--accent-soft); }
+  td.ok { color: var(--ok); font-weight: 600; }
+  td.bad { color: var(--bad); font-weight: 600; }
+  td.dup { background: var(--bad-soft); }
+
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; margin: 10px 0;
+    font-size: .84rem; line-height: 1.6; word-break: normal; overflow-wrap: normal;
+  }
+  code { font-family: "D2Coding", "Cascadia Mono", Consolas, "Courier New", monospace; }
+  p code, li code, td code, summary code {
+    background: var(--code-bg); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 5px; font-size: .86em;
+  }
+  .src { font-size: .8rem; color: var(--muted); margin: 2px 0 0; }
+
+  details.faq {
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px;
+    margin-top: 8px; background: var(--surface);
+  }
+  details.faq summary { cursor: pointer; font-weight: 600; font-size: .94rem; }
+  details.faq p { margin: 8px 0 4px; font-size: .94rem; }
+
+  .note {
+    border: 1px solid var(--line); background: var(--code-bg);
+    border-radius: 8px; padding: 8px 14px; margin-top: 12px; font-size: .9rem; color: var(--muted);
+  }
+  .note b { color: var(--text); }
+
+  /* 번호 따라가기 */
+  .trace { display: grid; gap: 4px; margin: 12px 0; }
+  .trace .step { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--surface); }
+  .trace .step .t { font-size: .78rem; font-weight: 700; color: var(--muted); }
+  .trace .step table { margin-top: 4px; }
+  .trace .arrow { text-align: center; color: var(--accent); font-weight: 700; font-size: .88rem; }
+
+  /* 흐름 칩 */
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0; }
+  .flow .c {
+    border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
+    padding: 6px 10px; font-size: .86rem; text-align: center;
+  }
+  .flow .c small { display: block; color: var(--muted); font-size: .75rem; }
+  .flow .c.on { border-color: var(--accent); background: var(--accent-soft); }
+  .flow .a { color: var(--accent); font-weight: 700; }
+
+  figure { margin: 12px 0; }
+  figure .scroll svg { display: block; min-width: 640px; width: 100%; height: auto; }
+  figcaption { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+  .venn { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .venn figure { margin: 0; text-align: center; }
+  .venn svg { width: 100%; max-width: 280px; height: auto; }
+
+  .svg-box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .svg-head { fill: var(--accent-soft); stroke: var(--line); stroke-width: 1.5; }
+  .svg-t { fill: var(--text); font-size: 13px; font-family: inherit; }
+  .svg-th { fill: var(--accent); font-size: 14px; font-weight: 700; font-family: inherit; }
+  .svg-m { fill: var(--muted); font-size: 11px; font-family: inherit; }
+  .svg-pk { fill: var(--warn); font-size: 11px; font-weight: 700; font-family: inherit; }
+  .svg-fk { fill: var(--accent); font-size: 11px; font-weight: 700; font-family: inherit; }
+  .svg-rel { stroke: var(--accent); stroke-width: 2; fill: none; }
+  .svg-n { fill: var(--accent); font-size: 14px; font-weight: 700; font-family: inherit; }
+  .svg-row { stroke: var(--line); stroke-width: 1; }
+  .venn-c { fill: none; stroke: var(--muted); stroke-width: 2; }
+  .venn-f { fill: var(--accent); fill-opacity: .35; }
+
+  .summary li { margin-bottom: 8px; }
+  footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
+  footer ul { padding-left: 18px; }
+
+  @media (max-width: 560px) {
+    header.hero h1 { font-size: 1.4rem; }
+    section.q { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="chip">B6 · 도서 대여 DB (SQLite)</span>
+  <h1>동료평가 질문 5개 답변 정리</h1>
+  <p>과제 6번 “과제 목표” 5개 항목을 우리가 만든 테이블·쿼리·실행 결과로 설명합니다.
+     모든 SQL 과 숫자는 <code>sql/</code>, <code>results/</code> 의 실제 파일에서 가져왔습니다. (기준일 2026-10-08 고정)</p>
+</header>
+
+<nav class="top" aria-label="질문 바로가기">
+  <a href="#overview">한눈에</a>
+  <a href="#q1">1 엑셀 vs DB</a>
+  <a href="#q2">2 PK·FK·1:N</a>
+  <a href="#q3">3 CRUD</a>
+  <a href="#q4">4 JOIN·GROUP BY</a>
+  <a href="#q5">5 인덱스</a>
+  <a href="#recap">요약 카드</a>
+</nav>
+
+<!-- ===================================================== 한눈에 -->
+<section class="q" id="overview">
+  <h2>한눈에 보기 — 5개 질문, 한 줄 답</h2>
+  <div class="scroll">
+    <table>
+      <tr><th>#</th><th>질문</th><th>한 줄 답</th></tr>
+      <tr><td>1</td><td>데이터베이스와 엑셀의 차이점</td><td>양이 아니라 <b>관계</b>와 <b>규칙</b>을 DB 가 직접 관리해 준다는 점</td></tr>
+      <tr><td>2</td><td>PK/FK, 1:N 연결</td><td>PK = 겹치지 않는 번호, FK = 그 번호를 다른 테이블에 적어 둔 연결 번호. 1쪽 한 행에 N쪽 여러 행이 번호로 매달림</td></tr>
+      <tr><td>3</td><td>SELECT/INSERT/UPDATE/DELETE</td><td>읽기 / 새로 넣기 / 있는 값 바꾸기 / 없애기 — UPDATE·DELETE 는 WHERE 가 생명</td></tr>
+      <tr><td>4</td><td>JOIN 과 GROUP BY</td><td>JOIN = FK=PK 번호를 맞춰 옆으로 붙이기, GROUP BY = 같은 값끼리 묶어 COUNT·SUM·AVG</td></tr>
+      <tr><td>5</td><td>인덱스</td><td>책 뒤 색인. 자주 검색·JOIN 하고 값이 다양한 컬럼에 만들고, 쓰기가 잦거나 값 종류가 적은 컬럼엔 만들지 않음</td></tr>
+    </table>
+  </div>
+  <div class="note"><b>우리 DB 한 줄 소개</b> — 테이블 4개(<code>category</code> 10행 · <code>member</code> 12행 · <code>book</code> 24행 · <code>rental</code> 38행), 1:N 관계 3개, 쿼리 15개.</div>
+</section>
+
+
+<!-- ===================================================== Q1 -->
+<section class="q" id="q1">
+  <span class="qnum">QUESTION 1</span>
+  <h2>데이터베이스와 엑셀의 차이점</h2>
+  <p class="qtext">왜 파일이나 엑셀이 아니라 DB 에 테이블로 나눠 저장할까?</p>
+
+  <div class="answer">엑셀과 DB 의 차이는 “데이터가 얼마나 많냐”가 아닙니다. 테이블 사이의 <b>관계</b>를 표현하고, 입력 <b>규칙</b>을 DB 가 대신 지켜 준다는 점이 다릅니다.</div>
+  <div class="analogy"><b>비유</b> — 엑셀은 “영수증을 한 장에 몰아 적은 공책”, DB 는 “회원 서랍 · 책 서랍 · 대여기록 서랍을 따로 두고 번호 쪽지로 연결한 서랍장”입니다.</div>
+
+  <h3>① 엑셀식으로 한 시트에 적으면 — 김민준 회원의 대여 4건</h3>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>이름</th><th>이메일</th><th>전화</th><th>책 제목</th><th>분류</th><th>대여일</th></tr>
+      <tr><td class="dup">김민준</td><td class="dup">minjun.kim@example.com</td><td class="dup">010-1000-0001</td><td>아몬드</td><td>소설</td><td>2026-07-03</td></tr>
+      <tr><td class="dup">김민준</td><td class="dup">minjun.kim@example.com</td><td class="dup">010-1000-0001</td><td>혼자 공부하는 파이썬</td><td>IT</td><td>2026-07-22</td></tr>
+      <tr><td class="dup">김민준</td><td class="dup">minjun.kim@example.com</td><td class="dup">010-1000-0001</td><td>클린 코드</td><td>IT</td><td>2026-08-10</td></tr>
+      <tr><td class="dup">김민준</td><td class="dup">minjun.kim@example.com</td><td class="dup">010-1000-0001</td><td>점프 투 파이썬</td><td>IT</td><td>2026-09-30</td></tr>
+    </table>
+  </div>
+  <p>빨간 칸처럼 <b>같은 회원 정보가 대여할 때마다 반복</b>됩니다. 이메일이 바뀌면 4곳을 다 고쳐야 하고, 하나라도 놓치면 “같은 사람인데 이메일이 다른” 데이터가 생깁니다.</p>
+
+  <h3>② DB 는 나눠서 한 번만 저장하고 번호로 연결</h3>
+  <p>회원 정보는 <code>member</code> 에 <b>1번만</b> 저장하고, <code>rental</code> 에는 회원 번호(<code>member_id = 1</code>)만 적습니다. 이메일을 바꿀 때는 <code>member</code> 의 1행만 고치면 모든 대여 기록에 반영됩니다.</p>
+
+  <h3>③ 비교표</h3>
+  <div class="scroll">
+    <table>
+      <tr><th>항목</th><th>엑셀</th><th>DB (우리 프로젝트)</th></tr>
+      <tr><td>저장 방식</td><td>한 시트에 한 줄로 몰아 적음</td><td>테이블 4개로 나누고 번호(PK/FK)로 연결</td></tr>
+      <tr><td>중복</td><td>회원 정보가 대여마다 반복</td><td><code>member</code> 에 1번만</td></tr>
+      <tr><td>관계</td><td>사람이 눈·수식(VLOOKUP)으로 맞춤</td><td>FK 로 DB 가 관리</td></tr>
+      <tr><td>규칙</td><td>아무 값이나 입력 가능</td><td>NOT NULL · UNIQUE · CHECK · FK 가 잘못된 입력을 거부</td></tr>
+      <tr><td>꺼내 쓰기</td><td>필터 · 수식 · 피벗을 손으로</td><td>SQL 한 문장 (JOIN · GROUP BY)</td></tr>
+    </table>
+  </div>
+
+  <h3>④ 증거 — 잘못된 입력을 DB 가 막은 기록 (<code>results/00_verify.txt</code>)</h3>
+  <div class="scroll">
+    <table>
+      <tr><th>일부러 시도한 입력</th><th>DB 의 반응</th><th>지킨 규칙</th></tr>
+      <tr><td>없는 회원(999번)으로 대여 기록 INSERT</td><td class="bad">FOREIGN KEY constraint failed</td><td>FK</td></tr>
+      <tr><td>이미 있는 이메일로 회원 INSERT</td><td class="bad">UNIQUE constraint failed: member.email</td><td>UNIQUE</td></tr>
+      <tr><td>이름 없이(NULL) 회원 INSERT</td><td class="bad">NOT NULL constraint failed: member.name</td><td>NOT NULL</td></tr>
+      <tr><td>가격 -1 인 도서 INSERT</td><td class="bad">CHECK constraint failed: ck_book_price</td><td>CHECK</td></tr>
+    </table>
+  </div>
+  <p class="src">엑셀은 위 4가지를 모두 그냥 받아 줍니다.</p>
+
+  <h3>30초 대본</h3>
+  <div class="script"><p>엑셀과 DB 의 가장 큰 차이는 데이터가 얼마나 많냐가 아니라 ‘관계’를 표현할 수 있느냐입니다.
+  엑셀은 한 시트에 회원 이름과 이메일을 대여할 때마다 반복해서 적어야 하고, 잘못 입력해도 막아 주지 않습니다.
+  DB 는 회원·도서·대여 기록을 테이블로 나누고 번호로 연결해서 정보를 한 곳에만 저장합니다.
+  그리고 NOT NULL, UNIQUE, FK 같은 규칙이 잘못된 입력을 거부합니다.
+  실제로 제 DB 에 없는 회원 번호 999번으로 대여 기록을 넣으려고 하니 FOREIGN KEY constraint failed 에러로 막혔습니다.</p></div>
+
+  <h3>예상 꼬리질문</h3>
+  <details class="faq"><summary>엑셀도 VLOOKUP 으로 시트끼리 연결할 수 있지 않나요?</summary>
+    <p>연결은 되지만 그 연결을 사람이 수식으로 유지해야 하고, “없는 값을 입력하는 것”은 막지 못합니다. DB 는 FK 가 연결 자체를 규칙으로 강제합니다.</p></details>
+  <details class="faq"><summary>그럼 엑셀은 쓰면 안 되나요?</summary>
+    <p>아닙니다. 소량·개인용 집계에는 엑셀이 더 편합니다. 여러 테이블이 관계를 맺고, 규칙을 지켜야 하고, 여러 사람이 함께 쓰는 서비스 데이터에는 DB 가 맞습니다.</p></details>
+  <details class="faq"><summary>FK 검사를 끄면 어떻게 되나요?</summary>
+    <p>SQLite 는 <code>PRAGMA foreign_keys = ON</code> 을 켜야 FK 가 동작합니다. 대조 실험으로 끄고 같은 INSERT(999번 회원)를 했더니 <b>에러 없이 들어갔습니다</b>(시도 후 롤백). 규칙은 “켜져 있어야” 지켜집니다. (<code>results/00_verify.txt</code> 하단)</p></details>
+</section>
+
+
+<!-- ===================================================== Q2 -->
+<section class="q" id="q2">
+  <span class="qnum">QUESTION 2</span>
+  <h2>PK / FK 가 뭐고, 1:N 이 어떻게 연결되는지</h2>
+
+  <div class="answer"><b>PK</b> 는 행마다 붙는 “겹치지도 비지도 않는 고유 번호”, <b>FK</b> 는 그 번호를 <b>다른 테이블에 적어 둔 연결 번호</b>입니다. 1쪽의 한 행에 N쪽의 여러 행이 번호로 매달리는 것이 1:N 이고, FK 는 항상 <b>N쪽</b> 테이블에 있습니다.</div>
+  <div class="analogy"><b>비유</b> — PK 는 <b>학번</b>(한 사람에게만 붙고 겹치지 않음), FK 는 출석부에 이름 대신 적어 둔 <b>학번</b>입니다. 이름은 동명이인·개명이 있지만 번호는 변하지 않습니다.</div>
+
+  <h3>우리 DB 의 4개 테이블과 1:N 관계 3개</h3>
+  <figure>
+    <div class="scroll">
+      <svg viewBox="0 0 820 200" role="img" aria-label="category 1:N book, book 1:N rental, member 1:N rental 관계를 보여주는 ERD">
+        <!-- category -->
+        <rect class="svg-head" x="10" y="20" width="158" height="30" rx="6"/>
+        <rect class="svg-box" x="10" y="50" width="158" height="52"/>
+        <text class="svg-th" x="20" y="40">category</text>
+        <text class="svg-pk" x="18" y="68">PK</text><text class="svg-t" x="46" y="68">category_id</text>
+        <line class="svg-row" x1="10" y1="76" x2="168" y2="76"/>
+        <text class="svg-m" x="18" y="94">UK</text><text class="svg-t" x="46" y="94">name</text>
+        <!-- book -->
+        <rect class="svg-head" x="224" y="20" width="158" height="30" rx="6"/>
+        <rect class="svg-box" x="224" y="50" width="158" height="104"/>
+        <text class="svg-th" x="234" y="40">book</text>
+        <text class="svg-pk" x="232" y="68">PK</text><text class="svg-t" x="260" y="68">book_id</text>
+        <line class="svg-row" x1="224" y1="76" x2="382" y2="76"/>
+        <text class="svg-fk" x="232" y="94">FK</text><text class="svg-t" x="260" y="94">category_id</text>
+        <line class="svg-row" x1="224" y1="102" x2="382" y2="102"/>
+        <text class="svg-t" x="260" y="120">title</text>
+        <line class="svg-row" x1="224" y1="128" x2="382" y2="128"/>
+        <text class="svg-t" x="260" y="146">price</text>
+        <!-- rental -->
+        <rect class="svg-head" x="438" y="20" width="158" height="30" rx="6"/>
+        <rect class="svg-box" x="438" y="50" width="158" height="130"/>
+        <text class="svg-th" x="448" y="40">rental</text>
+        <text class="svg-pk" x="446" y="68">PK</text><text class="svg-t" x="474" y="68">rental_id</text>
+        <line class="svg-row" x1="438" y1="76" x2="596" y2="76"/>
+        <text class="svg-fk" x="446" y="94">FK</text><text class="svg-t" x="474" y="94">book_id</text>
+        <line class="svg-row" x1="438" y1="102" x2="596" y2="102"/>
+        <text class="svg-fk" x="446" y="120">FK</text><text class="svg-t" x="474" y="120">member_id</text>
+        <line class="svg-row" x1="438" y1="128" x2="596" y2="128"/>
+        <text class="svg-t" x="474" y="146">rented_at</text>
+        <line class="svg-row" x1="438" y1="154" x2="596" y2="154"/>
+        <text class="svg-t" x="474" y="172">status</text>
+        <!-- member -->
+        <rect class="svg-head" x="652" y="20" width="158" height="30" rx="6"/>
+        <rect class="svg-box" x="652" y="50" width="158" height="78"/>
+        <text class="svg-th" x="662" y="40">member</text>
+        <text class="svg-pk" x="660" y="68">PK</text><text class="svg-t" x="688" y="68">member_id</text>
+        <line class="svg-row" x1="652" y1="76" x2="810" y2="76"/>
+        <text class="svg-t" x="688" y="94">name</text>
+        <line class="svg-row" x1="652" y1="102" x2="810" y2="102"/>
+        <text class="svg-m" x="660" y="120">UK</text><text class="svg-t" x="688" y="120">email</text>
+        <!-- relations -->
+        <path class="svg-rel" d="M168 63 L224 89"/>
+        <text class="svg-n" x="172" y="58">1</text><text class="svg-n" x="208" y="84" text-anchor="end">N</text>
+        <path class="svg-rel" d="M382 63 L438 89"/>
+        <text class="svg-n" x="386" y="58">1</text><text class="svg-n" x="422" y="84" text-anchor="end">N</text>
+        <path class="svg-rel" d="M652 63 L596 115"/>
+        <text class="svg-n" x="646" y="58" text-anchor="end">1</text><text class="svg-n" x="604" y="134">N</text>
+      </svg>
+    </div>
+    <figcaption>PK = 주황색 · FK = 파란색 · UK = UNIQUE. 선의 <b>N 쪽 테이블에 FK 가 있습니다.</b> (<code>erd.svg</code> 에 전체 컬럼 버전이 있습니다)</figcaption>
+  </figure>
+  <ul>
+    <li><b>category 1 : book N</b> — 한 분류에 여러 도서 (<code>book.category_id</code>)</li>
+    <li><b>member 1 : rental N</b> — 한 회원이 여러 번 대여 (<code>rental.member_id</code>)</li>
+    <li><b>book 1 : rental N</b> — 한 도서가 여러 번 대여됨 (<code>rental.book_id</code>)</li>
+  </ul>
+
+  <h3>번호를 따라가 보기 — 31번 대여 기록은 누가 무엇을 빌린 걸까?</h3>
+  <div class="trace">
+    <div class="step"><span class="t">① rental (대여 기록)</span>
+      <div class="scroll"><table><tr><th>rental_id</th><th>member_id</th><th>book_id</th><th>rented_at</th><th>due_date</th><th>status</th></tr>
+      <tr class="hl"><td>31</td><td><b>1</b></td><td><b>11</b></td><td>2026-09-30</td><td>2026-10-14</td><td>RENTED</td></tr></table></div></div>
+    <div class="arrow">↓ member_id = 1 로 member 에서 찾기</div>
+    <div class="step"><span class="t">② member (회원)</span>
+      <div class="scroll"><table><tr><th>member_id</th><th>name</th><th>email</th></tr>
+      <tr class="hl"><td>1</td><td>김민준</td><td>minjun.kim@example.com</td></tr></table></div></div>
+    <div class="arrow">↓ book_id = 11 로 book 에서 찾기</div>
+    <div class="step"><span class="t">③ book (도서)</span>
+      <div class="scroll"><table><tr><th>book_id</th><th>category_id</th><th>title</th><th>price</th></tr>
+      <tr class="hl"><td>11</td><td><b>5</b></td><td>점프 투 파이썬</td><td>19800</td></tr></table></div></div>
+    <div class="arrow">↓ category_id = 5 로 category 에서 찾기</div>
+    <div class="step"><span class="t">④ category (분류)</span>
+      <div class="scroll"><table><tr><th>category_id</th><th>name</th></tr>
+      <tr class="hl"><td>5</td><td>IT</td></tr></table></div></div>
+  </div>
+  <p><b>결론</b> : 31번 대여 기록 = <b>김민준</b> 회원이 <b>IT</b> 분류의 <b>점프 투 파이썬</b>을 2026-09-30 에 빌림. (<code>results/Q06.txt</code> 의 31번 행과 동일)
+     이렇게 번호를 따라가는 일을 SQL 이 한 번에 해 주는 것이 JOIN 입니다. → 질문 4</p>
+
+  <h3>1:N 숫자로 확인하기</h3>
+  <div class="scroll">
+    <table>
+      <tr><th>1 쪽</th><th>N 쪽</th><th>실제 값</th><th>출처</th></tr>
+      <tr><td>category <b>IT</b> 1개</td><td>book</td><td class="num">5권</td><td>Q9</td></tr>
+      <tr><td>member <b>김민준</b> 1명</td><td>rental</td><td class="num">4건</td><td>Q8</td></tr>
+      <tr><td>book <b>혼자 공부하는 파이썬</b> 1권</td><td>rental</td><td class="num">5건</td><td>Q10</td></tr>
+    </table>
+  </div>
+
+  <h3>코드로 보면 — PK/FK 선언 (<code>sql/01_schema.sql</code> 일부)</h3>
+<pre><code>CREATE TABLE rental (
+    rental_id INTEGER PRIMARY KEY AUTOINCREMENT,  -- PK : 대여 기록 1건마다 붙는 고유 번호
+    member_id INTEGER NOT NULL,                   -- FK 컬럼 : 누가 빌렸나 (member 의 번호)
+    book_id   INTEGER NOT NULL,                   -- FK 컬럼 : 어떤 책인가 (book 의 번호)
+    -- ... (대여일 · 반납예정일 · 상태 · 연체료 컬럼 생략)
+    CONSTRAINT fk_rental_member
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
+        ON DELETE RESTRICT,                       -- 대여 기록이 있는 회원은 삭제 불가
+    CONSTRAINT fk_rental_book
+        FOREIGN KEY (book_id)   REFERENCES book (book_id)
+        ON DELETE RESTRICT                        -- 대여 기록이 있는 책은 삭제 불가
+);</code></pre>
+  <p>FK 가 지켜 주는 것 두 가지 — ① <b>없는 번호는 참조 불가</b> (999번 회원 INSERT → 거부), ② <b>참조당하는 행은 삭제 불가</b> (대여 기록이 있는 1번 회원·1번 도서 DELETE → 거부). 둘 다 <code>results/00_verify.txt</code> 에 기록되어 있습니다.</p>
+
+  <h3>30초 대본</h3>
+  <div class="script"><p>PK 는 한 행을 구분하는 고유 번호로, 중복되거나 비어 있을 수 없습니다. 학번 같은 것입니다.
+  FK 는 다른 테이블의 PK 번호를 가져와 적어 둔 컬럼으로, ‘이 대여 기록은 몇 번 회원의 것이다’처럼 가리키는 역할을 합니다.
+  1:N 은 한 쪽의 한 행에 다른 쪽 여러 행이 연결되는 관계입니다.
+  제 DB 에서는 김민준 회원 1명에게 대여 기록이 4건 연결되고, 이때 FK 는 항상 N 쪽인 rental 테이블에 있습니다.
+  31번 대여 기록의 member_id 1 과 book_id 11 을 따라가면 김민준이 점프 투 파이썬을 빌렸다는 걸 알 수 있습니다.</p></div>
+
+  <h3>예상 꼬리질문</h3>
+  <details class="faq"><summary>PK 로 이름을 쓰면 안 되나요?</summary>
+    <p>이름은 동명이인이 있고 개명으로 바뀔 수 있습니다. PK 는 겹치지 않고 변하지 않아야 하므로 의미 없는 번호(<code>member_id</code>)를 씁니다.</p></details>
+  <details class="faq"><summary>FK 는 왜 항상 N 쪽에 있나요?</summary>
+    <p>1 쪽의 한 칸에 번호를 여러 개 적을 수 없기 때문입니다. 회원 칸에 “대여한 책 1, 10, 12, 11” 처럼 적는 대신, 대여 1건마다 한 줄(<code>rental</code>)을 만들고 거기에 <code>member_id</code> 를 적습니다.</p></details>
+  <details class="faq"><summary>회원과 도서는 서로 여러 개씩 연결되는데(N:M) 왜 1:N 만 있나요?</summary>
+    <p><code>rental</code> 이 둘 사이의 “다리” 역할을 합니다. 대여 1건 = 회원 1명 + 책 1권이므로, 회원→대여, 도서→대여 두 개의 1:N 으로 풀어서 표현합니다.</p></details>
+</section>
+
+
+<!-- ===================================================== Q3 -->
+<section class="q" id="q3">
+  <span class="qnum">QUESTION 3</span>
+  <h2>SELECT / INSERT / UPDATE / DELETE 는 언제 쓰나</h2>
+
+  <div class="answer">데이터를 <b>읽을 때 SELECT</b>, <b>새로 넣을 때 INSERT</b>, <b>있는 값을 바꿀 때 UPDATE</b>, <b>없앨 때 DELETE</b>. SELECT 만 데이터를 바꾸지 않고, 나머지 셋은 실제 데이터를 바꿉니다.</div>
+
+  <h3>도서관 한 사이클에 대응시키면</h3>
+  <div class="flow">
+    <div class="c on">회원 가입<small>INSERT</small></div><span class="a">→</span>
+    <div class="c on">책 검색<small>SELECT</small></div><span class="a">→</span>
+    <div class="c on">대여 시작<small>INSERT</small></div><span class="a">→</span>
+    <div class="c on">기한 초과 처리<small>UPDATE</small></div><span class="a">→</span>
+    <div class="c on">탈퇴<small>DELETE</small></div>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <tr><th>명령</th><th>한 줄 뜻</th><th>우리 DB 에서</th><th>주의</th></tr>
+      <tr><td><b>SELECT</b></td><td>읽기 (조회)</td><td>Q1 ~ Q12 · 책 검색, 대여 중 목록, 집계</td><td>데이터를 바꾸지 않아 몇 번 실행해도 안전</td></tr>
+      <tr><td><b>INSERT</b></td><td>새 행 추가</td><td><code>02_insert_data.sql</code> · 회원 · 도서 · 대여 기록 입력</td><td><b>부모 먼저</b> (category → member → book → rental)</td></tr>
+      <tr><td><b>UPDATE</b></td><td>기존 행의 값 변경</td><td>Q13 · 기한 지난 ‘대여 중’ → ‘연체’</td><td><b>WHERE 필수</b> — 빼면 전체 행이 바뀜</td></tr>
+      <tr><td><b>DELETE</b></td><td>행 삭제</td><td>Q14 · 대여 기록 없는 회원 탈퇴</td><td><b>WHERE 필수</b> + FK 가 막을 수 있음</td></tr>
+    </table>
+  </div>
+
+  <h3>INSERT — 새 행 넣기 (부모 → 자식 순서)</h3>
+<pre><code>INSERT INTO member (member_id, name, email, phone, joined_at)  -- 어떤 컬럼에
+VALUES (1, '김민준', 'minjun.kim@example.com',                   -- 어떤 값을
+        '010-1000-0001', '2026-01-15');</code></pre>
+  <p class="src">※ <code>02_insert_data.sql</code> 의 member 첫 행을 단독 INSERT 로 풀어 쓴 예 (실제 파일은 12명을 한 번에 입력)</p>
+  <p>부모(<code>member</code>, <code>book</code>)가 먼저 있어야 자식(<code>rental</code>)을 넣을 수 있어서, 입력 순서는 <b>category → member → book → rental</b> 입니다.</p>
+
+  <h3>UPDATE — 조건에 맞는 행만 바꾸기 (Q13)</h3>
+<pre><code>UPDATE rental
+SET status   = 'OVERDUE',                       -- 상태를 '연체'로
+    late_fee = CAST(julianday('2026-10-08') - julianday(due_date) AS INTEGER) * 300  -- 하루 300원
+WHERE status = 'RENTED'                         -- ★ 이 조건이 없으면 38행 전부가 바뀐다!
+  AND due_date &lt; '2026-10-08';                  -- 반납 예정일이 지난 것만</code></pre>
+  <div class="scroll">
+    <table>
+      <tr><th>status</th><th class="num">변경 전</th><th class="num">변경 후</th></tr>
+      <tr><td>RENTED</td><td class="num">11</td><td class="num">8</td></tr>
+      <tr><td>OVERDUE</td><td class="num">1</td><td class="num">4</td></tr>
+      <tr><td>RETURNED</td><td class="num">26</td><td class="num">26</td></tr>
+    </table>
+  </div>
+  <p class="src">결과: 3행 변경 (<code>results/Q13.txt</code>). 실행 전·후에 <code>GROUP BY status</code> SELECT 로 확인했습니다.</p>
+
+  <h3>DELETE — 안전장치를 붙여 지우기 (Q14)</h3>
+<pre><code>DELETE FROM member
+WHERE member_id = 12                            -- 12번 회원(신나래)만
+  AND NOT EXISTS (SELECT 1 FROM rental AS r     -- 대여 기록이 하나도 없을 때만 삭제
+                  WHERE r.member_id = member.member_id);</code></pre>
+  <p>회원 수 <b>12 → 11</b>. 대여 기록이 있는 회원은 FK(<code>RESTRICT</code>) 때문에 지워지지 않으므로, 에러가 나기 전에 조건으로 미리 걸렀습니다.</p>
+
+  <h3>30초 대본</h3>
+  <div class="script"><p>SELECT 는 읽기, INSERT 는 새 데이터 추가, UPDATE 는 있는 데이터 수정, DELETE 는 삭제입니다.
+  도서관으로 보면 회원 가입이 INSERT, 책 검색이 SELECT, 기한이 지난 대여를 연체로 바꾸는 게 UPDATE, 탈퇴가 DELETE 입니다.
+  UPDATE 와 DELETE 는 WHERE 를 빼면 전체 행이 바뀌거나 지워지기 때문에 조건을 꼭 확인합니다.
+  제 Q13 에서는 기한이 지난 3건만 OVERDUE 로 바꿨고, Q14 에서는 대여 기록이 없는 회원 1명만 삭제했습니다.</p></div>
+
+  <h3>예상 꼬리질문</h3>
+  <details class="faq"><summary>UPDATE 에서 WHERE 를 빼먹으면 어떻게 되나요?</summary>
+    <p>조건이 없으므로 rental 38행 전부의 status 와 late_fee 가 바뀝니다. 그래서 실행 전에 같은 WHERE 로 SELECT 를 먼저 돌려 대상 행을 확인합니다. (Q13 · Q14 도 전·후 SELECT 를 붙였습니다)</p></details>
+  <details class="faq"><summary>대여 기록이 있는 회원을 DELETE 하면요?</summary>
+    <p><code>FOREIGN KEY constraint failed</code> 로 거부됩니다. (<code>results/00_verify.txt</code> (5)) 기록이 주인 없는 번호가 되는 것을 FK 가 막아 줍니다.</p></details>
+  <details class="faq"><summary>INSERT 를 자식 테이블부터 하면요?</summary>
+    <p>부모에 그 번호가 없으므로 FK 검사에서 실패합니다. 그래서 부모 → 자식 순서로 입력합니다.</p></details>
+</section>
+
+
+<!-- ===================================================== Q4 -->
+<section class="q" id="q4">
+  <span class="qnum">QUESTION 4</span>
+  <h2>JOIN 과 GROUP BY 로 연결된 데이터를 한 번에 뽑는 방법</h2>
+
+  <div class="answer"><b>JOIN</b> 은 FK = PK 번호가 같은 행끼리 <b>옆으로 붙여</b> 흩어진 테이블을 한 표로 만들고, <b>GROUP BY</b> 는 같은 값끼리 <b>묶어서</b> 개수·합계·평균을 구합니다. 둘을 합치면 “누가 무엇을 몇 번” 같은 질문이 SQL 한 문장으로 풀립니다.</div>
+  <div class="analogy"><b>비유</b> — JOIN 은 “번호표를 맞춰 서류 3장을 클립으로 묶기”, GROUP BY 는 “대여 카드 38장을 책 제목별 상자에 나눠 담고 장수 세기”입니다.</div>
+
+  <h3>① JOIN — 번호만 있는 표에 이름을 붙이기 (Q6)</h3>
+  <p><code>rental</code> 만 보면 <code>member_id = 1, book_id = 11</code> 같은 번호뿐이라 사람이 읽을 수 없습니다. 번호를 맞춰 <code>member</code>, <code>book</code> 을 붙입니다.</p>
+<pre><code>SELECT r.rental_id, m.name AS member_name, b.title, r.rented_at, r.due_date
+FROM rental AS r                                   -- 기준 테이블 : 대여 기록
+INNER JOIN member AS m ON m.member_id = r.member_id  -- 회원 번호가 같은 행을 붙임
+INNER JOIN book   AS b ON b.book_id   = r.book_id    -- 책 번호가 같은 행을 붙임
+WHERE r.status = 'RENTED'                          -- 대여 중인 것만
+ORDER BY r.due_date, r.rental_id;                  -- 반납 예정일 빠른 순</code></pre>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>rental_id</th><th>member_name</th><th>title</th><th>rented_at</th><th>due_date</th></tr>
+      <tr><td>28</td><td>최수빈</td><td>이것이 취업을 위한 코딩 테스트다</td><td>2026-09-18</td><td>2026-10-02</td></tr>
+      <tr><td>29</td><td>한지우</td><td>사피엔스</td><td>2026-09-20</td><td>2026-10-04</td></tr>
+      <tr><td>30</td><td>정하은</td><td>SQL 첫걸음</td><td>2026-09-22</td><td>2026-10-06</td></tr>
+      <tr class="hl"><td>31</td><td>김민준</td><td>점프 투 파이썬</td><td>2026-09-30</td><td>2026-10-14</td></tr>
+      <tr><td colspan="5" style="text-align:center;color:var(--muted)">… 총 11행 (<code>results/Q06.txt</code>)</td></tr>
+    </table>
+  </div>
+  <p>질문 2 에서 번호를 손으로 따라갔던 31번 행이 이제 <b>한 줄</b>로 나옵니다.</p>
+
+  <h3>② GROUP BY — 묶어서 세기 (Q10 인기 도서 TOP 5)</h3>
+  <div class="flow">
+    <div class="c">rental<small>38행</small></div><span class="a">→</span>
+    <div class="c">JOIN book<small>책 제목 붙임 · 38행</small></div><span class="a">→</span>
+    <div class="c on">GROUP BY 책<small>19개 그룹</small></div><span class="a">→</span>
+    <div class="c on">COUNT(*)<small>그룹별 개수</small></div><span class="a">→</span>
+    <div class="c">ORDER BY DESC<small>많은 순</small></div><span class="a">→</span>
+    <div class="c">LIMIT 5<small>상위 5개</small></div>
+  </div>
+<pre><code>SELECT b.title, COUNT(*) AS rental_count          -- 책 제목, 묶음 안의 행 수
+FROM rental AS r
+INNER JOIN book AS b ON b.book_id = r.book_id     -- ① 책 제목 붙이기
+GROUP BY b.book_id, b.title                       -- ② 같은 책끼리 묶기
+ORDER BY rental_count DESC, b.title               -- ③ 많이 빌린 순
+LIMIT 5;                                          -- ④ 5개만</code></pre>
+  <div class="scroll">
+    <table>
+      <tr><th>title</th><th class="num">rental_count</th></tr>
+      <tr class="hl"><td>혼자 공부하는 파이썬</td><td class="num">5</td></tr>
+      <tr><td>아몬드</td><td class="num">4</td></tr>
+      <tr><td>점프 투 파이썬</td><td class="num">4</td></tr>
+      <tr><td>아주 작은 습관의 힘</td><td class="num">3</td></tr>
+      <tr><td>클린 코드</td><td class="num">3</td></tr>
+    </table>
+  </div>
+  <p class="src">한 번이라도 대여된 책이 19권(24권 중 5권은 한 번도 안 빌려짐, Q7)이라 그룹이 19개입니다.</p>
+
+  <h3>③ WHERE 와 HAVING — 묶기 “전”과 “후” (Q11)</h3>
+<pre><code>SELECT m.name, COUNT(*) AS late_count, SUM(r.late_fee) AS total_late_fee
+FROM rental AS r
+INNER JOIN member AS m ON m.member_id = r.member_id
+WHERE r.late_fee &gt; 0                  -- 묶기 "전" : 연체료가 있는 기록만 남김 (행을 거름)
+GROUP BY m.member_id, m.name           -- 회원별로 묶기
+HAVING SUM(r.late_fee) &gt;= 1500        -- 묶은 "후" : 합계가 1,500원 이상인 회원만 (그룹을 거름)
+ORDER BY total_late_fee DESC;</code></pre>
+  <div class="scroll">
+    <table>
+      <tr><th>name</th><th class="num">late_count</th><th class="num">total_late_fee</th></tr>
+      <tr><td>강도윤</td><td class="num">2</td><td class="num">4800</td></tr>
+      <tr><td>박지호</td><td class="num">1</td><td class="num">2100</td></tr>
+      <tr><td>김민준</td><td class="num">1</td><td class="num">1500</td></tr>
+    </table>
+  </div>
+
+  <h3>④ INNER JOIN 과 LEFT JOIN — “짝 없는 행”을 남길까 버릴까</h3>
+  <div class="venn">
+    <figure>
+      <svg viewBox="0 0 260 130" role="img" aria-label="INNER JOIN: 두 원의 교집합만 선택">
+        <defs><clipPath id="clipInner"><circle cx="165" cy="60" r="45"/></clipPath></defs>
+        <circle class="venn-f" cx="95" cy="60" r="45" clip-path="url(#clipInner)"/>
+        <circle class="venn-c" cx="95" cy="60" r="45"/>
+        <circle class="venn-c" cx="165" cy="60" r="45"/>
+        <text class="svg-m" x="85" y="64" text-anchor="middle">member</text>
+        <text class="svg-m" x="175" y="64" text-anchor="middle">rental</text>
+        <text class="svg-t" x="130" y="124" text-anchor="middle">INNER JOIN</text>
+      </svg>
+      <figcaption>양쪽에 짝이 있는 행만 남김</figcaption>
+    </figure>
+    <figure>
+      <svg viewBox="0 0 260 130" role="img" aria-label="LEFT JOIN: 왼쪽 원 전체 선택">
+        <circle class="venn-f" cx="95" cy="60" r="45"/>
+        <circle class="venn-c" cx="95" cy="60" r="45"/>
+        <circle class="venn-c" cx="165" cy="60" r="45"/>
+        <text class="svg-m" x="85" y="64" text-anchor="middle">member</text>
+        <text class="svg-m" x="175" y="64" text-anchor="middle">rental</text>
+        <text class="svg-t" x="130" y="124" text-anchor="middle">LEFT JOIN</text>
+      </svg>
+      <figcaption>왼쪽은 전부 남기고, 짝이 없으면 NULL</figcaption>
+    </figure>
+  </div>
+  <p>Q8 은 <code>member</code> 를 기준으로 <b>LEFT JOIN</b> 해서 대여가 0건인 회원도 함께 보여 줍니다.</p>
+<pre><code>SELECT m.member_id, m.name, COUNT(r.rental_id) AS rental_count  -- COUNT(컬럼) : NULL 은 세지 않음
+FROM member AS m
+LEFT JOIN rental AS r ON r.member_id = m.member_id             -- 대여가 없어도 회원은 남김
+GROUP BY m.member_id, m.name
+ORDER BY rental_count DESC, m.member_id;</code></pre>
+  <div class="scroll">
+    <table>
+      <tr><th class="num">member_id</th><th>name</th><th class="num">rental_count</th></tr>
+      <tr><td class="num">5</td><td>정하은</td><td class="num">5</td></tr>
+      <tr><td class="num">6</td><td>강도윤</td><td class="num">5</td></tr>
+      <tr><td colspan="3" style="text-align:center;color:var(--muted)">… (총 12행)</td></tr>
+      <tr class="hl"><td class="num">11</td><td>오세훈</td><td class="num">0</td></tr>
+      <tr class="hl"><td class="num">12</td><td>신나래</td><td class="num">0</td></tr>
+    </table>
+  </div>
+  <p>INNER JOIN 이었다면 마지막 두 명(0건 회원)은 결과에서 사라집니다.</p>
+
+  <h3>한 번에 뽑는 레시피 (읽는 순서)</h3>
+  <div class="flow">
+    <div class="c on">FROM<small>기준 테이블</small></div><span class="a">→</span>
+    <div class="c on">JOIN … ON<small>FK = PK 로 붙이기</small></div><span class="a">→</span>
+    <div class="c">WHERE<small>묶기 전 행 거르기</small></div><span class="a">→</span>
+    <div class="c on">GROUP BY<small>묶기</small></div><span class="a">→</span>
+    <div class="c">HAVING<small>묶은 뒤 거르기</small></div><span class="a">→</span>
+    <div class="c">ORDER BY<small>정렬</small></div><span class="a">→</span>
+    <div class="c">LIMIT<small>개수 제한</small></div>
+  </div>
+
+  <h3>30초 대본</h3>
+  <div class="script"><p>대여 기록 테이블에는 회원 번호와 책 번호만 있어서 그것만으로는 누가 무엇을 빌렸는지 알기 어렵습니다.
+  JOIN 은 FK 와 PK 가 같은 값끼리 연결해서 회원 이름과 책 제목을 한 줄로 붙여 줍니다.
+  GROUP BY 는 같은 값끼리 묶어서 개수나 합계를 구합니다.
+  예를 들어 Q10 은 대여 기록에 책 제목을 JOIN 한 뒤 책별로 GROUP BY 해서 가장 많이 대여된 책 TOP 5 를 뽑았고, 1위는 ‘혼자 공부하는 파이썬’ 5회였습니다.
+  대여가 한 번도 없는 회원까지 보고 싶을 때는 INNER JOIN 대신 LEFT JOIN 을 씁니다.</p></div>
+
+  <h3>예상 꼬리질문</h3>
+  <details class="faq"><summary>WHERE 와 HAVING 의 차이는요?</summary>
+    <p>WHERE 는 묶기 <b>전</b>에 개별 행을 거르고, HAVING 은 묶은 <b>후</b>에 그룹(합계·개수)을 거릅니다. 합계처럼 묶은 뒤에야 알 수 있는 값은 WHERE 에 쓸 수 없습니다. (Q11)</p></details>
+  <details class="faq"><summary>LEFT JOIN 에서 왜 COUNT(*) 가 아니라 COUNT(r.rental_id) 를 썼나요?</summary>
+    <p>대여가 없는 회원도 결과에 1줄은 생깁니다(오른쪽이 NULL). <code>COUNT(*)</code> 는 그 줄을 1건으로 세어 “0건 회원이 1건”이 되고, <code>COUNT(r.rental_id)</code> 는 NULL 을 빼고 세어 정확히 0 이 나옵니다. (Q8)</p></details>
+  <details class="faq"><summary>JOIN 대신 서브쿼리로도 풀 수 있나요?</summary>
+    <p>“대여 기록이 없는 회원”처럼 <b>있다/없다</b>만 판단할 때는 서브쿼리(Q12 의 <code>NOT IN (SELECT …)</code>)도 됩니다. 반면 회원 이름과 책 제목을 <b>함께 보여 줘야</b> 할 때는 JOIN 이 필요합니다.</p></details>
+</section>
+
+
+<!-- ===================================================== Q5 -->
+<section class="q" id="q5">
+  <span class="qnum">QUESTION 5</span>
+  <h2>인덱스가 왜 필요하고, 어떤 컬럼에 적용하면 좋은지</h2>
+
+  <div class="answer">인덱스는 <b>책 뒤의 색인</b>입니다. 없으면 DB 가 모든 행을 처음부터 끝까지 읽고(<b>SCAN</b>), 있으면 색인으로 바로 찾아갑니다(<b>SEARCH</b>). <b>자주 검색·JOIN 하고 값이 다양한 컬럼</b>에 만들면 효과가 큽니다.</div>
+  <div class="analogy"><b>비유</b> — 두꺼운 책에서 “파이썬”이 나온 쪽을 찾을 때, 1쪽부터 넘기는 것(SCAN) vs 뒤쪽 색인을 보고 바로 펴는 것(SEARCH).</div>
+
+  <h3>우리 DB 에서의 변화 (Q15)</h3>
+<pre><code>-- (1) 인덱스 만들기 전 : 3번 회원의 대여 기록 찾기
+EXPLAIN QUERY PLAN SELECT * FROM rental WHERE member_id = 3;
+--> SCAN rental                                   ← 38행을 처음부터 끝까지 읽음
+
+-- (2) 인덱스 생성
+CREATE INDEX idx_rental_member_id ON rental (member_id);
+
+-- (3) 같은 쿼리를 다시
+EXPLAIN QUERY PLAN SELECT * FROM rental WHERE member_id = 3;
+--> SEARCH rental USING INDEX idx_rental_member_id (member_id=?)   ← 색인으로 바로 찾음</code></pre>
+  <div class="note"><b>솔직한 단서</b> — 지금은 38행뿐이라 속도 차이를 체감할 수는 없습니다. 그래도 “실행 방식이 SCAN → SEARCH 로 바뀐다”는 것이 핵심이고, 대여 기록이 수십만 건 쌓이는 실제 서비스에서는 이 차이가 커집니다.</div>
+
+  <h3>어떤 컬럼에 만들면 좋을까 — 우리 DB 에 적용해 본 판정</h3>
+  <div class="scroll">
+    <table>
+      <tr><th>컬럼</th><th>판정</th><th>이유</th></tr>
+      <tr><td><code>rental.member_id</code></td><td class="ok">만듦 (Q15)</td><td>회원별 조회 · JOIN 의 ON 에 자주 쓰임 (Q6, Q8, Q11) + 대여 기록이 계속 쌓이는 테이블</td></tr>
+      <tr><td><code>rental.book_id</code></td><td class="ok">후보</td><td>Q7, Q10 의 JOIN ON 에 쓰임 — 같은 이유 (과제에서는 member_id 만 만듦)</td></tr>
+      <tr><td><code>member.email</code></td><td>이미 있음</td><td>UNIQUE 컬럼이라 DB 가 자동으로 색인을 만듦</td></tr>
+      <tr><td><code>*_id</code> (PK)</td><td>이미 있음</td><td>PK 도 자동으로 빠르게 찾도록 관리됨</td></tr>
+      <tr><td><code>rental.status</code></td><td class="bad">비추천</td><td>값이 3종류뿐 (38건 중 26건이 RETURNED) → 색인으로 걸러지는 양이 적음</td></tr>
+      <tr><td><code>book.title</code> (<code>LIKE '%파이썬%'</code>)</td><td class="bad">효과 없음</td><td>앞에 <code>%</code> 가 붙은 검색은 색인을 못 탐 (Q2)</td></tr>
+      <tr><td><code>rental.late_fee</code></td><td class="bad">비추천</td><td>검색 조건으로 거의 안 쓰임</td></tr>
+    </table>
+  </div>
+
+  <h3>좋은 컬럼 · 나쁜 컬럼 체크리스트</h3>
+  <div class="scroll">
+    <table>
+      <tr><th>만들면 좋은 컬럼</th><th>피하는 편이 좋은 경우</th></tr>
+      <tr>
+        <td><ul style="margin:0;padding-left:18px">
+          <li><code>WHERE</code> 로 자주 검색하는 컬럼</li>
+          <li><code>JOIN … ON</code> 에 쓰는 FK 컬럼</li>
+          <li><code>ORDER BY</code> 로 자주 정렬하는 컬럼</li>
+          <li>값이 다양한 컬럼 (이메일 · 회원번호 · 날짜)</li>
+        </ul></td>
+        <td><ul style="margin:0;padding-left:18px">
+          <li>값 종류가 적은 컬럼 (상태 · 성별)</li>
+          <li>거의 조회 조건에 안 쓰는 컬럼</li>
+          <li>INSERT / UPDATE 가 매우 잦은 테이블</li>
+          <li>행이 몇십 건뿐인 작은 테이블</li>
+        </ul></td>
+      </tr>
+    </table>
+  </div>
+  <p><b>왜 무작정 다 만들지 않나?</b> 인덱스는 데이터를 넣고 고칠 때마다 색인도 함께 갱신해야 해서 <b>쓰기가 느려지고 저장 공간도 더 씁니다.</b> 읽기 이득과 쓰기 비용을 저울질해서 만듭니다.</p>
+
+  <h3>30초 대본</h3>
+  <div class="script"><p>인덱스는 책 뒤의 색인과 같습니다. 인덱스가 없으면 DB 가 모든 행을 처음부터 끝까지 읽어야 하지만, 있으면 색인으로 바로 찾아갑니다.
+  저는 rental 의 member_id 에 인덱스를 만들었더니 실행 계획이 SCAN 에서 SEARCH USING INDEX 로 바뀌었습니다.
+  인덱스는 WHERE 나 JOIN 에 자주 쓰이고 값이 다양한 컬럼, 예를 들어 FK 나 이메일에 만들면 좋습니다.
+  반대로 status 처럼 값 종류가 적거나 쓰기가 잦은 테이블에서는 오히려 부담이 됩니다.
+  지금은 데이터가 38행뿐이라 속도 차이를 체감하긴 어렵지만, 데이터가 커질수록 효과가 커집니다.</p></div>
+
+  <h3>예상 꼬리질문</h3>
+  <details class="faq"><summary>인덱스는 많이 만들수록 좋은가요?</summary>
+    <p>아닙니다. 인덱스마다 INSERT · UPDATE · DELETE 때 같이 갱신되어 쓰기가 느려지고 용량도 늘어납니다. 자주 쓰는 조회에만 만듭니다.</p></details>
+  <details class="faq"><summary>38행인데 인덱스가 의미가 있나요?</summary>
+    <p>이 크기에서는 속도 차이가 없습니다. 과제에서는 “대여 기록이 계속 쌓이는 테이블”을 가정하고, 실행 계획이 SCAN → SEARCH 로 바뀌는 것을 눈으로 확인하는 데 의미가 있습니다.</p></details>
+  <details class="faq"><summary>PK 컬럼에는 인덱스를 따로 만들어야 하나요?</summary>
+    <p>아니요. PK 와 UNIQUE 컬럼은 DB 가 자동으로 빠르게 찾을 수 있게 관리합니다. 그래서 직접 만드는 인덱스는 FK 컬럼처럼 “자동으로 안 만들어지는데 자주 쓰는 컬럼”에 합니다.</p></details>
+</section>
+
+
+<!-- ===================================================== 요약 -->
+<section class="q" id="recap">
+  <h2>발표 직전 5문장 요약 카드</h2>
+  <ol class="summary">
+    <li><b>DB vs 엑셀</b> — 양이 아니라 <b>관계</b>와 <b>규칙</b>. 테이블로 나눠 번호로 잇고, 잘못된 입력은 DB 가 거부한다. (999번 회원 → FK 에러)</li>
+    <li><b>PK/FK/1:N</b> — PK 는 고유 번호, FK 는 그 번호를 N쪽에 적어 둔 연결 번호. 김민준 1 : 대여 4.</li>
+    <li><b>CRUD</b> — SELECT 읽기 · INSERT 추가(부모 먼저) · UPDATE 수정 · DELETE 삭제. UPDATE/DELETE 는 WHERE 확인.</li>
+    <li><b>JOIN/GROUP BY</b> — JOIN 으로 번호를 맞춰 붙이고, GROUP BY 로 묶어 센다. 0건까지 보려면 LEFT JOIN + COUNT(컬럼).</li>
+    <li><b>인덱스</b> — 책 뒤 색인. SCAN → SEARCH. 자주 검색·JOIN 하고 값이 다양한 컬럼에, 대신 쓰기 비용이 든다.</li>
+  </ol>
+</section>
+
+<footer>
+  <p>근거 파일 (모두 <code>B6/</code> 안에 있음)</p>
+  <ul>
+    <li><code>sql/01_schema.sql</code> — 테이블 · PK · FK · 제약조건</li>
+    <li><code>sql/02_insert_data.sql</code> — 샘플 데이터</li>
+    <li><code>sql/03_queries.sql</code> — 쿼리 15개 (Q1 ~ Q15)</li>
+    <li><code>results/Q06 · Q07 · Q08 · Q09 · Q10 · Q11 · Q13 · Q14 · Q15.txt</code>, <code>results/00_verify.txt</code> — 실행 결과</li>
+    <li><code>erd.svg</code> — ERD 이미지</li>
+  </ul>
+  <p>※ 모든 이름 · 이메일 · 전화번호는 실습용 가상 데이터입니다.</p>
+</footer>
+
+</div>
+</body>
+</html>
