@@ -1,13 +1,12 @@
-"""Mini Git 패키지.
+"""Mini Git: 커밋 그래프(DAG), 브랜치, 역색인, 직접 구현한 정렬로 만든 CLI 버전 관리 흉내.
 
-파일별 역할 한눈에 보기
+파일 지도
+  models.py     커밋 데이터 모양(Commit), hash 발급기, 에러 종류
+  sorting.py    병합 정렬 (내장 정렬 금지라서 직접 구현)
+  graph.py      커밋 그래프 + 위상 정렬 / 조상 탐색 / 최단 경로
+  index.py      역색인 (keyword -> 커밋, author -> 커밋)
+  repository.py 브랜치/HEAD/커밋 생성 + 위 부품들을 묶는 지휘자
+  cli.py        입력 파싱 + 출력 형식 + REPL
 
-- models.py     : 커밋 한 개의 생김새(어떤 정보를 담는지)
-- hashmap.py    : 직접 만든 해시맵. 키로 값을 바로 꺼내는 서랍장
-- sorting.py    : 직접 만든 정렬(merge sort). sorted()를 못 쓰니 손으로 구현
-- repository.py : 커밋 그래프 + 브랜치 + 검색 인덱스를 관리하는 핵심 두뇌
-- cli.py        : 사용자가 친 명령을 해석해서 repository에 넘기는 창구
-
-데이터 흐름은 한 방향이다.
-사용자 입력 -> cli.py -> repository.py -> (hashmap / sorting / models)
+데이터는 한 방향으로 흐른다:  cli -> repository -> (graph / index / sorting / models)
 """
