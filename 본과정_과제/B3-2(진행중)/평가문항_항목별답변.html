@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B3-2 평가문항 항목별 답변</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --text: #1b2230; --muted: #596273; --line: #dce1e9;
+    --accent: #2b6cdf; --accent-soft: #e7efff; --ok: #1b7f49; --ok-soft: #e4f5ea;
+    --bad: #b3261e; --bad-soft: #fdeceb; --warn: #8a5300; --warn-soft: #fff3de;
+    --code-bg: #f0f2f6; --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141b; --surface: #171d27; --text: #e6eaf0; --muted: #9ba6b6; --line: #2a3342;
+      --accent: #7ba9ff; --accent-soft: #1b2a47; --ok: #62d18f; --ok-soft: #12301f;
+      --bad: #ff8d85; --bad-soft: #3a1b19; --warn: #f2b066; --warn-soft: #382612; --code-bg: #10161f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141b; --surface: #171d27; --text: #e6eaf0; --muted: #9ba6b6; --line: #2a3342;
+    --accent: #7ba9ff; --accent-soft: #1b2a47; --ok: #62d18f; --ok-soft: #12301f;
+    --bad: #ff8d85; --bad-soft: #3a1b19; --warn: #f2b066; --warn-soft: #382612; --code-bg: #10161f;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+
+  header.hero { padding: 40px 0 20px; }
+  header.hero h1 { font-size: 1.7rem; line-height: 1.35; margin: 0 0 8px; }
+  header.hero p { margin: 0 0 6px; color: var(--muted); }
+  .chip {
+    display: inline-block; font-size: .78rem; font-weight: 600; padding: 2px 10px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-bottom: 10px;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line); margin: 0 -16px; padding: 8px 16px;
+    display: flex; gap: 6px; overflow-x: auto; white-space: nowrap;
+  }
+  nav.top a {
+    flex: none; text-decoration: none; color: var(--muted); font-size: .88rem;
+    padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  }
+  nav.top a:hover { color: var(--accent); border-color: var(--accent); }
+
+  h2 { font-size: 1.35rem; line-height: 1.4; margin: 0 0 4px; }
+  h3 { font-size: 1.05rem; margin: 30px 0 4px; padding-top: 20px; border-top: 1px solid var(--line); }
+  h3.first { border-top: 0; padding-top: 0; margin-top: 14px; }
+  h4 { font-size: .98rem; margin: 18px 0 6px; }
+  section.item {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px 22px; margin-top: 24px;
+  }
+  .sub { color: var(--muted); font-size: .92rem; margin: 2px 0 0; }
+  .qnum { display: inline-block; font-weight: 700; font-size: .8rem; color: var(--accent); letter-spacing: .04em; margin-bottom: 2px; }
+  .qtext { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
+
+  .answer {
+    border-left: 4px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; font-weight: 600;
+  }
+  .answer .lab { display: block; font-size: .74rem; letter-spacing: .06em; color: var(--accent); margin-bottom: 2px; }
+  ul.kp { margin: 10px 0 0; padding-left: 20px; }
+  ul.kp li { margin: 3px 0; }
+  .note {
+    border: 1px solid var(--line); background: var(--code-bg);
+    border-radius: 8px; padding: 8px 14px; margin-top: 12px; font-size: .9rem; color: var(--muted);
+  }
+  .note b { color: var(--text); }
+  .warn { border-color: var(--warn); background: var(--warn-soft); color: var(--text); }
+  .warn b { color: var(--warn); }
+  .good { border-color: var(--ok); background: var(--ok-soft); color: var(--text); }
+  .good b { color: var(--ok); }
+
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code-bg); font-weight: 600; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.ok { color: var(--ok); font-weight: 700; }
+  td.bad { color: var(--bad); font-weight: 600; }
+  tr.hl td { background: var(--accent-soft); }
+  .scroll { overflow-x: auto; margin: 10px 0; }
+  .scroll table.wide { min-width: 640px; }
+
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; margin: 10px 0;
+    font-size: .84rem; line-height: 1.6; word-break: normal; overflow-wrap: normal;
+  }
+  code { font-family: "D2Coding", "Cascadia Mono", Consolas, "Courier New", monospace; }
+  p code, li code, td code, summary code {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: .86em;
+  }
+  .src { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+
+  details.faq { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; margin-top: 8px; background: var(--surface); }
+  details.faq summary { cursor: pointer; font-weight: 600; font-size: .94rem; }
+  details.faq p, details.faq ul { margin: 8px 0 4px; font-size: .94rem; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0; }
+  .flow .c { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; font-size: .86rem; text-align: center; }
+  .flow .c small { display: block; color: var(--muted); font-size: .75rem; }
+  .flow .c.on { border-color: var(--accent); background: var(--accent-soft); }
+  .flow .c.no { border-color: var(--bad); background: var(--bad-soft); }
+  .flow .c.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .flow .a { color: var(--accent); font-weight: 700; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-top: 10px; }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; background: var(--surface); }
+  .box h4 { margin-top: 0; }
+  .box.bad { border-color: var(--bad); }
+  .box.ok { border-color: var(--ok); }
+  .box p, .box ul { font-size: .92rem; margin: 6px 0 0; }
+  .box ul { padding-left: 18px; }
+
+  svg.diagram { width: 100%; height: auto; max-width: 640px; display: block; margin: 12px auto; }
+  svg.diagram text { fill: var(--text); font-size: 13px; font-family: "D2Coding", "Cascadia Mono", Consolas, monospace; }
+  svg.diagram .nd { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  svg.diagram .nd.on { fill: var(--accent-soft); stroke: var(--accent); }
+  svg.diagram .nd.hd { fill: var(--ok-soft); stroke: var(--ok); }
+  svg.diagram .ed { stroke: var(--muted); stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+  svg.diagram .cap { font-size: 11px; fill: var(--muted); font-family: inherit; }
+  svg.diagram .nm { font-size: 11.5px; font-weight: 700; }
+  svg.diagram .ds { font-size: 10.5px; fill: var(--muted); font-family: inherit; }
+
+  footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
+  footer ul { padding-left: 18px; }
+  @media (max-width: 560px) {
+    header.hero h1 { font-size: 1.4rem; }
+    section.item { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="chip">B3-2 · ai-gitgen · 평가문항 5. 항목 1~4</span>
+  <h1>평가문항 항목별 답변</h1>
+  <p>평가 화면의 “5. 평가문항” 항목 1~4 전부(문항 18개)를 우리 코드로 답합니다.
+     각 문항은 <b>① 핵심 답(그대로 말해도 되는 1~2문장) → ② key point → ③ 근거 코드</b> 순서입니다.</p>
+  <p>출력 예시는 제출 폴더(<code>ai-gitgen</code>)의 코드를 임시 저장소에서 직접 실행해서 확인한 값입니다(2026-10-23, 단위 테스트 10개 통과).
+     <b>단, AI가 쓴 문장(“README 의 클론 주소를 수정했습니다” 등)은 API 키 없이 흐름만 확인하려고 띄운 가짜 서버의 고정 문장</b>입니다.
+     형식·로그·오류 메시지는 실제 코드가 낸 값이고, 진짜 AI 출력 예는 README 5장을 쓰세요.</p>
+</header>
+
+<nav class="top" aria-label="바로가기">
+  <a href="#overview">한눈에</a>
+  <a href="#demo">시연 준비</a>
+  <a href="#i1">항목 1 동작 시연</a>
+  <a href="#i2">항목 2 설계</a>
+  <a href="#i3">항목 3 파라미터·프롬프트</a>
+  <a href="#i4">항목 4 검토·보안·개선</a>
+  <a href="#tips">조심할 점</a>
+</nav>
+
+<!-- ============================================================ 한눈에 -->
+<section class="item" id="overview">
+  <h2>한눈에 보기</h2>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>항목</th><th>성격</th><th>한 줄 답</th></tr>
+      <tr><td>1</td><td><b>시연</b></td><td>명령을 한 줄씩 입력해 7가지 동작을 보여 준다 (아래 <a href="#demo">시연 준비</a> 그대로)</td></tr>
+      <tr><td>2</td><td><b>설계 이유</b></td><td>git 수집 / AI 호출 / 프롬프트 / 후처리를 파일 단위로 분리 · 프롬프트는 “부탁”, formatter는 “보증” · 파라미터는 CLI 옵션으로 열어 실험 · 오류는 <code>AIError</code>로 모아 한 곳에서 출력</td></tr>
+      <tr><td>3</td><td><b>개념·값 선택</b></td><td>temperature=무작위성 · max_tokens=길이 상한(작으면 JSON이 잘림) · 프롬프트=규칙(system)+자료(user) · 길이 규칙은 <b>후처리</b>(AI 호출 1회 보장)</td></tr>
+      <tr><td>4</td><td><b>응용</b></td><td>형식 OK ≠ 내용 정확 → 사람이 검토 · diff에 비밀값이 섞이면 safe-mode(마스킹·파일 제외·전송 제한) · 개선 우선순위: 보안 → 큰 diff → 테스트 → 편의</td></tr>
+    </table>
+  </div>
+  <div class="note good"><b>PASS 받는 요령 3가지</b>
+    <ul class="kp">
+      <li><b>항목 1</b>은 말보다 <b>시연</b>. 입력할 명령을 미리 메모장에 적어 두고 순서대로 입력합니다.</li>
+      <li><b>항목 2~4</b>는 “핵심 답 → 근거(파일·함수) → 한계” 순서로 말합니다. 한계를 숨기지 말고 “현재는 ~, 개선하면 ~”라고 말하면 이해도가 높게 보입니다.</li>
+      <li>코드를 다 외우지 말고 <b>어느 파일이 무슨 일을 하는지</b>만 기억합니다: <code>git_collector.py</code>(git 수집) · <code>safe_mode.py</code>(마스킹) · <code>prompts.py</code>(프롬프트) · <code>ai_client.py</code>(API 호출) · <code>formatter.py</code>(검증·후처리) · <code>main.py</code>(옵션·순서 연결·출력).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 시연 준비 -->
+<section class="item" id="demo">
+  <h2>시연 준비 — 이 순서대로 입력하세요</h2>
+  <p class="sub">전체 흐름은 이 한 줄입니다. 로그의 <code>[INFO]</code> 순서가 그대로 이 흐름입니다.</p>
+  <div class="flow">
+    <div class="c">① git 수집<small>status / diff</small></div><span class="a">→</span>
+    <div class="c">② safe-mode<small>마스킹·제한</small></div><span class="a">→</span>
+    <div class="c">③ 프롬프트<small>system + user</small></div><span class="a">→</span>
+    <div class="c on">④ AI API 1회<small>REST 호출</small></div><span class="a">→</span>
+    <div class="c">⑤ JSON 해석<small>parse</small></div><span class="a">→</span>
+    <div class="c ok">⑥ 검증·후처리<small>길이·템플릿</small></div><span class="a">→</span>
+    <div class="c">⑦ 출력<small>[CHECK]</small></div>
+  </div>
+
+<pre><code># PowerShell — 프로젝트 루트(ai-gitgen 폴더)에서
+cd C:\Users\user\codyssey\본과정_과제\B3-2\ai-gitgen
+.\.venv\Scripts\Activate.ps1
+$env:AI_API_KEY = "&lt;본인 키&gt;"
+# Groq 를 쓴다면 (README 에서 실제로 쓴 설정) 아래도 설정하고
+# 모든 명령 끝에 --model openai/gpt-oss-120b --max-tokens 2000 을 붙입니다
+$env:AI_API_BASE_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+# ① 변경 사항 없음 (깨끗한 상태에서 먼저)
+git status
+python main.py commit
+
+# ② 시연용 변경 만들기
+Add-Content README.md "demo line"
+
+# ③ API Key 없음  (키를 변수에 잠깐 보관했다가 복구)
+$k = $env:AI_API_KEY ; Remove-Item Env:AI_API_KEY
+python main.py commit ; $LASTEXITCODE        # 1 이 나와야 함
+$env:AI_API_KEY = $k
+
+# ④ 정상 실행
+python main.py commit
+python main.py pr
+
+# ⑤ 옵션 비교 (항목 1의 6번 표 참고)
+python main.py commit -temperature 0.0
+python main.py commit -max-tokens 100
+
+# ⑥ 끝나면 원상복구
+git restore README.md</code></pre>
+
+  <div class="note warn"><b>주의 ① 변경 사항 검사가 Key 검사보다 먼저</b> — 변경이 없으면 키가 없어도 “변경 사항이 없습니다”로 먼저 끝납니다. 그래서 <b>Key 누락 시연은 반드시 ② 이후(변경이 있는 상태)</b>에서 합니다. (직접 실행해서 확인한 순서입니다.)</div>
+  <div class="note"><b>주의 ② 프로젝트 루트에서 실행</b> — 하위 폴더나 다른 폴더에서 실행하면 오류로 끝납니다(항목 2의 4번 표). 명령 앞의 <code>python main.py</code>는 <b>루트에서</b> 입력합니다.</div>
+  <div class="note"><b>주의 ③ <code>pr</code>은 “아직 커밋 안 한 변경”이 있으면 그대로 동작</b>합니다. 이미 커밋을 끝낸 feature 브랜치라면 <code>python main.py pr --base main</code>처럼 기준 브랜치를 줘야 합니다. 안 주면 <code>변경 사항이 없습니다. PR 초안을 생성하지 않고 종료합니다.</code>가 나옵니다(확인함).</div>
+</section>
+
+<!-- ============================================================ 항목 1 -->
+<section class="item" id="i1">
+  <h2>항목 1 — 동작 시연 (7문항)</h2>
+  <p class="sub">PASS 기준은 “요구한 출력이 화면에 나온다”입니다. 각 문항마다 <b>입력 → 기대 출력 → 눈으로 확인할 곳</b>을 적었습니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 1 · 1/7</span></h3>
+  <p class="qtext">프로젝트 루트에서 커밋 메시지 생성 명령 실행 시 커밋 메시지가 터미널에 출력되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. <code>python main.py commit</code>을 실행하면 git 변경을 읽고 AI를 1번 호출한 뒤, <code>Commit Message</code> 구획에 제목과 본문을 출력하고 마지막에 형식 검증 결과를 보여 줍니다.</div>
+<pre><code>$ python main.py commit
+[INFO] Git status 수집 완료: 1개 파일 변경 감지
+         - [수정] README.md
+[INFO] Git diff 수집 완료: 7줄
+[INFO] safe-mode ON (최대 10개 파일 / 200줄): 7줄 -&gt; 7줄 전송
+[INFO] AI API 요청 중... (provider=openai, model=gpt-4o-mini, temperature=0.3, max_tokens=800)
+[INFO] AI API 호출 횟수: 1회 / 토큰 사용: 입력 321, 출력 123
+[DONE] 커밋 메시지 생성 완료
+
+--- Change Summary (변경 요약) ---------------------------------
+README 의 클론 주소를 수정했습니다.          &lt;- (가짜 서버의 고정 문장)
+------------------------------------------------------------
+
+--- Commit Message -----------------------------------------
+docs: README 클론 URL 수정
+
+- README.md 의 git clone URL 을 실제 저장소 주소로 교체
+------------------------------------------------------------
+
+[CHECK] 형식 검증 결과
+  [OK  ] 커밋 제목 22자 (권장 50자 이내)
+  [OK  ] 커밋 본문 불릿 1개 (최소 품질 기준: 핵심 변경 불릿 요약 충족)
+
+[NOTE] AI 초안입니다. 내용을 검토·수정한 뒤 적용하세요.</code></pre>
+  <ul class="kp">
+    <li>확인 포인트: <code>Commit Message</code> 구획(제목 1줄 + 불릿) · <code>AI API 호출 횟수: 1회</code> · <code>[CHECK]</code> 가 전부 <code>OK</code></li>
+    <li>이 도구는 <b>출력까지만</b> 합니다. <code>git commit</code>은 사용자가 검토 후 직접 실행합니다(항목 4의 1번).</li>
+  </ul>
+  <p class="src">근거: <code>main.py</code> <code>run()</code> — 0) 옵션 범위 검사 → 1) git 수집 → 2) safe-mode → 3) 프롬프트 → 4) API 호출 → 5) 검증·출력</p>
+
+  <h3><span class="qnum">항목 1 · 2/7</span></h3>
+  <p class="qtext">PR 생성 명령 실행 시 PR 제목과 본문 초안이 터미널에 출력되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. <code>python main.py pr</code>을 실행하면 <code>PR Title</code>과 <code>PR Body</code> 구획이 출력됩니다. 본문은 <code>## Why / ## What / ## How to Test</code> 세 부분입니다.</div>
+<pre><code>$ python main.py pr
+[INFO] 현재 브랜치: main
+[INFO] Git status 수집 완료: 1개 파일 변경 감지
+  ...
+[DONE] PR 초안 생성 완료
+
+--- PR Title -----------------------------------------------
+docs: README 클론 주소 수정
+------------------------------------------------------------
+
+--- PR Body ------------------------------------------------
+## Why
+- 클론 주소가 템플릿 값이라 수정이 필요함
+
+## What
+- README.md 의 git clone URL 을 실제 주소로 교체
+
+## How to Test
+- python main.py pr --base main 실행
+------------------------------------------------------------</code></pre>
+  <ul class="kp">
+    <li>commit과의 차이: <code>[INFO] 현재 브랜치</code> 줄이 추가되고, AI에게 받는 JSON 키가 <code>why / what / how_to_test</code>입니다.</li>
+    <li><code>--base main</code>을 주면 <b>이미 커밋된 변경</b>(<code>main...HEAD</code>)까지 포함합니다. 확인해 보니 커밋 완료 상태에서 <code>pr</code>만 치면 “변경 사항이 없습니다”, <code>pr --base main</code>은 변경 파일이 잡힙니다.</li>
+  </ul>
+  <p class="src">근거: <code>git_collector.py</code> <code>get_diff(base)</code> / <code>collect_changes()</code> · <code>prompts.py</code> <code>PR_SYSTEM</code></p>
+
+  <h3><span class="qnum">항목 1 · 3/7</span></h3>
+  <p class="qtext">AI API Key가 설정되지 않은 상태에서 실행하면 오류 메시지가 출력되고 종료되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. <code>AI_API_KEY</code> 환경변수가 없으면 <b>API를 부르기 전에</b> 오류 메시지를 출력하고 종료 코드 1로 끝납니다. 호출 횟수는 0회입니다.</div>
+<pre><code>PS&gt; python main.py commit
+[INFO] Git status 수집 완료: 1개 파일 변경 감지
+         - [수정] README.md
+[INFO] Git diff 수집 완료: 7줄
+[ERROR] AI_API_KEY 환경변수가 설정되지 않았습니다.
+        예) PowerShell : $env:AI_API_KEY="YOUR_KEY"
+            bash/zsh   : export AI_API_KEY="YOUR_KEY"
+[INFO] AI API 호출 횟수: 0회
+PS&gt; $LASTEXITCODE
+1</code></pre>
+  <ul class="kp">
+    <li>메시지가 <b>해결 방법(예시 명령)</b>까지 알려 줍니다. 키 값을 메시지에 찍지 않습니다.</li>
+    <li><code>--dry-run</code>은 키 없이도 실행됩니다(프롬프트만 출력, API 호출 0회). 키 검사를 <code>if not args.dry_run:</code> 안에 두었기 때문입니다.</li>
+    <li>변경 사항이 없는 상태면 이 오류가 아니라 4번 메시지가 먼저 나옵니다(시연 준비의 주의 ①).</li>
+  </ul>
+  <p class="src">근거: <code>ai_client.py</code> <code>get_api_key()</code>가 <code>AIError</code>를 던짐 → <code>main.py</code> <code>run()</code>이 잡아서 <code>[ERROR]</code> 출력 후 <code>return 1</code></p>
+
+  <h3><span class="qnum">항목 1 · 4/7</span></h3>
+  <p class="qtext">Git 변경 사항이 없는 상태에서 실행하면 “변경 사항이 없습니다”에 준하는 메시지가 출력되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 변경이 없으면 <code>변경 사항이 없습니다</code>를 출력하고 <b>AI를 부르지 않고</b> 정상 종료(종료 코드 0)합니다.</div>
+<pre><code>PS&gt; git status
+nothing to commit, working tree clean
+PS&gt; python main.py commit
+[INFO] Git status 수집 완료: 0개 파일 변경 감지
+[INFO] 변경 사항이 없습니다. 커밋 메시지를 생성하지 않고 종료합니다.
+PS&gt; python main.py pr
+...
+[INFO] 변경 사항이 없습니다. PR 초안을 생성하지 않고 종료합니다.</code></pre>
+  <ul class="kp">
+    <li>오류가 아니라 “할 일이 없음”이라 종료 코드는 <b>0</b>(성공)입니다. 반면 Key 누락·네트워크 오류는 1입니다.</li>
+    <li>이 검사가 API Key 검사보다 앞에 있어서, 변경이 없으면 <b>키가 없어도</b> 이 메시지가 나옵니다 → 불필요한 호출·비용 방지.</li>
+  </ul>
+  <p class="src">근거: <code>git_collector.py</code> <code>GitChanges.is_empty</code> · <code>main.py</code> <code>run()</code>의 <code>if changes.is_empty:</code></p>
+
+  <h3><span class="qnum">항목 1 · 5/7</span></h3>
+  <p class="qtext">출력된 PR 본문에 Why/What/How to Test 구조가 포함되고, 각 섹션에 최소 1개 불릿이 포함되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. AI에게는 <b>내용만 JSON 리스트로</b> 받고, <code>## Why / ## What / ## How to Test</code> 틀과 <code>- </code> 불릿은 <b>코드가 만들기 때문에</b> 섹션이 빠질 수 없습니다. 비어 있으면 안내 불릿을 넣고, 완성된 본문을 정규식으로 한 번 더 검사합니다.</div>
+<pre><code>[CHECK] 형식 검증 결과
+  [OK  ] PR 제목 21자 (최대 80자 이내)
+  [OK  ] 'Why' 섹션 불릿 1개
+  [OK  ] 'What' 섹션 불릿 1개
+  [OK  ] 'How to Test' 섹션 불릿 1개
+  [OK  ] PR 본문 템플릿 검증 통과 (Why/What/How to Test + 각 섹션 불릿 1개 이상)</code></pre>
+  <p>AI가 <code>why</code>를 빈 리스트로 줬을 때(가짜 서버로 일부러 재현):</p>
+<pre><code>## Why
+- (AI가 내용을 생성하지 않았습니다 — 직접 작성하세요)      &lt;- 코드가 채움
+...
+  [FIX ] 'Why' 섹션이 비어 있어 안내 불릿 삽입
+  [OK  ] PR 본문 템플릿 검증 통과 (Why/What/How to Test + 각 섹션 불릿 1개 이상)</code></pre>
+  <ul class="kp">
+    <li><code>[OK]</code> = 문제없음 / <code>[WARN]</code> = 주의 / <code>[FIX]</code> = 코드가 고쳤음. 어떤 조치를 했는지 숨기지 않고 보여 줍니다.</li>
+    <li>마지막 줄 검증은 <b>독립 검사</b>입니다 — 만들 때 쓴 로직이 아니라, 완성된 문자열을 다시 정규식으로 읽어 확인합니다.</li>
+  </ul>
+  <p class="src">근거: <code>formatter.py</code> <code>check_pr()</code> · <code>validate_pr_body()</code> · 테스트 <code>test_pr_sections_always_present</code></p>
+
+  <h3><span class="qnum">항목 1 · 6/7</span></h3>
+  <p class="qtext"><code>-temperature</code> 또는 <code>-max-tokens</code> 값을 변경해 실행했을 때 출력 길이/디테일 차이가 재현되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>값은 요청에 그대로 실려 로그에 찍힙니다. <b><code>temperature</code>는 문구의 다양성, <code>max-tokens</code>는 “여기서 자름” 기준</b>이라, 낮은 값·작은 값으로 바꿔 실행하면 차이를 보여 줄 수 있습니다. 단일 대시(<code>-temperature</code>)와 이중 대시(<code>--temperature</code>) 둘 다 됩니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>보여줄 것</th><th>명령</th><th>기대하는 모습</th></tr>
+      <tr><td>temperature 낮음</td><td><code>python main.py commit -temperature 0.0</code> (2~3번)</td><td>실행해도 거의 같은 문구</td></tr>
+      <tr><td>temperature 높음</td><td><code>python main.py commit -temperature 1.5</code> (2~3번)</td><td>실행마다 표현이 달라짐</td></tr>
+      <tr><td>max-tokens 작음</td><td><code>python main.py commit -max-tokens 100</code></td><td><code>[WARN] 응답이 max_tokens 한도에서 잘렸습니다</code> 후 JSON 해석 실패</td></tr>
+      <tr><td>max-tokens 충분</td><td><code>python main.py commit -max-tokens 2000</code></td><td>정상 출력</td></tr>
+    </table>
+  </div>
+  <p><b>직접 확인한 것</b> — 값이 로그와 요청 본문에 반영되는지, 작은 max-tokens에서 잘릴 때의 동작 (잘림은 가짜 서버가 일부러 잘라 보낸 응답):</p>
+<pre><code>$ python main.py commit -temperature 0.0 -max-tokens 2000
+[INFO] AI API 요청 중... (provider=openai, model=gpt-4o-mini, temperature=0.0, max_tokens=2000)
+
+$ python main.py commit -max-tokens 100
+[INFO] AI API 요청 중... (provider=openai, model=gpt-4o-mini, temperature=0.3, max_tokens=100)
+[INFO] AI API 호출 횟수: 1회 / 토큰 사용: 입력 321, 출력 100
+[WARN] 응답이 max_tokens 한도에서 잘렸습니다. --max-tokens 값을 늘려 보세요.
+[ERROR] AI 응답을 JSON 으로 해석하지 못했습니다. --max-tokens 를 늘리거나 --temperature 를 낮춰 다시 시도하세요.
+        원본 응답 앞부분: '{"summary": "README 의 클론 주소를 수정했습니다.", "title": "d'
+
+$ python main.py commit -max-tokens 20
+[ERROR] --max-tokens 는 50 이상이어야 합니다 (JSON 응답이 잘릴 수 있음).      (종료 코드 2)
+$ python main.py commit --temperature 3
+[ERROR] --temperature 는 0.0 ~ 2.0 사이여야 합니다.                          (종료 코드 2)</code></pre>
+  <div class="note warn"><b>당황하지 않는 법</b>
+    <ul class="kp">
+      <li><code>max-tokens</code>는 <b>상한</b>이라서, 실제로 필요한 길이보다 크게 줘도 결과는 같습니다(800 vs 2000이 똑같이 나와도 정상). 필요한 길이보다 <b>작을 때만</b> 잘립니다.</li>
+      <li>실제 AI에서의 문구 차이는 이 문서에서 직접 확인한 값이 아닙니다. 모델마다 다르니 시연 전에 한 번 돌려 보세요. 차이가 작게 나오면 “이 모델에서는 이렇게 나왔다”고 그대로 설명하는 것이 안전합니다.</li>
+      <li>README에 적은 대로 <code>gpt-oss-120b</code> 같은 <b>추론형 모델</b>은 답하기 전에 내부 추론에 토큰을 먼저 써서, 작은 값이면 응답이 잘릴 수 있습니다(그래서 <code>--max-tokens 2000</code>). 일부 추론형 모델은 <code>temperature</code> 자체를 거부해 <code>HTTP 400</code>이 날 수도 있습니다.</li>
+    </ul></div>
+  <p class="src">근거: <code>main.py</code> <code>build_parser()</code>(<code>"--temperature", "-temperature"</code> 두 이름 등록) · <code>ai_client.py</code> <code>_build_request()</code></p>
+
+  <h3><span class="qnum">항목 1 · 7/7</span></h3>
+  <p class="qtext">커밋/PR 출력이 정의된 길이/형식 규칙(제목 길이, 섹션 구조, 불릿 조건)을 만족하는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 프롬프트로 규칙을 <b>요청</b>하고, AI가 어겨도 <code>formatter.py</code>가 코드로 <b>보증</b>합니다. 무엇을 고쳤는지는 <code>[CHECK]</code>에 <code>FIX</code>로 표시됩니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>규칙</th><th>기준</th><th>어기면</th></tr>
+      <tr><td>커밋 제목 길이</td><td>권장 50자 / 최대 72자</td><td>51~72자는 <code>WARN</code>, 72자 초과는 단어 경계에서 잘라 <code>FIX</code></td></tr>
+      <tr><td>PR 제목 길이</td><td>최대 80자</td><td>잘라서 <code>FIX</code></td></tr>
+      <tr><td>제목 모양</td><td><code>&lt;type&gt;: 요약</code>, 한 줄, 끝 마침표·따옴표 없음</td><td>마침표·따옴표·여러 줄은 정리, type 형식이 아니면 <code>WARN</code></td></tr>
+      <tr><td>커밋 본문 불릿</td><td>최대 3개</td><td>초과분은 버림 (<b>CHECK에는 표시되지 않음</b>)</td></tr>
+      <tr><td>PR 섹션 구조</td><td>Why / What / How to Test, 각 불릿 1개 이상</td><td>빈 섹션에 안내 불릿 삽입 <code>FIX</code> + 최종 정규식 재검사</td></tr>
+    </table>
+  </div>
+  <p>일부러 규칙을 어기는 응답을 줘서 확인한 결과(가짜 서버):</p>
+<pre><code>제목 109자 응답 ->
+docs: 아주 긴 커밋 제목 문장이 계속 이어지는 경우 아주 긴 커밋 제목 문장이 계속 이어지는 경우 아주 긴 커밋 제목…
+  [FIX ] 커밋 제목 109자 -&gt; 최대 72자로 자름 (69자)
+
+PR 제목 109자 응답 ->
+  [FIX ] PR 제목 109자 -&gt; 최대 80자로 자름 (76자)
+
+불릿 5개 응답 -> 출력된 본문 불릿은 3개 (항목 1 ~ 3 만 남음)</code></pre>
+  <ul class="kp">
+    <li>잘라낸 제목 끝에 <code>…</code>가 붙고 “몇 자 → 몇 자”로 보여 주므로 사용자가 알 수 있습니다.</li>
+    <li>자동 테스트: <code>test_commit_title_truncated_to_72</code>, <code>test_pr_title_max_80</code>, <code>test_pr_sections_always_present</code>.</li>
+  </ul>
+  <p class="src">근거: <code>formatter.py</code> 상단 상수(<code>COMMIT_TITLE_RECOMMENDED=50</code>, <code>COMMIT_TITLE_MAX=72</code>, <code>PR_TITLE_MAX=80</code>) · <code>check_commit()</code> · <code>check_pr()</code></p>
+</section>
+
+<!-- ============================================================ 항목 2 -->
+<section class="item" id="i2">
+  <h2>항목 2 — 설계 설명 (4문항)</h2>
+  <p class="sub">“왜 이렇게 나눴나”를 묻습니다. 파일 이름과 함수 이름을 함께 말하면 설득력이 올라갑니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 2 · 1/4</span></h3>
+  <p class="qtext">Git 변경 사항 수집 로직과 AI API 호출 로직을 왜 분리했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>한 파일이 <b>한 가지 일만</b> 하도록 나눴습니다. <code>git_collector.py</code>는 git 명령만, <code>ai_client.py</code>는 HTTP 통신만 압니다. 나누면 ① 키 없이도 git 수집과 테스트가 가능하고 ② 제공자(OpenAI/Anthropic)나 서버를 바꿔도 git 코드는 그대로이며 ③ 변경이 없으면 API를 아예 부르지 않을 수 있습니다.</div>
+
+  <div class="scroll"><svg class="diagram" style="min-width:560px" viewBox="0 0 640 250" role="img" aria-label="main.py가 git_collector, safe_mode, prompts, ai_client, formatter를 순서대로 부르는 구조">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/>
+      </marker>
+    </defs>
+    <rect class="nd on" x="230" y="8" width="180" height="40" rx="8"/>
+    <text x="320" y="32" text-anchor="middle" class="nm">main.py (순서 연결·옵션·출력)</text>
+
+    <path class="ed" d="M290,48 L64,106"/>
+    <path class="ed" d="M305,48 L190,106"/>
+    <path class="ed" d="M320,48 L320,106"/>
+    <path class="ed" d="M335,48 L450,106"/>
+    <path class="ed" d="M350,48 L576,106"/>
+
+    <rect class="nd" x="4"   y="108" width="120" height="58" rx="8"/>
+    <text x="64"  y="128" text-anchor="middle" class="nm">① git_collector</text>
+    <text x="64"  y="145" text-anchor="middle" class="ds">status / diff 수집</text>
+    <text x="64"  y="159" text-anchor="middle" class="ds">subprocess</text>
+
+    <rect class="nd" x="132" y="108" width="120" height="58" rx="8"/>
+    <text x="192" y="128" text-anchor="middle" class="nm">② safe_mode</text>
+    <text x="192" y="145" text-anchor="middle" class="ds">마스킹·전송 제한</text>
+    <text x="192" y="159" text-anchor="middle" class="ds">정규식</text>
+
+    <rect class="nd" x="260" y="108" width="120" height="58" rx="8"/>
+    <text x="320" y="128" text-anchor="middle" class="nm">③ prompts</text>
+    <text x="320" y="145" text-anchor="middle" class="ds">system / user 문자열</text>
+    <text x="320" y="159" text-anchor="middle" class="ds">조립</text>
+
+    <rect class="nd hd" x="388" y="108" width="120" height="58" rx="8"/>
+    <text x="448" y="128" text-anchor="middle" class="nm">④ ai_client</text>
+    <text x="448" y="145" text-anchor="middle" class="ds">REST 호출·오류·JSON</text>
+    <text x="448" y="159" text-anchor="middle" class="ds">requests</text>
+
+    <rect class="nd" x="516" y="108" width="120" height="58" rx="8"/>
+    <text x="576" y="128" text-anchor="middle" class="nm">⑤ formatter</text>
+    <text x="576" y="145" text-anchor="middle" class="ds">길이·템플릿 검증</text>
+    <text x="576" y="159" text-anchor="middle" class="ds">후처리</text>
+
+    <text class="cap" x="64"  y="186" text-anchor="middle">AI·HTTP 모름</text>
+    <text class="cap" x="192" y="186" text-anchor="middle">git·AI 모름</text>
+    <text class="cap" x="320" y="186" text-anchor="middle">HTTP 모름</text>
+    <text class="cap" x="448" y="186" text-anchor="middle">git 모름</text>
+    <text class="cap" x="576" y="186" text-anchor="middle">API 모름</text>
+    <text class="cap" x="10" y="226">화살표 = 호출. 아래 다섯 파일은 서로를 거의 import하지 않고, main.py 가 순서대로 이어 줍니다.</text>
+  </svg></div>
+
+  <ul class="kp">
+    <li><b>분리의 증거 ①</b> — 단위 테스트 10개가 <b>API 키·인터넷 없이 0.01초</b>에 돕니다(마스킹, 길이 후처리, JSON 해석).</li>
+    <li><b>분리의 증거 ②</b> — 이 문서의 시연도 코드를 고치지 않고 <code>AI_API_BASE_URL</code> 환경변수로 <b>서버 주소만 가짜 서버로 바꿔</b> 돌렸습니다. Groq를 쓴 것도 같은 원리입니다.</li>
+    <li><b>분리의 증거 ③</b> — <code>--dry-run</code>은 git 수집·마스킹·프롬프트 조립까지만 하고 ④(HTTP)만 건너뜁니다. 나뉘어 있어서 가능한 기능입니다.</li>
+    <li><b>비용 측면</b> — 수집 결과로 “변경 없음”을 먼저 판단하므로, 할 일이 없으면 AI 호출이 0회입니다(항목 1의 4번).</li>
+    <li>의존 관계: <code>ai_client.py</code>와 <code>formatter.py</code>는 다른 gitgen 파일을 import하지 않습니다. <code>prompts.py</code>는 <code>GitChanges</code>(데이터 상자) 타입만 가져옵니다.</li>
+  </ul>
+  <p class="src">근거: <code>git_collector.py</code> 상단 docstring(“Git 연동 범위는 status, diff”) · <code>ai_client.py</code> 상단 docstring(“SDK 없이 REST”) · <code>tests/test_core.py</code></p>
+
+  <h3><span class="qnum">항목 2 · 2/4</span></h3>
+  <p class="qtext">프롬프트 구성 로직과 출력 포맷팅(길이 규칙 포함) 로직을 어떻게 분리했고, 그 이유를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><code>prompts.py</code>는 AI에게 보내기 <b>전</b>(무엇을 어떻게 써 달라고 <b>부탁</b>), <code>formatter.py</code>는 답이 온 <b>후</b>(규칙을 지켰는지 확인하고 <b>보증</b>)를 맡습니다. AI는 부탁을 100% 지키지 않기 때문에 두 겹으로 만들었습니다.</div>
+  <div class="grid2">
+    <div class="box"><h4>prompts.py — 부탁 (입력 쪽)</h4>
+      <ul>
+        <li>역할·언어·형식 규칙을 문장으로 전달</li>
+        <li>“제목 50자 이내”도 <b>글로 요청</b>만 함</li>
+        <li>출력 모양은 JSON 스키마로 고정</li>
+        <li>실패해도 예외 없음(그냥 문자열)</li>
+      </ul></div>
+    <div class="box ok"><h4>formatter.py — 보증 (출력 쪽)</h4>
+      <ul>
+        <li>길이를 <b>숫자로 세어</b> 자르거나 경고</li>
+        <li>Why/What/How to Test 틀은 <b>코드가 렌더링</b></li>
+        <li>빈 섹션 채움 + 최종 정규식 재검사</li>
+        <li>한 일을 <code>[CHECK]</code>로 보고</li>
+      </ul></div>
+  </div>
+  <ul class="kp">
+    <li><b>AI는 “내용”, 코드는 “형식”</b>: JSON(<code>{"title":..., "why":[...]}</code>)으로 받아 코드가 마크다운으로 만들기 때문에 섹션 누락이 구조적으로 불가능합니다.</li>
+    <li>길이 숫자(50/72/80)는 <code>formatter.py</code> 상수와 프롬프트 문구에 각각 있습니다. 값을 바꾸면 <b>두 곳을 같이</b> 고쳐야 하는 점이 한계입니다(개선: 상수 한 곳에서 프롬프트에 주입).</li>
+    <li>조립 함수와 검증 함수가 서로 몰라서, 프롬프트를 고쳐도 검증 테스트는 영향이 없습니다.</li>
+  </ul>
+  <p class="src">근거: <code>prompts.py</code> <code>COMMIT_SYSTEM</code>, <code>PR_SYSTEM</code>, <code>build_user_prompt()</code> · <code>formatter.py</code> 상단 docstring(“전략: 재생성 대신 후처리”)</p>
+
+  <h3><span class="qnum">항목 2 · 3/4</span></h3>
+  <p class="qtext">API 파라미터를 CLI 옵션으로 설계한 이유(재현성/실험 용이성)를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>코드를 고치지 않고 <b>명령어만 바꿔</b> 같은 조건을 다시 돌리거나(재현성) 값을 바꿔 비교하려고(실험 용이성) CLI 옵션으로 열었습니다. 쓴 명령어가 곧 실험 기록이 됩니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>옵션</th><th>기본값</th><th>열어 둔 이유</th></tr>
+      <tr><td><code>--temperature</code></td><td>0.3</td><td>같은 diff로 0.0 vs 1.5를 비교 실험</td></tr>
+      <tr><td><code>--max-tokens</code></td><td>800</td><td>모델마다 필요한 길이가 달라서(추론형 모델은 2000)</td></tr>
+      <tr><td><code>--provider</code>, <code>--model</code></td><td>openai, gpt-4o-mini</td><td>제공자·모델 교체 (환경변수 <code>AI_PROVIDER</code>로도 지정)</td></tr>
+      <tr><td><code>--timeout</code></td><td>60초</td><td>느린 네트워크에서 대기 시간 조절</td></tr>
+      <tr><td><code>--safe-mode</code> / <code>--no-safe-mode</code>, <code>--max-files</code>, <code>--max-lines</code></td><td>ON, 10, 200</td><td>보호 강도와 정보량 사이 조절</td></tr>
+      <tr><td><code>--context</code>, <code>--convention</code></td><td>없음</td><td>diff에 없는 “왜”와 팀 규칙을 프롬프트에 주입</td></tr>
+      <tr><td><code>--dry-run</code></td><td>off</td><td>비용 0으로 프롬프트만 확인</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>기본값이 있어서</b> 옵션 없이도 바로 쓸 수 있고, 필요할 때만 바꿉니다. 로그에 실제 적용값이 찍힙니다(<code>AI API 요청 중... temperature=…, max_tokens=…</code>).</li>
+    <li><b>범위 검사를 호출 전에</b>: <code>--temperature</code>는 0.0~2.0, <code>--max-tokens</code>는 50 이상이 아니면 API를 부르기 전에 종료 코드 2로 끝납니다(확인함).</li>
+    <li>환경변수(<code>AI_API_KEY</code>, <code>AI_PROVIDER</code>, <code>AI_API_BASE_URL</code>)는 <b>비밀·환경</b> 값, CLI 옵션은 <b>실험</b> 값으로 나눴습니다. 키는 코드·명령 기록에 남기지 않기 위해 옵션이 아니라 환경변수로만 받습니다.</li>
+  </ul>
+  <p class="src">근거: <code>main.py</code> <code>build_parser()</code> · <code>run()</code> 앞부분의 범위 검사</p>
+
+  <h3><span class="qnum">항목 2 · 4/4</span></h3>
+  <p class="qtext">오류 처리(API Key 누락, 네트워크 오류 등)를 어떤 방식으로 구현했고, 왜 그렇게 했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>오류를 <b>종류별로 나눠 잡아서</b>, 해결 방법이 담긴 한국어 메시지로 바꾸고 <code>AIError</code>/<code>GitError</code>라는 직접 만든 예외로 모았습니다. 아래 계층은 예외를 <b>던지기만</b> 하고, <code>main.py</code>가 한 곳에서 <code>[ERROR]</code>로 출력하며 종료 코드를 정합니다. 파이썬 에러 화면(Traceback)이 나오면 초보 사용자는 원인을 알 수 없기 때문입니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>상황</th><th>잡는 곳</th><th>사용자가 보는 것</th><th>종료</th><th>실행 확인</th></tr>
+      <tr><td>git 미설치 / 저장소 아님 / 루트 아님</td><td><code>git_collector.py</code> → <code>GitError</code></td><td>“현재 폴더는 Git 저장소가 아닙니다…” / “프로젝트 루트 디렉토리에서 실행해야 합니다”(현재·루트 위치 표시)</td><td>1</td><td class="ok">저장소 아님·루트 아님 확인</td></tr>
+      <tr><td>옵션 값 범위</td><td><code>main.py</code> <code>run()</code></td><td>“--temperature 는 0.0 ~ 2.0 사이여야 합니다”</td><td>2</td><td class="ok">확인</td></tr>
+      <tr><td><b>API Key 누락</b></td><td><code>get_api_key()</code> (호출 <b>전</b>)</td><td>예시 명령 포함 안내 + “호출 횟수: 0회”</td><td>1</td><td class="ok">확인</td></tr>
+      <tr><td><b>네트워크 오류</b></td><td><code>call_ai()</code> 1단계</td><td>Timeout → “N초 안에 응답이 없습니다” / ConnectionError → “API 서버에 연결할 수 없습니다. 인터넷 연결/프록시를 확인하세요”</td><td>1</td><td>ConnectionError 확인, Timeout은 코드로만</td></tr>
+      <tr><td>HTTP 오류 400·401·403·404·429·5xx</td><td><code>call_ai()</code> 2단계</td><td>“[HTTP 401] 인증 실패(API Key가 올바르지 않음)” + 서버의 상세 메시지</td><td>1</td><td>401·429 확인</td></tr>
+      <tr><td>응답 구조가 다름</td><td><code>call_ai()</code> 3단계</td><td>“응답 형식을 해석할 수 없습니다”</td><td>1</td><td>코드로만</td></tr>
+      <tr><td>JSON이 아니거나 잘림</td><td><code>parse_json_response()</code></td><td>원본 앞부분 + “--max-tokens 를 늘리거나 --temperature 를 낮춰…”</td><td>1</td><td class="ok">확인</td></tr>
+      <tr><td>Ctrl+C</td><td><code>main()</code></td><td>“사용자가 중단했습니다”</td><td>130</td><td>코드로만</td></tr>
+    </table>
+  </div>
+<pre><code>[INFO] AI API 요청 중... (provider=openai, model=gpt-4o-mini, temperature=0.3, max_tokens=800)
+[ERROR] API 호출 실패 [HTTP 401] 인증 실패(API Key가 올바르지 않음)
+        상세: Incorrect API key provided: ****...****.
+[INFO] AI API 호출 횟수: 1회 (실패)
+
+[ERROR] API 호출 실패 [HTTP 429] 요청 한도 초과 또는 크레딧 부족
+[ERROR] 네트워크 오류: API 서버에 연결할 수 없습니다. 인터넷 연결/프록시를 확인하세요. (ConnectionError)</code></pre>
+  <ul class="kp">
+    <li><b>왜 키 검사를 호출 전에?</b> 요청을 보낸 뒤에 실패하면 시간만 쓰고, 이미 diff를 만들고 마스킹까지 한 작업이 낭비됩니다. 일찍 실패(fail fast)시키고 “0회”라고 알려 줍니다.</li>
+    <li><b>왜 단계별로 나눴나?</b> “보내다가 실패(네트워크)”, “서버가 거절(HTTP 코드)”, “받았는데 이상함(파싱)”은 원인과 해결 방법이 다르기 때문입니다.</li>
+    <li><b>왜 예외로 모았나?</b> <code>AIError</code> 한 종류만 잡으면 되고, 메시지·종료 코드 결정이 <code>main.py</code> 한 곳에 있어서 고치기 쉽습니다.</li>
+    <li><b>왜 종료 코드를 나눴나?</b> 0=성공(변경 없음 포함), 1=실행 중 오류, 2=잘못된 옵션 — 다른 스크립트가 결과를 구분해 쓸 수 있습니다.</li>
+  </ul>
+  <p class="src">근거: <code>ai_client.py</code> <code>call_ai()</code>의 3단계 주석(“1) 전송 단계 예외 / 2) HTTP 상태코드 / 3) 응답 파싱”) · <code>git_collector.py</code> <code>run_git()</code>, <code>ensure_repo_root()</code></p>
+</section>
+
+<!-- ============================================================ 항목 3 -->
+<section class="item" id="i3">
+  <h2>항목 3 — 파라미터와 프롬프트 (4문항)</h2>
+  <p class="sub">개념 이름 + <b>왜 그 값을 골랐는지</b>를 한 세트로 말합니다. 먼저 AI에게 실제로 날아가는 요청 모양입니다(가짜 서버가 받은 본문의 키 목록).</p>
+<pre><code>POST /v1/chat/completions
+Authorization: Bearer &lt;AI_API_KEY&gt;          &lt;- 키는 헤더로만, 본문·로그에는 없음
+{
+  "model": "gpt-4o-mini",
+  "temperature": 0.3,
+  "max_completion_tokens": 800,          &lt;- CLI 의 --max-tokens 값 (Anthropic 은 max_tokens)
+  "response_format": {"type": "json_object"},   &lt;- JSON 출력 강제
+  "messages": [ {"role":"system", ...}, {"role":"user", ...} ]
+}</code></pre>
+
+  <h3 class="first"><span class="qnum">항목 3 · 1/4</span></h3>
+  <p class="qtext">AI API 요청 시 <code>temperature</code> 값을 높이거나 낮추면 결과가 어떻게 달라지는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><code>temperature</code>는 AI가 다음 단어를 고를 때의 <b>무작위성</b>입니다. 낮으면 같은 입력에 거의 같은 답과 규칙 준수, 높으면 표현은 다양해지지만 형식 이탈·과장 가능성이 커집니다. 커밋/PR은 창의성보다 <b>정확한 요약</b>이 목적이라 기본값을 0.3으로 했습니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th></th><th>낮음 (0.0 ~ 0.3)</th><th>높음 (0.8 이상)</th></tr>
+      <tr><td>같은 diff를 여러 번 실행</td><td class="ok">거의 같은 문구</td><td>실행마다 표현이 달라짐</td></tr>
+      <tr><td>규칙 준수(제목 길이·JSON·한국어)</td><td class="ok">잘 지킴</td><td class="bad">어길 가능성 증가 → <code>[CHECK]</code>의 WARN/FIX 가능성</td></tr>
+      <tr><td>diff에 없는 내용</td><td class="ok">덜 지어냄</td><td class="bad">추측·과장 위험</td></tr>
+      <tr><td>어울리는 작업</td><td>요약, 분류, 정해진 형식</td><td>아이디어 내기, 문구 다듬기</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>왜 0이 아니라 0.3?</b> 0.0은 가장 일관되지만 문장이 딱딱하게 반복될 수 있어, 규칙은 잘 지키면서 약간의 자연스러움을 남긴 값으로 잡았습니다.</li>
+    <li>값 범위는 코드에서 0.0~2.0으로 검사합니다(항목 2의 3번).</li>
+    <li>실제 AI에서 높낮이 비교 출력은 이 문서에서 직접 측정하지 않았습니다. 시연 때 직접 돌려서 확인하세요(항목 1의 6번 표).</li>
+  </ul>
+  <p class="src">근거: <code>main.py</code> <code>--temperature</code> 도움말(“낮을수록 일관적, 기본 0.3: 요약 작업에 적합”) · README “파라미터가 결과에 미치는 영향”</p>
+
+  <h3><span class="qnum">항목 3 · 2/4</span></h3>
+  <p class="qtext"><code>max_tokens</code> 값이 결과물에 어떤 영향을 미치며, 어떤 기준으로 값을 설정했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>토큰은 AI가 글을 세는 단위이고, <code>max_tokens</code>는 답변 길이의 <b>상한</b>입니다. 너무 작으면 JSON이 중간에 잘려 해석에 실패하고, 크게 잡아도 <b>쓴 만큼만</b> 쓰므로 결과는 같고 비용 상한만 올라갑니다. 커밋/PR은 짧은 JSON이라 기본 800으로, 추론형 모델은 2000으로 잡았습니다.</div>
+  <ul class="kp">
+    <li><b>잘림 감지</b>: OpenAI 계열은 <code>finish_reason == "length"</code>, Anthropic은 <code>stop_reason == "max_tokens"</code>일 때 <code>[WARN] 응답이 max_tokens 한도에서 잘렸습니다</code>를 띄웁니다(항목 1의 6번에서 확인).</li>
+    <li><b>값 선택 기준</b>: 출력이 “요약 1~2문장 + 제목 + 불릿 몇 개”의 JSON이라 짧습니다. README에 기록한 실제 실행(추론형 <code>gpt-oss-120b</code>)에서는 출력이 커밋 593토큰, PR 1048토큰이었고 <b>내부 추론 토큰이 포함</b>된 값이라, 그 모델은 800이면 PR이 잘릴 수 있어 <code>--max-tokens 2000</code>을 권장했습니다.</li>
+    <li><b>하한 50</b>: 그보다 작으면 JSON 구조 자체가 완성될 수 없어서 호출 전에 막습니다.</li>
+    <li>800은 모델별로 측정해 정한 정밀한 값이 아니라 “짧은 JSON에 넉넉한 값”이라는 기준입니다. 모델을 바꾸면 <code>[INFO] … 출력 N</code> 토큰 로그를 보고 조절하면 됩니다.</li>
+  </ul>
+  <div class="note"><b>입력 토큰(프롬프트)도 비용</b> — 로그의 <code>입력 321, 출력 123</code>처럼 둘 다 셉니다. 그래서 safe-mode의 전송 제한(10개 파일/200줄)이 비용 상한 역할도 합니다. safe-mode를 꺼도 2000줄 상한(<code>HARD_LIMIT_LINES</code>)이 있습니다.</div>
+  <p class="src">근거: <code>ai_client.py</code> <code>call_ai()</code>의 <code>truncated</code> 계산 · <code>main.py</code> <code>--max-tokens</code> 범위 검사 · README 4장 “max_tokens”</p>
+
+  <h3><span class="qnum">항목 3 · 3/4</span></h3>
+  <p class="qtext">커밋/PR 용도에 맞는 결과를 얻기 위해 프롬프트에 어떤 정보를 포함했고, 왜 그렇게 구성했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>프롬프트를 <b>system(규칙)</b>과 <b>user(자료)</b>로 나눴습니다. system에는 역할·언어·형식·금지사항을, user에는 브랜치·변경 파일·변경 이유·팀 컨벤션·diff를 넣습니다. diff에는 “무엇이 바뀌었나”만 있고 “왜”는 없어서 <code>--context</code>로 이유를 따로 받습니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>구분</th><th>들어가는 것</th><th>왜</th></tr>
+      <tr><td rowspan="6">system<br>(규칙)</td><td>역할: 시니어 개발자, 커밋/PR 작성 전문가</td><td>어조·수준 고정</td></tr>
+      <tr><td>모든 내용 <b>한국어</b> (type·파일명·명령어는 원문)</td><td>README 사례: 지정 전에는 PR이 영어로 나옴</td></tr>
+      <tr><td>Conventional Commits <code>&lt;type&gt;: 요약</code>, 제목 50자(커밋)/80자(PR), 명사형, 마침표 금지</td><td>팀이 읽기 쉬운 통일된 모양</td></tr>
+      <tr><td>불릿 개수(커밋 1~3, PR why 1~3 / what 2~5 / how_to_test 1~4), 파일명 포함 권장</td><td>길이·구체성 제어</td></tr>
+      <tr><td>diff에 없는 내용 추측 금지, 과장 금지, <code>[MASKED_...]</code> 언급 금지</td><td>지어내기·민감정보 노출 억제</td></tr>
+      <tr><td><b>JSON으로만</b> 응답(스키마 명시)</td><td>코드가 파싱·검증·렌더링하기 위해</td></tr>
+      <tr><td rowspan="5">user<br>(자료)</td><td>현재 브랜치, 변경 파일 목록(<code>git status</code>)</td><td>변경의 전체 윤곽</td></tr>
+      <tr><td><code>--context</code>: 작성자가 알려준 변경 이유</td><td>diff에 없는 “왜”</td></tr>
+      <tr><td><code>.ai-gitgen.md</code>: 팀 컨벤션 (“위 규칙보다 우선 적용”)</td><td>팀별 규칙 반영(확인: 파일이 있으면 <code>[INFO] 팀 컨벤션 적용</code>)</td></tr>
+      <tr><td>아직 <code>git add</code> 안 한 신규 파일 안내</td><td>diff에 내용이 없다는 사실을 AI에게 알려 오해 방지</td></tr>
+      <tr><td><code>git diff</code> (safe-mode 처리 후)</td><td>실제 변경 내용</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>system/user 분리</b>: 규칙은 고정, 자료는 매번 바뀝니다. 나눠 두면 규칙만 고치기 쉽습니다.</li>
+    <li><b>JSON 고정</b>: AI가 마크다운을 자유롭게 쓰면 섹션이 빠질 수 있어, 형식은 코드가 책임집니다(항목 2의 2번).</li>
+    <li>프롬프트 전문은 <code>--dry-run</code>으로 비용 없이 볼 수 있습니다(시연 가능).</li>
+  </ul>
+  <p class="src">근거: <code>prompts.py</code> <code>COMMIT_SYSTEM</code> · <code>PR_SYSTEM</code> · <code>build_user_prompt()</code> · 모듈 docstring의 “핵심 아이디어 1~4”</p>
+
+  <h3><span class="qnum">항목 3 · 4/4</span></h3>
+  <p class="qtext">길이/형식 규칙을 “재생성”으로 해결할지 “후처리”로 해결할지 선택했다면, 그 선택 이유를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><b>후처리</b>를 선택했습니다. 재생성은 규칙을 어길 때마다 AI를 다시 불러야 해서 호출 횟수·비용·시간이 예측되지 않고 다시 불러도 또 어길 수 있습니다. 후처리는 <b>AI 호출이 항상 1번</b>이고 코드로 자르거나 채우니 결과가 확실합니다.</div>
+  <div class="grid2">
+    <div class="box bad"><h4>재생성</h4>
+      <ul>
+        <li>어기면 → AI 재호출 (2회, 3회…)</li>
+        <li>비용·시간 예측 불가</li>
+        <li>다시 불러도 또 어길 수 있음</li>
+        <li>장점: 문장이 자연스러움</li>
+      </ul></div>
+    <div class="box ok"><h4>후처리 (선택)</h4>
+      <ul>
+        <li>항상 AI 1회 → 비용·시간 예측 가능</li>
+        <li>자르기·채우기는 코드라 100% 확실</li>
+        <li>무엇을 고쳤는지 <code>[CHECK]</code>에 표시</li>
+        <li>단점: 자른 제목이 어색할 수 있음</li>
+      </ul></div>
+  </div>
+  <ul class="kp">
+    <li><b>단점 보완</b>: ① 프롬프트로 먼저 “50자 이내”를 요청 ② 단어 경계에서 자르고 끝에 <code>…</code> 표시 ③ <code>FIX</code>로 알려 주고 사람이 검토(항목 4의 1번).</li>
+    <li><b>후처리로 못 고치는 것</b>: JSON이 아예 깨진 경우는 자동 재시도 없이 오류와 해결 힌트를 보여 주고 끝냅니다(“호출 1회” 원칙 유지). 사용자가 옵션을 바꿔 다시 실행합니다.</li>
+    <li>“자를 수 있는 것(길이)·채울 수 있는 것(섹션)”은 후처리, “의미”는 사람이 고칩니다.</li>
+  </ul>
+  <p class="src">근거: <code>formatter.py</code> 상단 docstring · <code>_shorten()</code> · README 6-3 “재생성 대신 후처리 선택”</p>
+</section>
+
+<!-- ============================================================ 항목 4 -->
+<section class="item" id="i4">
+  <h2>항목 4 — 검토·보안·개선 (3문항)</h2>
+  <p class="sub">“만약 ~라면?”을 묻습니다. 실제 사례와 한계를 함께 말하는 것이 가장 설득력 있습니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 4 · 1/3</span></h3>
+  <p class="qtext">AI가 생성한 커밋/PR 텍스트를 바로 사용하지 않고 검토가 필요한 이유를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>AI는 <b>diff만 보고</b> 쓰기 때문에 의도를 모르고 사실과 다르게 쓸 수 있고, 우리 <code>[CHECK]</code>는 <b>길이·구조 같은 “형식”만</b> 검사하지 “내용이 맞는지”는 모릅니다. 커밋 메시지는 히스토리에 계속 남으니 사람이 확인·수정한 뒤 적용합니다.</div>
+  <p>실제로 고친 사례 (README 5장 표):</p>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>대상</th><th>AI 초안</th><th>최종 적용</th><th>이유</th></tr>
+      <tr><td>커밋 type</td><td><code>docs: 프롬프트에 한국어 작성 규칙 추가</code></td><td><code>fix: 커밋/PR 프롬프트에 한국어 작성 규칙 추가</code></td><td>문자열 변경이지만 <b>프로그램 출력이 바뀌는 동작 수정</b>이라 fix</td></tr>
+      <tr><td>PR What</td><td>prompts.py에 <b>주석</b>을 삽입</td><td>프롬프트 <b>규칙</b>에 한국어 작성 규칙 추가</td><td>실제로는 주석이 아니라 프롬프트 규칙 문자열</td></tr>
+      <tr><td>PR What</td><td>“이미지 경로가 일관되게 반영됨”</td><td>삭제</td><td>diff에 근거가 없는 추측 문장</td></tr>
+      <tr><td>How to Test</td><td>“스크립트를 실행하여…”</td><td><code>python main.py commit</code> 등 구체 명령</td><td>리뷰어가 그대로 따라 할 수 있게</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>형식 OK ≠ 내용 정확</b>: 위 초안들도 길이·섹션 검사는 모두 통과했습니다. 그래서 <code>[CHECK]</code>가 전부 OK여도 안심하면 안 됩니다.</li>
+    <li><b>AI가 모르는 것</b>: 왜 바꿨는지(→ <code>--context</code>로 보완), 팀의 type 관례, 이전 맥락. diff가 잘렸으면(safe-mode 제한) 일부만 보고 쓴 요약입니다.</li>
+    <li><b>도구의 설계</b>: <code>git commit</code>·<code>push</code>·PR 생성을 하지 않고 출력까지만 하며, 마지막에 항상 <code>[NOTE] AI 초안입니다. 내용을 검토·수정한 뒤 적용하세요.</code>를 보여 줍니다.</li>
+  </ul>
+  <p class="src">근거: README “AI 초안 → 최종 적용 시 다듬은 점” · <code>main.py</code> 마지막 <code>[NOTE]</code> 출력 · <code>git_collector.py</code> docstring(“push/PR 생성은 하지 않음”)</p>
+
+  <h3><span class="qnum">항목 4 · 2/3</span></h3>
+  <p class="qtext"><code>git diff</code>에 민감정보(API Key, 개인정보 등)가 포함될 수 있는 상황과 이를 방지하기 위한 방안을 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>diff는 AI 서버로 <b>전송</b>되므로, 코드에 박아 둔 키·<code>.env</code> 같은 파일·비밀번호·개인정보가 섞이면 그대로 외부로 나갑니다. 그래서 전송 <b>전에</b> safe-mode(기본 ON)가 ① 패턴 마스킹 ② 민감 파일 내용 제외 ③ 전송량 제한을 합니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>민감정보가 섞이는 상황</th><th>safe-mode의 대응</th></tr>
+      <tr><td>코드에 API Key를 직접 적음 (<code>sk-…</code>, AWS <code>AKIA…</code>, Google <code>AIza…</code>, GitHub <code>ghp_…</code>, JWT)</td><td>패턴을 찾아 <code>[MASKED_API_KEY]</code> 등으로 치환</td></tr>
+      <tr><td><code>password = "…"</code>, <code>token</code>, <code>secret</code> 대입문</td><td>값 부분만 <code>[MASKED_SECRET]</code></td></tr>
+      <tr><td>테스트 데이터·문서의 이메일, 휴대폰, 주민번호</td><td><code>[MASKED_EMAIL]</code>, <code>[MASKED_PHONE]</code>, <code>[MASKED_RRN]</code></td></tr>
+      <tr><td><code>.env</code>, <code>*.pem</code>, <code>*.key</code>, <code>id_rsa*</code>, <code>*secret*</code> 등을 실수로 <code>git add</code></td><td>파일 <b>내용 자체를 보내지 않고</b> “민감 파일로 판단되어 내용 전송 제외”만 전달</td></tr>
+      <tr><td>diff가 너무 커서 많은 정보가 한꺼번에 나감</td><td>최대 10개 파일 / 200줄로 제한(<code>--max-files</code>, <code>--max-lines</code>)</td></tr>
+    </table>
+  </div>
+  <p>직접 실행한 결과 — 키·이메일·전화번호·비밀번호가 든 <code>settings.py</code>와 <code>.env</code>를 스테이징하고 <code>--dry-run</code>(실제 전송될 프롬프트 확인):</p>
+<pre><code># safe-mode ON (기본)
+[INFO] safe-mode ON (최대 10개 파일 / 200줄): 17줄 -&gt; 12줄 전송
+[INFO] 민감정보 마스킹 4건: OPENAI/ANTHROPIC_KEY 1건, EMAIL 1건, PHONE(KR) 1건, SECRET_ASSIGNMENT 1건
+[INFO] 민감 파일 내용 제외: .env
+  diff --git a/.env b/.env
+  [safe-mode] 민감 파일로 판단되어 내용 전송 제외
+  +OPENAI_KEY = "[MASKED_API_KEY]"
+  +admin = "[MASKED_EMAIL]"
+  +phone = "[MASKED_PHONE]"
+  +password = "[MASKED_SECRET]"
+
+# --no-safe-mode
+[WARN] safe-mode OFF: diff 원문이 그대로 AI API 로 전송됩니다.
+  +AI_API_KEY=abc123secret
+  +OPENAI_KEY = "sk-proj-abcdefghijklmnopqrstuvwxyz123456"
+  +admin = "hong@example.com"
+  +phone = "010-1234-5678"
+  +password = "hunter2pass"</code></pre>
+  <p>실제 API 요청 본문(가짜 서버가 받은 값)에서도 <code>sk-proj-…</code>, 이메일, 전화번호, <code>hunter2pass</code>, <code>.env</code>의 값 5개가 <b>모두 들어 있지 않음</b>을 확인했습니다.</p>
+  <h4>그 밖의 방지책</h4>
+  <ul class="kp">
+    <li><b>키 관리</b>: API Key는 코드·README에 적지 않고 환경변수로만 받습니다. 실수로 올렸다면 즉시 폐기(재발급).</li>
+    <li><b>미리 보기</b>: <code>--dry-run</code>으로 전송 내용을 먼저 확인할 수 있습니다.</li>
+    <li><b>저장소 관리</b>: <code>.env</code>·키 파일은 <code>.gitignore</code>에 넣어 애초에 스테이징되지 않게 합니다.</li>
+    <li><b>safe-mode를 꺼도</b> 경고를 보여 주고, 2000줄 상한은 유지합니다.</li>
+  </ul>
+  <div class="note warn"><b>한계 (직접 확인한 것) — 이것까지 말하면 이해도가 높게 보입니다</b>
+    <ul class="kp">
+      <li>정규식 기반이라 <b>모든 민감정보를 잡는다고 보장할 수 없습니다.</b> 예: <code>password = "mysecretpw"</code>처럼 <b>숫자 없는 소문자</b> 값은 “변수 이름처럼 보인다”고 판단해 마스킹되지 않았고, 한글에 바로 붙은 전화번호(<code>연락처010-1234-5678입니다</code>)도 마스킹되지 않았습니다. (과잉 마스킹을 피하려는 설계의 부작용입니다)</li>
+      <li><code>git add</code> 하지 않은 <b>신규 파일</b>은 diff에 내용이 없어 파일 이름만 전달됩니다.</li>
+      <li>이미 <b>커밋된 과거 내용</b>은 <code>pr --base</code>를 쓸 때만 diff에 포함됩니다. 민감정보가 과거 커밋에 있었다면 그 경우에도 같은 마스킹이 적용됩니다.</li>
+    </ul></div>
+  <p class="src">근거: <code>safe_mode.py</code> <code>MASK_RULES</code>, <code>SECRET_ASSIGN</code>, <code>SENSITIVE_FILE_PATTERNS</code>, <code>apply_safe_mode()</code> · 테스트 <code>TestSafeMode</code> 4개</p>
+
+  <h3><span class="qnum">항목 4 · 3/3</span></h3>
+  <p class="qtext">이 도구를 실제 팀 프로젝트에 적용한다면 어떤 기능을 가장 먼저 추가하거나 개선하고 싶은지, 그 우선순위 근거를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답 (예시 — 본인 생각에 맞게 바꾸세요)</span>우선순위는 <b>보안 → 큰 diff → 테스트 → 편의</b>입니다. 한 번 외부로 나간 정보는 되돌릴 수 없어 피해가 가장 크기 때문에, <b>민감정보 탐지 강화와 “전송 전 확인” 단계</b>를 가장 먼저 하겠습니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th class="num">순위</th><th>개선</th><th>지금의 문제 (근거)</th></tr>
+      <tr class="hl"><td class="num">1</td><td><b>민감정보 탐지 강화 + 전송 전 확인</b><br>전문 시크릿 스캐너 연동, “이 내용이 전송됩니다. 계속할까요?” 확인</td><td>정규식 한계를 직접 재현함(숫자 없는 비밀번호, 한글에 붙은 전화번호 누락). <b>실수의 비용이 가장 크고 되돌릴 수 없음</b></td></tr>
+      <tr><td class="num">2</td><td><b>큰 diff 처리</b><br>파일별로 나눠 요약한 뒤 합치기</td><td>200줄·10개 파일을 넘으면 뒤를 <b>버려서</b> 요약이 부분적으로만 맞음(경고만 표시)</td></tr>
+      <tr><td class="num">3</td><td><b>테스트 확장 + CI</b><br>가짜 서버로 <code>main.py</code> 전체 흐름·오류 경로 테스트</td><td>현재 테스트 10개는 마스킹·후처리·JSON 해석만 다룸. <code>call_ai</code>, <code>git_collector</code>, <code>main.run</code>은 자동 테스트가 없음(이번 검증은 수동)</td></tr>
+      <tr><td class="num">4</td><td><b>편의 기능</b><br>승인하면 <code>git commit</code> 실행, git hook 연동, 컨벤션 파일 팀 공유</td><td>편하지만 1~3이 안정된 뒤에 붙여야 안전. 자동화할수록 “검토 없이 적용”될 위험도 커짐</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>우선순위 기준 한 줄</b>: “실패했을 때 피해의 크기 × 되돌리기 어려움”이 큰 것부터. 보안은 되돌릴 수 없고, 큰 diff는 품질 문제, 테스트는 안정성, 편의는 있으면 좋은 것입니다.</li>
+    <li>그 밖의 작은 개선: 길이 규칙 숫자를 한 곳에서 관리(항목 2의 2번), 커밋 본문 불릿이 잘려도 <code>[CHECK]</code>에 표시, <code>--safe-mode</code> 플래그 정리(기본이 ON이라 지금은 켜도 아무것도 바뀌지 않음).</li>
+  </ul>
+  <p class="src">근거: 항목 4의 2번 “한계”, <code>safe_mode.py</code> <code>apply_safe_mode()</code>(초과분 생략), <code>tests/test_core.py</code>(테스트 대상 범위)</p>
+
+  <div class="note"><b>항목 5 (보너스 문제 해결 크레딧)</b> — 평가자가 부여하는 항목이라 따로 답변할 내용은 없습니다. 참고로 팀 컨벤션 기능(<code>.ai-gitgen.md</code>가 있으면 프롬프트에 “팀 컨벤션 (위 규칙보다 우선 적용)”으로 주입, 로그에 <code>[INFO] 팀 컨벤션 적용: .ai-gitgen.md</code>)은 직접 실행해서 동작을 확인했습니다. 다만 README에서 <b>컨벤션 적용 전/후 비교 출력</b>은 찾지 못했으니, 보너스 요건을 보여 줘야 한다면 두 번 실행한 출력을 준비해 두세요.</div>
+</section>
+
+<!-- ============================================================ 조심할 점 -->
+<section class="item" id="tips">
+  <h2>평가 중 조심할 점 · 예상 꼬리 질문</h2>
+  <details class="faq" open><summary>시연할 때 함정 5가지</summary>
+    <ul>
+      <li><b>변경이 없으면 Key 오류가 안 나옵니다</b> — 변경 검사가 먼저입니다. Key 누락 시연은 변경을 만든 뒤에 하세요.</li>
+      <li><b>프로젝트 루트에서 실행</b> — 하위 폴더에서는 “프로젝트 루트 디렉토리에서 실행해야 합니다”로 끝납니다.</li>
+      <li><b>커밋 끝난 브랜치의 PR은 <code>--base main</code></b> — 안 주면 “변경 사항이 없습니다”입니다.</li>
+      <li><b>Groq/추론형 모델이면 <code>--max-tokens 2000</code></b> — 기본 800이면 PR 응답이 잘릴 수 있습니다.</li>
+      <li><b>시연 후 <code>git restore README.md</code></b> — 시연용으로 넣은 줄을 되돌립니다.</li>
+    </ul></details>
+  <details class="faq"><summary>“왜 SDK(openai, anthropic 패키지)를 안 쓰고 requests로 직접 호출했나요?”</summary>
+    <p>요청 구성 → 전송 → 응답 파싱 → 예외 처리의 <b>흐름을 코드로 그대로 보이게</b> 하려고 했습니다(<code>ai_client.py</code> 상단 설명). 또 OpenAI 호환 서버(Groq 등)는 주소만 바꿔서 쓸 수 있습니다. 대신 SDK가 해 주는 재시도·스트리밍 같은 편의 기능은 직접 안 만들었습니다.</p></details>
+  <details class="faq"><summary>“--safe-mode 옵션을 줘도 아무 변화가 없던데요?”</summary>
+    <p>맞습니다. <code>--safe-mode</code>는 기본값이 이미 ON이라 <b>켜도 동작이 바뀌지 않는 옵션</b>입니다. 실제로 동작을 바꾸는 것은 끄는 <code>--no-safe-mode</code>입니다. 정리 대상 개선점으로 알고 있다고 답하면 됩니다.</p></details>
+  <details class="faq"><summary>“git push나 PR 생성까지는 왜 안 하나요?”</summary>
+    <p>과제 범위가 Git 연동은 <code>status</code>, <code>diff</code>까지이고, AI가 쓴 글을 <b>검토 없이 원격에 반영하면 위험</b>하기 때문입니다. 초안 출력까지만 하고 적용은 사람이 합니다.</p></details>
+  <details class="faq"><summary>“테스트는 어떻게 돌리나요?”</summary>
+    <p><code>python -m unittest discover -s tests -v</code> → 10개가 통과합니다(마스킹 4, 후처리 4, JSON 해석 2). API 키·인터넷이 필요 없습니다. 반대로 HTTP 호출·git 수집·전체 흐름은 자동 테스트가 없다는 점이 한계입니다(항목 4의 3번).</p></details>
+  <details class="faq"><summary>모르는 질문을 받았을 때 말하는 틀</summary>
+    <ul>
+      <li>“<b>현재 구현은</b> ~입니다.”</li>
+      <li>“<b>한계는</b> ~입니다.” (예: 정규식이라 놓치는 패턴이 있음, 큰 diff는 잘림)</li>
+      <li>“<b>개선한다면</b> ~를 바꾸겠습니다.” (예: 전송 전 확인 단계, 파일별 요약)</li>
+    </ul>
+    <p>끝까지 모르겠으면 “이 부분은 아직 정확히 설명 못 하겠습니다. 코드의 ~ 함수가 이 일을 한다는 것까지는 압니다”처럼 아는 범위를 분명히 말하는 편이 낫습니다.</p></details>
+  <footer>
+    <ul>
+      <li>코드·출력 확인: <code>본과정_과제/B3-2/ai-gitgen/</code> (임시 저장소 + 가짜 OpenAI 호환 서버로 실행. 프로젝트 폴더의 코드·git 기록은 건드리지 않음)</li>
+      <li>가짜 서버로 확인한 것: 흐름, 오류 메시지, 후처리, 마스킹, 요청 본문. <b>확인하지 못한 것</b>: 실제 AI에서의 temperature·max-tokens 문구 차이, Timeout·5xx·Ctrl+C 경로(코드로만 확인).</li>
+      <li>실제 AI 출력 예와 상세 설명은 같은 폴더의 <code>README.md</code>, <code>ai-gitgen_학습자료.html</code>을 참고하세요.</li>
+    </ul>
+  </footer>
+</section>
+
+</div>
+</body>
+</html>

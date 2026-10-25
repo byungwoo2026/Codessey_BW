@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B5-2 평가문항 항목별 답변</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --text: #1b2230; --muted: #596273; --line: #dce1e9;
+    --accent: #2b6cdf; --accent-soft: #e7efff; --ok: #1b7f49; --ok-soft: #e4f5ea;
+    --bad: #b3261e; --bad-soft: #fdeceb; --warn: #8a5300; --warn-soft: #fff3de;
+    --code-bg: #f0f2f6; --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141b; --surface: #171d27; --text: #e6eaf0; --muted: #9ba6b6; --line: #2a3342;
+      --accent: #7ba9ff; --accent-soft: #1b2a47; --ok: #62d18f; --ok-soft: #12301f;
+      --bad: #ff8d85; --bad-soft: #3a1b19; --warn: #f2b066; --warn-soft: #382612; --code-bg: #10161f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141b; --surface: #171d27; --text: #e6eaf0; --muted: #9ba6b6; --line: #2a3342;
+    --accent: #7ba9ff; --accent-soft: #1b2a47; --ok: #62d18f; --ok-soft: #12301f;
+    --bad: #ff8d85; --bad-soft: #3a1b19; --warn: #f2b066; --warn-soft: #382612; --code-bg: #10161f;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+
+  header.hero { padding: 40px 0 20px; }
+  header.hero h1 { font-size: 1.7rem; line-height: 1.35; margin: 0 0 8px; }
+  header.hero p { margin: 0 0 6px; color: var(--muted); }
+  .chip {
+    display: inline-block; font-size: .78rem; font-weight: 600; padding: 2px 10px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-bottom: 10px;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line); margin: 0 -16px; padding: 8px 16px;
+    display: flex; gap: 6px; overflow-x: auto; white-space: nowrap;
+  }
+  nav.top a {
+    flex: none; text-decoration: none; color: var(--muted); font-size: .88rem;
+    padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  }
+  nav.top a:hover { color: var(--accent); border-color: var(--accent); }
+
+  h2 { font-size: 1.35rem; line-height: 1.4; margin: 0 0 4px; }
+  h3 { font-size: 1.05rem; margin: 30px 0 4px; padding-top: 20px; border-top: 1px solid var(--line); }
+  h3.first { border-top: 0; padding-top: 0; margin-top: 14px; }
+  h4 { font-size: .98rem; margin: 18px 0 6px; }
+  section.item {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px 22px; margin-top: 24px;
+  }
+  .sub { color: var(--muted); font-size: .92rem; margin: 2px 0 0; }
+  .qnum { display: inline-block; font-weight: 700; font-size: .8rem; color: var(--accent); letter-spacing: .04em; margin-bottom: 2px; }
+  .qtext { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
+
+  .answer {
+    border-left: 4px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; font-weight: 600;
+  }
+  .answer .lab { display: block; font-size: .74rem; letter-spacing: .06em; color: var(--accent); margin-bottom: 2px; }
+  ul.kp { margin: 10px 0 0; padding-left: 20px; }
+  ul.kp li { margin: 3px 0; }
+  .note {
+    border: 1px solid var(--line); background: var(--code-bg);
+    border-radius: 8px; padding: 8px 14px; margin-top: 12px; font-size: .9rem; color: var(--muted);
+  }
+  .note b { color: var(--text); }
+  .warn { border-color: var(--warn); background: var(--warn-soft); color: var(--text); }
+  .warn b { color: var(--warn); }
+  .good { border-color: var(--ok); background: var(--ok-soft); color: var(--text); }
+  .good b { color: var(--ok); }
+
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code-bg); font-weight: 600; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.ok { color: var(--ok); font-weight: 700; }
+  td.bad { color: var(--bad); font-weight: 600; }
+  tr.hl td { background: var(--accent-soft); }
+  .scroll { overflow-x: auto; margin: 10px 0; }
+  .scroll table.wide { min-width: 640px; }
+
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; margin: 10px 0;
+    font-size: .84rem; line-height: 1.6; word-break: normal; overflow-wrap: normal;
+  }
+  code { font-family: "D2Coding", "Cascadia Mono", Consolas, "Courier New", monospace; }
+  p code, li code, td code, summary code {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: .86em;
+  }
+  .src { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+
+  details.faq { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; margin-top: 8px; background: var(--surface); }
+  details.faq summary { cursor: pointer; font-weight: 600; font-size: .94rem; }
+  details.faq p, details.faq ul { margin: 8px 0 4px; font-size: .94rem; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0; }
+  .flow .c { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; font-size: .86rem; text-align: center; }
+  .flow .c small { display: block; color: var(--muted); font-size: .75rem; }
+  .flow .c.on { border-color: var(--accent); background: var(--accent-soft); }
+  .flow .c.no { border-color: var(--bad); background: var(--bad-soft); }
+  .flow .c.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .flow .a { color: var(--accent); font-weight: 700; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-top: 10px; }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; background: var(--surface); }
+  .box h4 { margin-top: 0; }
+  .box.bad { border-color: var(--bad); }
+  .box.ok { border-color: var(--ok); }
+
+  svg.diagram { width: 100%; height: auto; max-width: 640px; display: block; margin: 12px auto; }
+  svg.diagram text { fill: var(--text); font-size: 13px; font-family: "D2Coding", "Cascadia Mono", Consolas, monospace; }
+  svg.diagram .nd { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  svg.diagram .nd.on { fill: var(--accent-soft); stroke: var(--accent); }
+  svg.diagram .nd.hd { fill: var(--ok-soft); stroke: var(--ok); }
+  svg.diagram .ed { stroke: var(--muted); stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+  svg.diagram .tag { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1; }
+  svg.diagram .cap { font-size: 11.5px; fill: var(--muted); font-family: inherit; }
+
+  footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
+  footer ul { padding-left: 18px; }
+  @media (max-width: 560px) {
+    header.hero h1 { font-size: 1.4rem; }
+    section.item { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="chip">B5-2 · Mini Git · 평가문항 5. 항목 1~4</span>
+  <h1>평가문항 항목별 답변</h1>
+  <p>평가 화면의 “5. 평가문항” 항목 1~4 전부(문항 20개)를 우리 코드로 답합니다.
+     각 문항은 <b>① 핵심 답(그대로 말해도 되는 1~2문장) → ② key point → ③ 근거 코드</b> 순서입니다.</p>
+  <p>출력 예시와 숫자는 제출 폴더의 코드를 직접 실행해서 확인한 값입니다(2026-10-23, 테스트 41개 통과). 시각은 가짜 시계로 찍은 값이라 실제 실행 때는 달라집니다.</p>
+</header>
+
+<nav class="top" aria-label="바로가기">
+  <a href="#overview">한눈에</a>
+  <a href="#demo">시연 준비</a>
+  <a href="#i1">항목 1 동작 시연</a>
+  <a href="#i2">항목 2 설계</a>
+  <a href="#i3">항목 3 개념</a>
+  <a href="#i4">항목 4 확장·변경</a>
+  <a href="#tips">조심할 점</a>
+</nav>
+
+<!-- ============================================================ 한눈에 -->
+<section class="item" id="overview">
+  <h2>한눈에 보기</h2>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>항목</th><th>성격</th><th>한 줄 답</th></tr>
+      <tr><td>1</td><td>직접 <b>시연</b>하면 PASS</td><td>명령을 한 줄씩 입력해 6가지 동작을 보여 준다 (아래 <a href="#demo">시연 준비</a> 그대로)</td></tr>
+      <tr><td>2</td><td><b>설계 이유</b> 설명</td><td>저장소·브랜치·HEAD·사용자를 나눠 담고 / hash는 dict + 증가 카운터 / 역색인은 COMMIT 안에서 한 커밋분만 갱신 / 탐색은 CommitGraph 한 곳 / docstring은 “무엇+왜”</td></tr>
+      <tr><td>3</td><td><b>개념</b> 설명</td><td>DAG(순환 없음) · LOG=위상 정렬(Kahn) · PATH=BFS(무방향) · 병합 정렬 O(n log n)·안정 · 역색인=dict 조회 O(1)</td></tr>
+      <tr><td>4</td><td><b>“만약 ~라면?”</b> 응용</td><td>10배면 “매번 전부 훑는” LOG·PATH가 병목 / PATH를 부모 방향만으로 바꾸면 No path가 늘고 비대칭 / author 정렬+부모 먼저=우선순위 Kahn / 난수 hash는 테스트·재현이 어려워짐</td></tr>
+    </table>
+  </div>
+  <div class="note good"><b>PASS 받는 요령 3가지</b>
+    <ul class="kp">
+      <li><b>항목 1</b>은 말보다 <b>시연</b>. 입력할 명령을 미리 메모장에 적어 두고 <b>한 줄씩</b> 입력합니다.</li>
+      <li><b>항목 2~4</b>는 “핵심 답 → 근거(파일·함수) → 한계” 순서로 말합니다. 한계를 먼저 아는 척 숨기지 말고 “현재는 ~, 개선하면 ~”라고 말하면 오히려 이해도가 높게 보입니다.</li>
+      <li>코드를 다 외우지 말고, <b>어느 파일에 있는지</b>만 기억합니다: <code>graph.py</code>(탐색) · <code>index.py</code>(역색인) · <code>sorting.py</code>(정렬) · <code>repository.py</code>(브랜치/HEAD) · <code>models.py</code>(Commit/hash) · <code>cli.py</code>(입출력).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 시연 준비 -->
+<section class="item" id="demo">
+  <h2>시연 준비 — 이 순서대로 입력하세요</h2>
+  <p class="sub">폴더에서 <code>python main.py</code> 실행 → 아래 명령을 <b>한 줄씩</b>(복사해서 한꺼번에 붙여넣지 말기) 입력합니다.</p>
+
+<pre><code>init "Alice"
+status
+commit "Initial commit"
+branch feature
+switch feature
+commit "Add login feature"
+user Bob
+commit "Fix login bug"
+switch main
+user Alice
+commit "Add payment feature"</code></pre>
+
+  <p>입력 후 커밋 그래프는 아래 모양이 됩니다. 이 그림 하나로 항목 1의 모든 시연을 설명할 수 있습니다.</p>
+
+  <svg class="diagram" viewBox="0 0 600 270" role="img" aria-label="커밋 그래프: c001에서 feature 브랜치(c002, c003)와 main 브랜치(c004)로 갈라짐">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/>
+      </marker>
+    </defs>
+    <!-- edges: child -> parent -->
+    <path class="ed" d="M170,100 L270,52"/>
+    <path class="ed" d="M170,170 L170,128"/>
+    <path class="ed" d="M430,100 L330,52"/>
+    <!-- nodes -->
+    <rect class="nd" x="240" y="14" width="120" height="38" rx="8"/>
+    <text x="300" y="38" text-anchor="middle">c001 root</text>
+    <rect class="nd" x="110" y="90" width="120" height="38" rx="8"/>
+    <text x="170" y="114" text-anchor="middle">c002 Alice</text>
+    <rect class="nd" x="110" y="170" width="120" height="38" rx="8"/>
+    <text x="170" y="194" text-anchor="middle">c003 Bob</text>
+    <rect class="nd hd" x="370" y="90" width="120" height="38" rx="8"/>
+    <text x="430" y="114" text-anchor="middle">c004 Alice</text>
+    <!-- tags -->
+    <rect class="tag" x="248" y="178" width="76" height="22" rx="11"/>
+    <text x="286" y="194" text-anchor="middle" style="font-size:12px">feature</text>
+    <rect class="tag" x="500" y="99" width="94" height="22" rx="11"/>
+    <text x="547" y="115" text-anchor="middle" style="font-size:12px">HEAD→main</text>
+    <path d="M248,189 L232,189" style="stroke:var(--warn);stroke-width:1.3;fill:none"/>
+    <path d="M500,110 L492,110" style="stroke:var(--warn);stroke-width:1.3;fill:none"/>
+    <!-- captions -->
+    <text class="cap" x="10" y="236">화살표 = 자식 → 부모</text>
+    <text class="cap" x="10" y="258">c003(feature)과 c004(main)는 서로의 조상이 아니다 → PATH는 c001을 거쳐 간다</text>
+  </svg>
+
+  <div class="note"><b>주의 ① 한 줄씩 입력</b> — 시각이 <b>초 단위</b>로 찍힙니다. 명령을 한꺼번에 붙여넣으면 모든 커밋의 시각이 같아져서 <code>LOG --sort-by=date</code> 결과가 <code>LOG</code>와 똑같이 보입니다. 한 줄씩 입력하면 정상입니다.</div>
+  <div class="note"><b>주의 ② <code>user</code>·<code>status</code>·<code>index</code>·<code>help</code>는 과제 요구에 없는 <u>보조 명령</u></b>입니다. <code>INIT</code>은 저장소 전체를 초기화하기 때문에, 한 저장소에서 작성자를 바꾸려고 <code>user Bob</code>을 만들었다고 말하면 됩니다(<code>git config user.name</code>과 같은 역할).</div>
+  <div class="note"><b>주의 ③ “No path” 시연은 프로그램을 다시 시작</b>해서 따로 합니다(항목 1의 4번 참고). hash 번호가 <code>c001</code>부터 다시 시작되어 깔끔합니다.</div>
+</section>
+
+<!-- ============================================================ 항목 1 -->
+<section class="item" id="i1">
+  <h2>항목 1 — 동작 시연 (6문항)</h2>
+  <p class="sub">PASS 기준은 “요구한 출력이 화면에 나온다”입니다. 각 문항마다 <b>입력 → 기대 출력 → 눈으로 확인할 곳</b>을 적었습니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 1 · 1/6</span></h3>
+  <p class="qtext">INIT &lt;user_name&gt; 실행 후 main 브랜치/HEAD/현재 사용자 설정이 정상적으로 초기화되어 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. <code>INIT</code> 하면 main 브랜치가 만들어지고, HEAD가 main을 가리키고, 작성자가 설정됩니다. 첫 줄 출력으로 세 가지를 바로 보여 줍니다.</div>
+<pre><code>mini-git&gt; init "Alice"
+Initialized repository.
+Current branch: main          &lt;- main 브랜치 생성 + HEAD가 main
+Current user: Alice           &lt;- 현재 사용자(author)
+mini-git&gt; status              (보조 명령: 내부 상태 확인)
+User: Alice
+Current branch: main
+HEAD commit: (no commits yet) &lt;- 아직 커밋이 없어서 가리키는 곳이 없음
+Branches: main
+Total commits: 0</code></pre>
+  <ul class="kp">
+    <li>INIT 전에 다른 명령을 치면 막힙니다: <code>Repository not initialized. Run INIT &lt;user_name&gt; first</code></li>
+    <li><code>init</code>(소문자)도 동작 — 명령어는 대소문자 구분 없음</li>
+  </ul>
+  <p class="src">근거: <code>repository.py</code> <code>init()</code> — <code>branches["main"] = None</code>, <code>head = "main"</code>, <code>author = user_name</code></p>
+
+  <h3><span class="qnum">항목 1 · 2/6</span></h3>
+  <p class="qtext">BRANCH &lt;name&gt; 생성 후 SWITCH &lt;name&gt;로 전환되며, 이후 COMMIT이 해당 브랜치에 반영되는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. <code>branch feature</code> → <code>switch feature</code> → <code>commit</code> 하면 <b>feature 브랜치만</b> 앞으로 나아가고, main은 그대로입니다. <code>log</code>의 브랜치 표시로 증명합니다.</div>
+<pre><code>mini-git&gt; branch feature
+Created branch: feature
+mini-git&gt; switch feature
+Switched to branch: feature
+mini-git&gt; commit "Add login feature"
+[feature c002] Add login feature      &lt;- 대괄호 안에 브랜치 이름이 찍힌다
+...
+mini-git&gt; switch main
+mini-git&gt; commit "Add payment feature"
+[main c004] Add payment feature
+mini-git&gt; log   (일부)
+commit c004 (Alice, ...) [HEAD -&gt; main]    &lt;- main 끝 = c004, parents: c001
+commit c003 (Bob, ...)   [feature]         &lt;- feature 끝 = c003, parents: c002</code></pre>
+  <ul class="kp">
+    <li>확인 포인트: c004의 부모는 <b>c001</b>(c003이 아님) → main에서 만든 커밋이 feature 쪽에 섞이지 않았다는 증거</li>
+    <li><code>status</code>로도 확인: switch 후 <code>Current branch</code>와 <code>HEAD commit</code>이 바뀝니다 (main→c004, feature→c003)</li>
+    <li>없는 브랜치 전환은 <code>Unknown branch: nope</code>, 같은 이름 재생성은 <code>Branch already exists: feature</code></li>
+  </ul>
+  <p class="src">근거: <code>repository.py</code> <code>create_branch()</code>(이름표 추가) · <code>switch()</code>(HEAD 이동) · <code>commit()</code>(현재 브랜치 이름표만 새 커밋으로 이동)</p>
+
+  <h3><span class="qnum">항목 1 · 3/6</span></h3>
+  <p class="qtext">LOG가 “부모 커밋이 자식 커밋보다 먼저” 출력되도록 동작하는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 시간순이 아니라 <b>위상 정렬(Kahn 알고리즘)</b>로 출력해서, 모든 커밋의 부모가 항상 위쪽에 먼저 나옵니다.</div>
+<pre><code>mini-git&gt; log        (요약 표시 — 실제로는 커밋마다 3줄: commit / parents / message)
+commit c001 (Alice, 09:00:00)               parents: -
+commit c002 (Alice, 09:01:00)               parents: c001
+commit c004 (Alice, 09:03:00) [HEAD -&gt; main] parents: c001
+commit c003 (Bob,   09:02:00) [feature]      parents: c002</code></pre>
+  <ul class="kp">
+    <li>검증 방법: 각 커밋의 <code>parents:</code> 에 적힌 hash가 <b>이미 위에서 나왔는지</b>만 보면 됩니다 (c003의 부모 c002 ✓ / c004의 부모 c001 ✓)</li>
+    <li>일부러 보여 줄 포인트: <b>c004가 c003보다 위에 있습니다.</b> 시간으로는 c003(09:02)이 더 먼저 만들어졌는데도요 → 시간순 나열이 아니라는 증거 (비교: <code>log --sort-by=date</code> 는 c003이 c004 앞)</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>topological_order()</code> — 자세한 원리는 항목 3의 2번</p>
+
+  <h3><span class="qnum">항목 1 · 4/6</span></h3>
+  <p class="qtext">PATH &lt;a&gt; &lt;b&gt;가 경로가 있으면 최단 경로를, 없으면 No path를 출력하는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 부모-자식 연결을 방향 없는 선으로 보고 BFS로 최단 경로를 찾고, 이어지지 않으면 <code>No path</code>를 출력합니다.</div>
+<pre><code>(경로 있음 — 시연 A에서)
+mini-git&gt; path c003 c004
+Path: c003 -&gt; c002 -&gt; c001 -&gt; c004     &lt;- 갈라진 브랜치: 공통 조상 c001을 거쳐 감
+mini-git&gt; path c001 c003
+Path: c001 -&gt; c002 -&gt; c003
+mini-git&gt; path c001 c999
+Unknown commit: c999                   &lt;- 없는 커밋은 No path가 아니라 에러</code></pre>
+  <p><b>“No path”는 프로그램을 다시 시작해서 이렇게 시연합니다</b> (뿌리 커밋이 2개인 상태를 만든다):</p>
+<pre><code>init "Alice"
+branch dev            &lt;- 첫 커밋 전에 브랜치를 만든다
+commit "Root one"     &lt;- [main c001] 부모 없음
+switch dev
+commit "Root two"     &lt;- [dev c002]  부모 없음 (c001과 이어지지 않음)
+path c001 c002
+No path</code></pre>
+  <ul class="kp">
+    <li>왜 이렇게 해야 No path가 나오나: 보통의 커밋은 항상 이전 커밋과 이어져서 모두 한 가족입니다. 뿌리가 둘이어야 이어지지 않는 두 덩어리가 생깁니다.</li>
+    <li>“c003→c004 경로가 왜 길이 3이죠?” → 두 끝 커밋은 서로 조상이 아니라서, c001까지 내려갔다가 다시 올라와야 합니다.</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>shortest_path()</code> · <code>cli.py</code> <code>_cmd_path()</code>(None이면 “No path”)</p>
+
+  <h3><span class="qnum">항목 1 · 5/6</span></h3>
+  <p class="qtext">ANCESTORS &lt;hash&gt;가 모든 조상을 빠짐없이 출력하는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 부모 방향으로 BFS를 하면서 이미 본 커밋은 건너뛰어, 모든 조상을 한 번씩만 가까운 순서로 출력합니다.</div>
+<pre><code>mini-git&gt; ancestors c003
+Ancestors of c003 (2):
+- c002: Add login feature (Alice)      &lt;- 부모
+- c001: Initial commit (Alice)         &lt;- 부모의 부모
+mini-git&gt; ancestors c004
+Ancestors of c004 (1):
+- c001: Initial commit (Alice)         &lt;- c003/c002는 다른 브랜치라 조상이 아님
+mini-git&gt; ancestors c001
+No ancestors                           &lt;- 뿌리 커밋은 조상이 없다</code></pre>
+  <ul class="kp">
+    <li>확인 포인트: c003의 조상은 c002, c001 <b>두 개</b> — 그림에서 화살표를 따라가면 정확히 일치</li>
+    <li>자기 자신은 조상이 아니라서 결과에 넣지 않습니다.</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>ancestors()</code> — <code>visited</code> 집합으로 중복 방지</p>
+
+  <h3><span class="qnum">항목 1 · 6/6</span></h3>
+  <p class="qtext">SEARCH &lt;keyword&gt; / SEARCH --author=&lt;name&gt; / LOG --sort-by=date|author가 요구사항대로 동작하는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>네. 검색은 전체를 훑지 않고 <b>역색인</b>에서 바로 꺼내고, 정렬은 <code>sorted()</code> 없이 <b>직접 만든 병합 정렬</b>로 날짜순·작성자순을 처리합니다.</div>
+<pre><code>mini-git&gt; search login
+Found 2 commits:
+- c002: Add login feature (Alice)
+- c003: Fix login bug (Bob)
+mini-git&gt; search LOGIN              &lt;- 대소문자 무시, 같은 결과
+mini-git&gt; search "add login"        &lt;- 여러 단어는 모두 포함(AND)
+Found 1 commit:
+- c002: Add login feature (Alice)
+mini-git&gt; search --author=bob
+Found 1 commit:
+- c003: Fix login bug (Bob)
+
+mini-git&gt; log --sort-by=date        &lt;- 오래된 것부터: c001, c002, c003, c004
+mini-git&gt; log --sort-by=author      &lt;- Alice 3개(c001,c002,c004) 다음 Bob(c003)</code></pre>
+  <ul class="kp">
+    <li>키워드·작성자 모두 <b>소문자로 맞춰서</b> 저장하므로 <code>--author=ALICE</code>로도 찾아집니다.</li>
+    <li>동률(같은 작성자)은 LOG 순서를 유지합니다 → 병합 정렬이 <b>안정 정렬</b>이라서 (항목 3의 4번)</li>
+    <li>없는 키워드: <code>No commits found</code> / 잘못된 정렬 기준: <code>Invalid args</code></li>
+  </ul>
+  <div class="note warn"><b>알고 있어야 당황하지 않는 점</b> — 검색은 <b>단어 단위</b>로 일치합니다. <code>search log</code>는 “login”이 있어도 <code>No commits found</code>입니다(키워드는 공백으로 쪼갠 단어 전체가 키). 요구사항의 최소 기준(공백 분리 + 소문자)을 그대로 따른 것입니다.</div>
+  <p class="src">근거: <code>index.py</code> <code>search_keyword()</code>, <code>search_author()</code> · <code>sorting.py</code> <code>merge_sort()</code> · <code>repository.py</code> <code>log()</code></p>
+</section>
+
+<!-- ============================================================ 항목 2 -->
+<section class="item" id="i2">
+  <h2>항목 2 — 설계 설명 (5문항)</h2>
+  <p class="sub">“왜 이렇게 나눴나 / 왜 이 자료구조인가”를 묻습니다. 파일 이름과 함수 이름을 함께 말하면 설득력이 올라갑니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 2 · 1/5</span></h3>
+  <p class="qtext">커밋 저장소/브랜치/HEAD/사용자 정보를 어떤 구조로 분리했고, 각 책임을 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>커밋은 <code>CommitGraph</code>(hash→Commit 해시맵), 브랜치는 <code>{이름: 커밋 hash}</code> dict, HEAD는 <b>현재 브랜치의 이름</b>, 사용자는 문자열 하나로 따로 두고, 이 넷을 <code>Repository</code>가 묶어서 관리합니다. 화면 출력은 <code>cli.py</code>가 맡습니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>정보</th><th>어디에</th><th>자료구조</th><th>책임</th></tr>
+      <tr><td>커밋 저장소</td><td><code>graph.py</code> CommitGraph</td><td><code>dict[hash → Commit]</code></td><td>커밋 보관·조회, 그래프 알고리즘</td></tr>
+      <tr><td>브랜치</td><td><code>Repository.branches</code></td><td><code>dict[이름 → hash | None]</code></td><td>“이 이름은 이 커밋을 가리킨다” 이름표</td></tr>
+      <tr><td>HEAD</td><td><code>Repository.head</code></td><td><code>str</code> (브랜치 이름)</td><td>지금 올라타 있는 브랜치</td></tr>
+      <tr><td>사용자</td><td><code>Repository.author</code></td><td><code>str</code></td><td>새 커밋의 작성자</td></tr>
+      <tr><td>역색인</td><td><code>index.py</code> InvertedIndex</td><td>dict 2개</td><td>키워드/작성자 → 커밋 목록</td></tr>
+      <tr><td>hash 발급</td><td><code>models.py</code> HashGenerator</td><td>정수 카운터</td><td>겹치지 않는 hash 발급</td></tr>
+    </table>
+  </div>
+  <p>포인터 구조 (시연 그래프 기준):</p>
+  <div class="flow">
+    <div class="c on">HEAD<small>"main"</small></div><span class="a">→</span>
+    <div class="c on">branches["main"]<small>"c004"</small></div><span class="a">→</span>
+    <div class="c">Commit c004<small>parents=["c001"]</small></div>
+  </div>
+  <ul class="kp">
+    <li><b>HEAD가 hash가 아니라 브랜치 “이름”인 이유</b>: COMMIT 때 <code>branches[head] = 새 hash</code> 한 줄로 브랜치만 옮기면 HEAD는 자동으로 따라갑니다. HEAD에 hash를 넣으면 매번 둘 다 고쳐야 합니다.</li>
+    <li><b>BRANCH는 커밋을 복사하지 않습니다.</b> <code>branches[새 이름] = branches[head]</code> — 같은 커밋을 가리키는 이름표가 하나 더 생길 뿐입니다.</li>
+    <li><b>의존 방향은 한 줄</b>: <code>cli</code> → <code>repository</code> → (<code>graph</code>/<code>index</code>/<code>sorting</code>/<code>models</code>). <code>Repository</code>에는 <code>print</code>가 없고(값을 돌려주거나 에러를 던짐) 문장으로 바꾸는 일은 <code>cli.py</code>만 하므로 <b>로직과 화면이 분리</b>됩니다.</li>
+    <li><b>INIT</b>은 <code>_reset()</code>으로 graph·index·branches·head·author를 새로 만듭니다(단, hash 발급기는 유지 → 항목 2의 2번).</li>
+  </ul>
+  <div class="note"><b>솔직한 설명</b> — 브랜치·HEAD·사용자는 별도 클래스가 아니라 <code>Repository</code>의 필드입니다. 각각 dict 하나·문자열 하나라 클래스까지 만들면 과하다고 판단했고, 길고 독립적인 그래프·인덱스·정렬만 클래스/파일로 분리했습니다.</div>
+  <p class="src">근거: <code>repository.py</code> 클래스 docstring과 <code>__init__</code>/<code>_reset</code> · README “프로젝트 구조”</p>
+
+  <h3><span class="qnum">항목 2 · 2/5</span></h3>
+  <p class="qtext">커밋 hash로 빠르게 조회하기 위해 어떤 키-값 구조를 사용했고, 중복/충돌을 어떻게 방지했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>파이썬 <code>dict</code>(해시맵)에 <code>hash → Commit</code>으로 저장해서 평균 O(1)에 찾습니다. 중복은 <b>증가 카운터</b>(c001, c002…)로 아예 안 생기게 하고, <code>add()</code>에서 한 번 더 검사하는 <b>이중 방어</b>입니다.</div>
+  <ul class="kp">
+    <li><b>왜 빠른가</b>: 리스트는 처음부터 하나씩 비교(O(N)), dict는 키를 계산해 칸 번호로 바로 접근(평균 O(1)). <code>self._commits[hash]</code></li>
+    <li><b>1차 방어 — 발급 방식</b>: <code>HashGenerator</code>의 카운터는 <b>늘기만 하고 줄지 않아서</b> 같은 번호가 두 번 나올 수 없습니다. <code>INIT</code>을 다시 해도 발급기는 유지해서 세션 전체에서 유일합니다. (1000번째부터는 <code>c1000</code>처럼 자릿수가 늘어남)</li>
+    <li><b>2차 방어 — 저장 시 검사</b>: <code>CommitGraph.add()</code>가 이미 있는 hash면 <code>ValueError</code>, 존재하지 않는 부모를 가리켜도 <code>ValueError</code>.</li>
+    <li><b>카운터를 고른 이유</b>: 과제가 “증가 카운터/난수 모두 허용, 중복만 없으면 됨”이라고 했고, 카운터는 충돌 검사·재시도가 필요 없고 사람이 입력하기도 쉽습니다. (대신 약점은 항목 4의 4번)</li>
+    <li>입력할 때 hash 대소문자는 구분하지 않습니다 (<code>C003</code>도 가능).</li>
+  </ul>
+  <p class="src">근거: <code>models.py</code> <code>HashGenerator.next_hash()</code> · <code>graph.py</code> <code>add()</code> · 테스트 <code>test_hashes_are_unique_even_across_init</code>, <code>test_hash_generator_never_repeats</code>, <code>test_graph_rejects_duplicates_and_unknown_parents</code></p>
+
+  <h3><span class="qnum">항목 2 · 3/5</span></h3>
+  <p class="qtext">커밋이 추가될 때 역색인(author/keyword)을 어떤 시점에, 어떤 방식으로 갱신하도록 설계했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><code>COMMIT</code> 명령 안에서, 커밋을 저장하고 브랜치를 옮긴 <b>직후</b>에 <code>index.add(commit)</code>를 한 번 호출합니다. 전체를 다시 만들지 않고 <b>새 커밋 한 개분만 추가</b>하는 증분 갱신입니다.</div>
+  <p><code>Repository.commit()</code>의 순서:</p>
+  <div class="flow">
+    <div class="c">① hash 발급<small>부모=브랜치 끝</small></div><span class="a">→</span>
+    <div class="c">② graph.add<small>그래프에 저장</small></div><span class="a">→</span>
+    <div class="c">③ 브랜치 이동<small>이름표 → 새 커밋</small></div><span class="a">→</span>
+    <div class="c on">④ index.add<small>역색인 갱신</small></div>
+  </div>
+  <ul class="kp">
+    <li><b>keyword 인덱스</b>: 메시지를 <code>split()</code> → 단어마다 <code>lower()</code> → <code>단어 → [hash…]</code> 목록에 추가. 한 메시지에 같은 단어가 두 번이어도 그 커밋은 <b>한 번만</b> 등록(<code>seen</code> 집합).</li>
+    <li><b>author 인덱스</b>: 작성자 이름을 <code>lower()</code>해서 <code>작성자 → [hash…]</code>에 추가.</li>
+    <li><b>한 함수가 두 인덱스를 같이 갱신</b> → 한쪽만 갱신되는 실수가 없습니다. <code>INIT</code>도 graph와 index를 같이 새로 만들어 서로 어긋나지 않습니다.</li>
+    <li><b>비용</b>: COMMIT 때 단어 수만큼 일을 더 하는 대신(쓰기 비용), 검색이 빨라집니다(읽기 이득) — 항목 3의 5번.</li>
+  </ul>
+  <p>시연: <code>index</code> 명령(보조)으로 실제 내용을 보여 줄 수 있습니다.</p>
+<pre><code>mini-git&gt; index
+[keyword index]
+  initial -&gt; c001
+  add -&gt; c002, c004
+  login -&gt; c002, c003
+  ...
+[author index]
+  alice -&gt; c001, c002, c004
+  bob -&gt; c003</code></pre>
+  <p class="src">근거: <code>repository.py</code> <code>commit()</code> 4단계 · <code>index.py</code> <code>InvertedIndex.add()</code></p>
+
+  <h3><span class="qnum">항목 2 · 4/5</span></h3>
+  <p class="qtext">LOG, PATH, ANCESTORS에서 사용하는 그래프 탐색 로직을 어떻게 재사용 가능하게 구성했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>세 알고리즘(위상 정렬·조상 탐색·최단 경로)을 모두 <code>CommitGraph</code> 한 클래스에 모으고, <b>CLI·Repository에 의존하지 않는 순수 계산</b>으로 만들었습니다. 같은 데이터(<code>_commits</code>, <code>_children</code>)와 같은 뼈대(큐 + visited/거리표)를 쓰고, “어떤 선을 따라갈지”는 <code>neighbors()</code> 한 곳에 뽑아 뒀습니다.</div>
+  <ul class="kp">
+    <li><b>독립성</b>: <code>graph.py</code>는 <code>models</code>만 import합니다. 그래서 그래프만 만들어 알고리즘을 바로 호출·테스트할 수 있습니다(단위 테스트가 실제로 그렇게 합니다).</li>
+    <li><b>역할 분담</b>: 입력 검사(없는 hash → <code>Unknown commit</code>)는 <code>Repository._resolve</code>, 출력 모양은 <code>cli.py</code>, 알고리즘은 <code>graph.py</code>.</li>
+    <li><b>공통 뼈대</b>: ① 리스트를 큐로 쓰되 <code>pop(0)</code>(느림) 대신 <code>front</code> 위치 번호만 앞으로 밀기 ② 이미 본 것은 <code>visited</code>/<code>distance</code> dict로 중복 방지.</li>
+    <li><b>한 곳 수정으로 정의 변경</b>: PATH가 “부모+자식(무방향)”인 정의는 <code>neighbors()</code>에만 있습니다 → 정의가 바뀌면 이 함수 중심으로 고치면 됩니다(항목 4의 2번).</li>
+    <li><b>검증</b>: 단순 무식한(brute force) 방법과 결과를 비교하는 테스트로 ANCESTORS·PATH가 맞는지 확인했습니다.</li>
+  </ul>
+  <div class="note warn"><b>솔직한 설명</b> — ANCESTORS와 PATH의 BFS 반복문이 각각 한 번씩 따로 있습니다(뼈대는 같지만 함수 하나로 합치진 않았습니다). “공통 BFS 함수 하나를 만들고 이웃을 돌려주는 함수만 바꿔 끼우는 방식으로 더 합칠 수 있다”가 개선점이라고 답하면 됩니다.</div>
+  <p class="src">근거: <code>graph.py</code> 상단 docstring(알고리즘 3개 요약), <code>neighbors()</code>, <code>_distances_from()</code> · 테스트 <code>test_ancestors_match_brute_force</code>, <code>test_shortest_path_matches_brute_force_including_lexicographic_tie_break</code></p>
+
+  <h3><span class="qnum">항목 2 · 5/5</span></h3>
+  <p class="qtext">주요 함수/클래스에 docstring/주석을 어떤 기준으로 작성했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><b>공개 클래스·함수는 전부 docstring</b>을 달고(자동 테스트가 검사), 내용은 “무엇을 하나 + 왜 그렇게 했나”로 씁니다. 주석은 코드를 따라 읽으면 알 수 있는 설명이 아니라 <b>이유와 함정</b>에 씁니다.</div>
+  <ul class="kp">
+    <li><b>기준 1 — 빠짐없이</b>: 이름이 <code>_</code>로 시작하지 않는 클래스·함수는 모두 docstring. <code>test_docstrings_exist_for_public_classes_and_functions</code>가 소스를 읽어서 검사합니다.</li>
+    <li><b>기준 2 — 파일 맨 위에 “이 파일의 역할”</b>: 알고리즘 요약·시간복잡도·용어(DAG, 역색인 등)를 초보도 읽을 수 있게 한글로.</li>
+    <li><b>기준 3 — “왜”를 쓴다</b>: 예) <code>front</code> 위치 번호를 쓰는 이유(<code>pop(0)</code>이 느려서), <code>_merge</code>에서 <code>&lt;=</code>인 이유(안정 정렬 유지, <code>&lt;</code>로 바꾸면 불안정).</li>
+    <li><b>기준 4 — 한계도 적는다</b>: 예) 키워드에서 구두점을 안 뗀다, 첫 커밋 전 브랜치는 가리키는 곳이 없다 — README “구현 선택과 한계”에도 정리.</li>
+  </ul>
+<pre><code># sorting.py _merge() 안의 주석 예
+# 안정 정렬이 되는 이유: 키가 같을 때(&lt;=) '왼쪽'을 먼저 꺼낸다.
+# (여기를 &lt; 로 바꾸면 불안정 정렬이 된다.)</code></pre>
+  <p class="src">근거: <code>test_mini_git.py</code> <code>ConstraintTests</code> · 각 파일 상단 docstring</p>
+</section>
+
+<!-- ============================================================ 항목 3 -->
+<section class="item" id="i3">
+  <h2>항목 3 — 개념 설명 (5문항)</h2>
+  <p class="sub">알고리즘 이름 + <b>왜 그걸 골랐는지</b> + 시간복잡도를 한 세트로 말합니다. V = 커밋 수, E = 부모 연결 수.</p>
+
+  <h3 class="first"><span class="qnum">항목 3 · 1/5</span></h3>
+  <p class="qtext">커밋 그래프가 왜 DAG여야 하는지, 사이클이 생기면 어떤 문제가 발생하는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>커밋은 <b>이미 있는 커밋만 부모</b>로 가리키고 부모는 항상 먼저 만들어지므로, 화살표가 과거로만 뻗어서 <b>되돌아오는 길(순환)이 없는 방향 그래프 = DAG</b>입니다. 순환이 있으면 “내가 내 조상”이 되어 부모-먼저 순서를 정할 수 없고 탐색이 끝나지 않습니다.</div>
+  <div class="grid2">
+    <div class="box ok"><h4>DAG (정상)</h4>
+      <div class="flow"><div class="c">c001</div><span class="a">←</span><div class="c">c002</div><span class="a">←</span><div class="c">c003</div></div>
+      <p style="margin:0;font-size:.9rem">자식→부모로만 이동. 어디로 가도 뿌리에서 끝남.</p></div>
+    <div class="box bad"><h4>순환 (불가능해야 함)</h4>
+      <div class="flow"><div class="c no">A</div><span class="a">→</span><div class="c no">B</div><span class="a">→</span><div class="c no">C</div><span class="a">→</span><div class="c no">A</div></div>
+      <p style="margin:0;font-size:.9rem">A의 조상을 따라가면 다시 A. 끝이 없음.</p></div>
+  </div>
+  <h4>순환이 생기면 생기는 문제 3가지</h4>
+  <ul class="kp">
+    <li><b>LOG 불가능</b>: “A가 B보다 먼저, B도 A보다 먼저”라서 부모-먼저 순서가 존재하지 않습니다. Kahn 알고리즘에서는 대기 부모 수가 0이 안 되는 커밋이 남고, 우리 코드는 <code>len(queue) != len(_order)</code>로 이를 감지해 에러를 냅니다(안전장치).</li>
+    <li><b>탐색 무한 반복</b>: ANCESTORS/PATH에서 <code>visited</code>가 없으면 제자리를 계속 돕니다.</li>
+    <li><b>의미 모순</b>: 커밋이 자기 자신의 조상이 될 수 없습니다. 히스토리는 시간이 한 방향으로만 흐릅니다.</li>
+  </ul>
+  <h4>우리 코드가 순환을 막는 방법</h4>
+  <ul class="kp">
+    <li><code>CommitGraph.add()</code>가 “부모는 이미 들어 있는 커밋이어야 한다”를 검사 → 새 커밋은 아무도 가리키지 않는 새 점이라 순환을 만들 수 없음.</li>
+    <li>기존 커밋의 부모를 바꾸는 명령이 없음(커밋은 한번 만들면 불변).</li>
+    <li>(참고) 진짜 Git은 커밋 hash 계산에 부모 hash가 들어가서, 순환은 수학적으로 불가능합니다.</li>
+  </ul>
+  <details class="faq"><summary>“트리가 아니라 왜 DAG죠?”</summary>
+    <p>병합(merge) 커밋은 부모가 2개라 트리가 아닙니다. 그래서 부모를 리스트(<code>parents</code>)로 저장합니다. 이번 CLI에는 merge 명령이 없어 모양은 트리처럼 나오지만, 데이터 구조와 알고리즘은 부모가 여러 개인 경우도 처리하고 단위 테스트로 검증했습니다.</p></details>
+  <p class="src">근거: <code>graph.py</code> 상단 docstring “왜 커밋 그래프는 DAG인가?” · <code>add()</code> · <code>topological_order()</code> 마지막 검사</p>
+
+  <h3><span class="qnum">항목 3 · 2/5</span></h3>
+  <p class="qtext">LOG에서 “부모가 먼저” 조건을 만족시키기 위해 어떤 접근(예: 위상 정렬 성격의 출력)을 적용했는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><b>위상 정렬(Kahn 알고리즘)</b>을 썼습니다. “아직 출력 안 된 부모가 0개”인 커밋부터 꺼내 출력하고, 그 자식들의 대기 부모 수를 1씩 줄이는 걸 반복합니다. 시간복잡도는 O(V+E)입니다.</div>
+  <h4>Kahn 알고리즘 5단계</h4>
+  <ul class="kp">
+    <li>① 커밋마다 “기다리는 부모 수”(= <code>len(parents)</code>)를 센다</li>
+    <li>② 기다리는 부모가 0개인 커밋(뿌리)을 큐에 넣는다</li>
+    <li>③ 큐에서 하나 꺼내 <b>출력</b>하고, 그 커밋의 자식들의 대기 수를 1 줄인다</li>
+    <li>④ 대기 수가 0이 된 자식은 큐에 넣는다 (부모가 2개인 병합 커밋은 두 부모가 다 나온 뒤에야 0이 됨)</li>
+    <li>⑤ 큐가 빌 때까지 반복</li>
+  </ul>
+  <p>시연 그래프로 따라가 보기 (정답은 실제 LOG 출력과 같습니다):</p>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>단계</th><th>꺼낸 커밋</th><th>대기 수가 0이 된 자식</th><th>큐 상태</th><th>출력 누적</th></tr>
+      <tr><td>시작</td><td>—</td><td>—</td><td>[c001]</td><td>—</td></tr>
+      <tr><td>1</td><td>c001</td><td>c002, c004</td><td>[c002, c004]</td><td>c001</td></tr>
+      <tr><td>2</td><td>c002</td><td>c003</td><td>[c004, c003]</td><td>c001, c002</td></tr>
+      <tr><td>3</td><td>c004</td><td>—</td><td>[c003]</td><td>c001, c002, c004</td></tr>
+      <tr class="hl"><td>4</td><td>c003</td><td>—</td><td>[ ]</td><td><b>c001, c002, c004, c003</b></td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>왜 “시간순으로 정렬”로는 안 되나</b>: 시간은 부모-먼저를 <b>구조로 보장하지 못합니다</b>(같은 초에 만든 커밋, 시계 오차, 다른 곳에서 가져온 커밋). 위상 정렬은 시간을 안 보고 <b>화살표(부모 정보)만으로</b> 순서를 보장합니다.</li>
+    <li>실제 확인: 위 표 결과에서 c004(09:03)가 c003(09:02)보다 먼저 나옵니다 — 시간순이 아니라는 증거.</li>
+    <li>큐는 <code>pop(0)</code>(느림) 대신 위치 번호 <code>front</code>를 앞으로 밀어서 O(1)로 꺼냅니다.</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>topological_order()</code> · 테스트 <code>test_topological_order_puts_every_parent_before_child</code>, <code>test_topological_order_with_merge_commit</code></p>
+
+  <h3><span class="qnum">항목 3 · 3/5</span></h3>
+  <p class="qtext">PATH에서 최단 경로를 찾기 위해 어떤 알고리즘(예: BFS)을 선택했고, 간선을 무방향으로 정의한 이유를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><b>BFS</b>입니다. 모든 간선의 비용이 1로 같아서, 가까운 곳부터 한 겹씩 퍼지는 BFS가 처음 도착한 길이 곧 최단입니다. 간선을 <b>무방향</b>으로 보는 이유는, 갈라진 두 브랜치 끝은 서로의 조상이 아니라서 방향대로는 길이 없고 공통 조상까지 내려갔다 올라와야 만나기 때문입니다.</div>
+  <div class="flow">
+    <div class="c on">c003<small>feature 끝</small></div><span class="a">→</span>
+    <div class="c on">c002</div><span class="a">→</span>
+    <div class="c on">c001<small>공통 조상</small></div><span class="a">→</span>
+    <div class="c on">c004<small>main 끝</small></div>
+  </div>
+  <ul class="kp">
+    <li><b>왜 BFS</b>: 간선 비용이 모두 같음 → BFS가 최단 보장. (DFS는 최단을 보장하지 않고, 비용이 다를 때 쓰는 다익스트라는 과함.)</li>
+    <li><b>왜 무방향</b>: 부모 방향으로만 가면 c003→c004는 <code>No path</code>가 됩니다(둘은 조상-자손이 아님). 과제도 “커밋-부모 연결을 무방향 간선으로 간주”라고 정의했습니다. 구현은 <code>neighbors() = 부모 + 자식</code>.</li>
+    <li><b>구현 2단계</b>: ① 도착점에서 BFS로 모든 커밋의 거리표 <code>distance</code> 계산 ② 출발점에서 “거리가 1 작은 이웃” 중 <b>hash가 가장 작은 쪽</b>으로 한 걸음씩 이동 → 최단 경로가 여러 개일 때 <code>h1-&gt;h2-&gt;…</code> 사전순 최소 경로가 됩니다.</li>
+    <li><b>욕심쟁이(greedy) 선택이 맞는 이유</b>: 최단 경로는 모두 같은 개수의 커밋을 지나므로, 앞 칸부터 작은 hash를 고르면 전체 문자열도 가장 작습니다.</li>
+    <li>이어지지 않으면 거리표에 출발점이 없어서 <code>None</code> → CLI가 <code>No path</code> 출력. 시간복잡도 O(V+E).</li>
+  </ul>
+  <div class="note"><b>참고</b> — 이 CLI로 만든 그래프는 트리 모양이라 최단 경로가 하나뿐입니다. “사전순 최소” 규칙은 병합 커밋이 있는 단위 테스트(brute force와 비교)로 확인했습니다.</div>
+  <p class="src">근거: <code>graph.py</code> <code>shortest_path()</code>, <code>_distances_from()</code>, <code>neighbors()</code></p>
+
+  <h3><span class="qnum">항목 3 · 4/5</span></h3>
+  <p class="qtext">정렬 알고리즘의 평균/최악 시간복잡도와 안정 정렬 여부를 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>직접 구현한 <b>병합 정렬</b>이고, 평균·최악 모두 <b>O(n log n)</b>, 추가 메모리 O(n), <b>안정 정렬</b>입니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>항목</th><th>병합 정렬 (우리 구현)</th><th>비교: 퀵 정렬</th></tr>
+      <tr><td>평균</td><td class="ok">O(n log n)</td><td>O(n log n)</td></tr>
+      <tr><td>최악</td><td class="ok">O(n log n) — 입력 순서와 무관</td><td class="bad">O(n²)</td></tr>
+      <tr><td>추가 메모리</td><td>O(n) (합칠 때 새 리스트)</td><td>O(log n) 정도</td></tr>
+      <tr><td>안정 정렬</td><td class="ok">예</td><td class="bad">아니오 (기본 형태)</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>왜 n log n</b>: 반으로 쪼개면 <b>log n 층</b>, 각 층에서 모든 원소를 한 번씩 합치므로 층당 n → n × log n.</li>
+    <li><b>안정 정렬이란</b>: 키가 같은 항목끼리 <b>원래 순서를 유지</b>. <code>_merge()</code>에서 키가 같으면 <code>&lt;=</code>로 <b>왼쪽(원래 앞쪽)</b>을 먼저 꺼내기 때문. <code>&lt;</code>로 바꾸면 불안정이 됩니다.</li>
+    <li><b>안정 정렬이 필요한 이유</b>: 작성자가 같거나 시각이 같은 커밋들이 LOG의 “부모 먼저” 순서를 그대로 유지해야 하기 때문(<code>LOG</code> 결과를 정렬 입력으로 넣음).</li>
+    <li><b>비교 기준 교체</b>: <code>key</code> 함수만 바꿔 한 코드로 처리 — <code>key=lambda c: c.timestamp</code>(날짜) / <code>c.author.lower()</code>(작성자).</li>
+    <li>금지 규칙: <code>sorted()</code>, <code>list.sort()</code>를 쓰지 않았고, 자동 테스트가 소스를 읽어 검사합니다(<code>test_no_builtin_sorting_api</code>).</li>
+  </ul>
+  <p>한 번 따라가 보기 (<code>[5, 2, 4, 1]</code>):</p>
+<pre><code>쪼개기:  [5, 2, 4, 1]  →  [5, 2]  [4, 1]  →  [5] [2]  [4] [1]
+합치기:  [5] [2] → [2, 5]     [4] [1] → [1, 4]     →  [2, 5] [1, 4] → [1, 2, 4, 5]</code></pre>
+  <p class="src">근거: <code>sorting.py</code> 상단 docstring(성질 4줄 요약), <code>merge_sort()</code>, <code>_merge()</code> · 테스트 <code>test_stable_sort_keeps_original_order_of_ties</code></p>
+
+  <h3><span class="qnum">항목 3 · 5/5</span></h3>
+  <p class="qtext">역색인이 순회 검색보다 빠른 이유를 자료구조/시간복잡도 관점에서 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>역색인은 “단어 → 커밋 목록”을 <b>미리 dict에 만들어 두기</b> 때문에 검색이 해시 조회 <b>평균 O(1) + 결과 개수(K)</b>입니다. 순회 검색은 모든 커밋 메시지를 열어 봐야 해서 <b>O(N)</b>(메시지 길이까지 치면 O(N·L))입니다. 대신 COMMIT 때 인덱스를 갱신하는 비용을 미리 냅니다.</div>
+  <div class="grid2">
+    <div class="box"><h4>순회 검색</h4>
+      <p style="margin:0;font-size:.9rem">c001 메시지 확인 → c002 확인 → … → cN 확인. 결과가 1개여도 <b>전부</b> 봄. O(N)</p></div>
+    <div class="box ok"><h4>역색인 검색</h4>
+      <p style="margin:0;font-size:.9rem"><code>index["login"]</code> → [c002, c003]. 책 뒤의 “찾아보기”처럼 바로 펼침. 평균 O(1) + K</p></div>
+  </div>
+  <p>실제 측정 (이 PC에서 한 번 잰 대략값, 희귀 단어 1개 검색):</p>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>커밋 수 N</th><th class="num">역색인 검색</th><th class="num">순회 검색</th><th>해석</th></tr>
+      <tr><td>10,000</td><td class="num">0.019 ms</td><td class="num">8.2 ms</td><td>약 400배 차이</td></tr>
+      <tr><td>100,000 (10배)</td><td class="num">0.033 ms</td><td class="num">146.6 ms</td><td>역색인은 거의 그대로, 순회는 약 18배 ↑</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>자료구조 관점</b>: dict는 해시 테이블 → 키로 칸을 바로 계산해 접근. 리스트처럼 처음부터 비교하지 않습니다.</li>
+    <li><b>교환(trade-off)</b>: 읽기(검색)를 빠르게 하려고 쓰기(COMMIT)와 메모리를 더 씁니다. 커밋은 한 번 쓰고 검색은 여러 번 하므로 이득.</li>
+    <li>여러 단어(<code>"add login"</code>)는 단어별 후보를 <b>교집합(AND)</b>합니다.</li>
+    <li>자동 테스트: 500개 커밋 중 결과 1개를 찾을 때 그래프에서 커밋을 <b>1번만</b> 꺼내는지 확인(<code>test_search_uses_index_not_scan</code>) — 전체를 훑지 않는다는 증명.</li>
+  </ul>
+  <p class="src">근거: <code>index.py</code> 상단 docstring, <code>search_keyword()</code>, <code>search_author()</code></p>
+</section>
+
+<!-- ============================================================ 항목 4 -->
+<section class="item" id="i4">
+  <h2>항목 4 — 확장·변경 질문 (4문항)</h2>
+  <p class="sub">정답이 하나로 정해져 있지 않고 <b>예측 → 근거 → 개선 방향</b>을 말하면 됩니다. 아래 변경안은 제출 코드를 고치지 않고 따로 만든 시험용 코드로 결과를 확인했습니다.</p>
+
+  <h3 class="first"><span class="qnum">항목 4 · 1/4</span></h3>
+  <p class="qtext">커밋 수가 10배 늘어났을 때 병목이 될 지점을 예측하고, 개선 방향(자료구조/알고리즘)을 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>병목은 <b>호출할 때마다 커밋 전체를 훑는 연산</b>입니다 — 특히 <code>LOG --sort-by</code>(정렬)와 <code>PATH</code>(BFS가 끝까지 돎). 검색과 COMMIT은 10배가 되어도 거의 그대로입니다. 개선은 ① PATH 조기 종료/양방향 BFS ② 위상 순서 캐시·페이징 ③ 정렬 생략입니다.</div>
+  <p>실제 측정 (직선 히스토리, 이 PC에서 한 번 잰 대략값):</p>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>연산</th><th class="num">10,000개</th><th class="num">100,000개</th><th>배율</th><th>복잡도</th></tr>
+      <tr><td>COMMIT (평균 1개당)</td><td class="num">7.8 µs</td><td class="num">8.5 µs</td><td>≈ 1배</td><td>단어 수에 비례 (N 무관)</td></tr>
+      <tr><td>SEARCH 희귀 단어</td><td class="num">0.019 ms</td><td class="num">0.033 ms</td><td>≈ 1.7배</td><td>평균 O(1) + K</td></tr>
+      <tr class="hl"><td>LOG (위상 정렬)</td><td class="num">10.7 ms</td><td class="num">184 ms</td><td>≈ 17배</td><td>O(V+E)</td></tr>
+      <tr class="hl"><td>LOG --sort-by=date</td><td class="num">51 ms</td><td class="num">782 ms</td><td>≈ 15배</td><td>O(V log V) + 위상 정렬</td></tr>
+      <tr class="hl"><td>PATH 양 끝</td><td class="num">25 ms</td><td class="num">327 ms</td><td>≈ 13배</td><td>O(V+E)</td></tr>
+      <tr class="hl"><td>PATH 바로 인접한 2개</td><td class="num">16 ms</td><td class="num">175 ms</td><td>≈ 11배</td><td>가까워도 전체 BFS</td></tr>
+      <tr><td>ANCESTORS</td><td class="num">7.9 ms</td><td class="num">122 ms</td><td>≈ 15배</td><td>O(V+E) (결과 크기 자체가 큼)</td></tr>
+    </table>
+  </div>
+  <p class="sub">※ 파이썬 실행 환경에 따라 값은 달라집니다. 핵심은 “선형 연산은 ~10배, 정렬은 그보다 조금 더, 검색은 거의 불변”이라는 <b>비례 관계</b>입니다. 여전히 100,000개에서 1초 안쪽이라 “느려지지만 동작은 한다”가 정확한 표현입니다.</p>
+  <h4>개선 방향 (우선순위 순)</h4>
+  <ul class="kp">
+    <li><b>PATH — 조기 종료 / 양방향 BFS</b>: 지금은 도착점에서 <b>그래프 전체</b>의 거리표를 만들어서 인접한 두 커밋도 전부 돕니다. 출발점을 만나면 BFS를 멈추게 하거나, 양쪽에서 동시에 퍼지는 양방향 BFS로 탐색 범위를 줄입니다.</li>
+    <li><b>LOG — 위상 순서를 캐시/증분 유지 + 페이징</b>: 커밋은 부모가 먼저 있어야 추가되므로 <b>추가되는 순서 자체가 이미 위상 순서</b>입니다. 새 커밋을 뒤에 붙이기만 하면 매번 다시 계산할 필요가 없습니다. 출력도 “최근 20개만(<code>-n</code>)”처럼 끊어서 보여 줍니다.</li>
+    <li><b>정렬 — 불필요하면 생략</b>: 날짜순은 이미 시간 순서로 쌓이므로 “이미 정렬됨”을 감지하면 건너뛸 수 있습니다(실제 파이썬 정렬이 쓰는 아이디어). 작성자순은 작성자별로 묶어 두는 방법도 있습니다.</li>
+    <li><b>SEARCH — 흔한 단어는 결과가 큼</b>(100,000개 중 25,000개 → 11.6 ms): 페이징/상위 N개. 인덱스 메모리는 전체 단어 수에 비례하므로 더 커지면 디스크(DB)로.</li>
+  </ul>
+  <details class="faq"><summary>“그럼 처음부터 캐시하면 되는 거 아닌가요? 왜 Kahn을 구현했죠?”</summary>
+    <p>Kahn은 “생성 순서가 위상 순서”라는 가정에 <b>의존하지 않고</b> 화살표만으로 순서를 만듭니다. 그래서 어떤 DAG에서도 맞고, 순환이 있으면 감지까지 합니다. 과제도 위상 정렬 성격의 출력을 요구했습니다. 규모가 커지면 그 가정을 이용한 최적화를 더하는 것이 개선 방향이라고 답하면 됩니다.</p></details>
+  <details class="faq"><summary>“재귀 한계(recursion limit)는 괜찮나요?”</summary>
+    <p>그래프 탐색은 전부 <b>반복문(큐)</b>이라 아주 긴 직선 히스토리에서도 재귀 깊이 문제가 없습니다. 병합 정렬의 재귀 깊이는 log n 정도뿐입니다. 5,000개 직선 히스토리 테스트와 100,000개 측정에서 확인했습니다.</p></details>
+
+  <h3><span class="qnum">항목 4 · 2/4</span></h3>
+  <p class="qtext">PATH의 간선 정의를 “부모 방향만 허용”으로 바꾸면 결과가 어떻게 달라지고, 구현은 무엇을 바꿔야 하는지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>“출발 커밋에서 부모 쪽으로만 걸어서 도착할 수 있는가”가 되어, <b>갈라진 브랜치 사이는 전부 No path</b>가 되고 <b>PATH a b 와 PATH b a 의 결과가 달라집니다</b>(대칭이 깨짐). 구현은 <code>neighbors()</code>를 부모만 돌려주게 바꾸고, <b>도착점에서의 BFS는 거꾸로(자식 방향)</b> 돌려야 합니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>입력 (시연 그래프)</th><th>지금 (무방향)</th><th>변경 후 (부모 방향만)</th></tr>
+      <tr><td><code>path c003 c004</code></td><td>c003 → c002 → c001 → c004</td><td class="bad">No path</td></tr>
+      <tr><td><code>path c004 c003</code></td><td>c004 → c001 → c002 → c003</td><td class="bad">No path</td></tr>
+      <tr><td><code>path c003 c001</code></td><td>c003 → c002 → c001</td><td>c003 → c002 → c001 (같음, 부모 방향)</td></tr>
+      <tr><td><code>path c001 c003</code></td><td>c001 → c002 → c003</td><td class="bad">No path (자식 방향은 막힘)</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>결과 변화 ① 갈라진 브랜치(c003↔c004)</b>는 서로 조상이 아니라 길이 끊김 → No path.</li>
+    <li><b>② 비대칭</b>: <code>path c003 c001</code>은 되는데 <code>path c001 c003</code>은 안 됨 (지금은 항상 대칭).</li>
+    <li><b>③ 기능의 성격이 바뀜</b>: 사실상 “도착 커밋이 내 조상인가?” 확인이 되어 ANCESTORS와 비슷해집니다.</li>
+  </ul>
+  <h4>구현에서 바꿀 곳</h4>
+  <ul class="kp">
+    <li><code>neighbors()</code> (걸어갈 때): <code>parents + children</code> → <code>parents</code>만.</li>
+    <li><code>_distances_from(end)</code> (거리표): 걸어가는 방향이 “출발 → 부모 → …→ 도착”이므로 <b>도착점에서 자식 방향(화살표 거꾸로)</b>으로 BFS를 해야 “도착까지의 거리”가 맞게 나옵니다. <b>이걸 빼먹으면 틀린 값이 나오는 것이 함정</b>.</li>
+    <li>“거리가 1 작은 이웃 중 hash가 작은 쪽” 규칙과 No path 처리, CLI·Repository는 그대로.</li>
+    <li>기존 테스트 중 “브랜치 사이 경로(공통 조상 경유)”와 “경로 길이 대칭” 테스트는 기대값을 바꿔야 합니다.</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>neighbors()</code>, <code>_distances_from()</code>, <code>shortest_path()</code> — 변경안을 따로 만들어 위 표의 값을 직접 확인했습니다.</p>
+
+  <h3><span class="qnum">항목 4 · 3/4</span></h3>
+  <p class="qtext">LOG --sort-by=author 요구사항이 “부모-자식 선후도 유지”로 강화된다면, 어떤 전략으로 해결할지 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span>그냥 정렬로는 안 되고, <b>Kahn(위상 정렬)에서 “지금 꺼낼 수 있는 커밋 중 작성자가 가장 작은 것”을 매번 고르게</b> 바꿉니다. 큐(선입선출) 대신 우선순위 선택을 쓰는 것이 핵심입니다.</div>
+  <h4>왜 정렬만으로는 깨지나 (직접 확인한 예)</h4>
+  <p>시연 그래프에서 feature 브랜치에 Alice가 한 커밋을 더 만든다고 합시다(<code>c005</code>, 부모는 Bob의 <code>c003</code>).</p>
+  <div class="grid2">
+    <div class="box bad"><h4>지금의 작성자 정렬</h4>
+      <div class="flow"><div class="c">c001<small>Alice</small></div><div class="c">c002<small>Alice</small></div><div class="c">c004<small>Alice</small></div><div class="c no">c005<small>Alice</small></div><div class="c no">c003<small>Bob</small></div></div>
+      <p style="margin:0;font-size:.9rem">c005가 부모 c003보다 <b>먼저</b> 나옴 → 위반</p></div>
+    <div class="box ok"><h4>우선순위 Kahn</h4>
+      <div class="flow"><div class="c">c001<small>Alice</small></div><div class="c">c002<small>Alice</small></div><div class="c">c004<small>Alice</small></div><div class="c ok">c003<small>Bob</small></div><div class="c ok">c005<small>Alice</small></div></div>
+      <p style="margin:0;font-size:.9rem">모든 부모가 자식보다 먼저 → 만족</p></div>
+  </div>
+  <h4>전략 (아이디어 3줄)</h4>
+  <ul class="kp">
+    <li>① Kahn처럼 “대기 부모 수”를 센다 → 대기 0개인 커밋만 <code>ready</code> 목록에 둔다.</li>
+    <li>② 매번 <code>ready</code> 중 <b>작성자가 가장 작은 것</b>(동률이면 먼저 ready가 된 것)을 하나 꺼내 출력한다. (대기 수가 0이 된 자식을 <code>ready</code>에 추가)</li>
+    <li>③ 결과는 “작성자순에 <b>최대한 가깝되</b> 부모-자식 순서는 지킨 순서”입니다. 두 조건이 충돌하면 <b>부모 먼저가 우선</b>(위 예의 c005).</li>
+  </ul>
+<pre><code># 설명용 스케치 (제출 코드에는 없음)
+ready = [뿌리 커밋들]
+while ready:
+    best = ready 중 author.lower()가 가장 작은 것 (동률이면 먼저 들어온 것)
+    ready.remove(best);  출력.append(best)
+    for child in 자식들[best]:
+        기다리는_부모[child] -= 1
+        if 기다리는_부모[child] == 0:  ready.append(child)</code></pre>
+  <ul class="kp">
+    <li><b>복잡도</b>: 최소를 고르는 방법에 따라 달라집니다. 선형 탐색이면 최악 O(V²), <b>힙(우선순위 큐)</b>이면 O((V+E) log V).</li>
+    <li><b>우리 프로젝트의 제약</b>: <code>sorted()</code>/<code>.sort()</code>는 물론 <code>heapq</code>도 소스 검사 테스트가 금지하고 있어서, 실제로 적용한다면 <b>직접 만든 힙</b>이나 병합 정렬로 <code>ready</code>를 유지해야 합니다.</li>
+    <li>이 스케치는 따로 실행해 위 예의 결과(<code>c001, c002, c004, c003, c005</code>)가 나오는 것과 모든 부모가 자식보다 앞에 오는 것을 확인했습니다.</li>
+  </ul>
+  <p class="src">근거: <code>graph.py</code> <code>topological_order()</code>(대기 부모 수 방식)를 확장하는 아이디어 · <code>repository.py</code> <code>log()</code>(지금은 위상 순서를 만든 뒤 병합 정렬)</p>
+
+  <h3><span class="qnum">항목 4 · 4/4</span></h3>
+  <p class="qtext">해시 생성 방식을 카운터 기반 ↔ 난수 기반으로 바꿀 때 테스트/재현/디버깅에 미치는 영향을 설명할 수 있는가?</p>
+  <div class="answer"><span class="lab">핵심 답</span><b>카운터는 결과가 항상 같아서(결정적) 테스트·재현·디버깅이 쉽고, 난수는 매번 달라서 모두 어려워집니다.</b> 난수로 바꾸면 테스트에서 정확한 hash 값을 비교할 수 없어 <b>시드 고정이나 가짜 발급기 주입</b>이 필요하고, 충돌 검사도 직접 해야 합니다.</div>
+  <div class="scroll">
+    <table class="wide">
+      <tr><th>관점</th><th>카운터 (현재)</th><th>난수</th></tr>
+      <tr><td>테스트</td><td class="ok">정확한 값(<code>c001</code>)을 그대로 비교 가능</td><td class="bad">값이 매번 다름 → 형식·길이만 검사, 또는 시드 고정/가짜 발급기 주입</td></tr>
+      <tr><td>재현</td><td class="ok">같은 명령 순서 → 같은 hash·같은 로그</td><td class="bad">같은 명령도 매번 다른 hash → 시드를 기록해 둬야 재현</td></tr>
+      <tr><td>디버깅</td><td class="ok">짧고 읽기 쉬움, 번호로 생성 순서가 보임</td><td class="bad">길고 무작위 → 복사해야 하고 순서 단서가 없음</td></tr>
+      <tr><td>유일성</td><td class="ok">줄지 않는 카운터라 100% 보장</td><td>충돌 확률이 아주 작지만 0은 아님 → 중복 검사 + 재발급 필요</td></tr>
+      <tr><td>약점</td><td>여러 곳에서 따로 만들면 겹침(분산 환경 부적합)</td><td class="ok">여러 곳에서 만들어도 겹칠 확률이 매우 낮음</td></tr>
+    </table>
+  </div>
+  <ul class="kp">
+    <li><b>우리 코드에서 가장 먼저 깨지는 곳</b>: 테스트. <code>"[main c001] Initial commit"</code>처럼 <b>hash 값을 글자 그대로</b> 비교하는 테스트가 많기 때문입니다.</li>
+    <li><b>바꾸기 쉬운 구조</b>: hash 발급은 <code>HashGenerator.next_hash()</code> 한 곳이고, 나머지 코드는 hash를 그냥 문자열로 다룹니다. 단, 입력 hash를 <code>lower()</code>로 맞춰 비교하므로(<code>_resolve</code>) 난수 hash는 <b>소문자</b>로 만들어야 호환됩니다.</li>
+    <li><b>테스트를 쉽게 만드는 방법</b>: 시계(<code>clock</code>)를 <code>Repository</code>에 주입하는 것처럼 <b>발급기도 주입</b>하면 됩니다. 지금은 <code>Repository.__init__</code>에서 직접 만들고 있어서 인자 하나를 추가해야 합니다 — 시드를 고정한 <code>random.Random(seed)</code> 발급기를 테스트에서 넘기면 재현이 가능해집니다.</li>
+    <li><b>난수일 때 필요한 추가 코드</b>: 새 hash가 이미 있으면 다시 뽑는 반복(<code>add()</code>의 중복 검사는 마지막 방어선으로 유지).</li>
+    <li>(참고) 진짜 Git은 둘 다 아니고 <b>커밋 내용을 SHA-1로 계산</b>해서 같은 내용이면 같은 hash, 다르면 사실상 다른 hash입니다 — 결정적이면서 분산 환경에도 안전.</li>
+  </ul>
+  <p class="src">근거: <code>models.py</code> <code>HashGenerator</code> · <code>repository.py</code> <code>__init__</code>(clock 주입 / hash 발급기 직접 생성), <code>_resolve()</code></p>
+</section>
+
+<!-- ============================================================ 조심할 점 -->
+<section class="item" id="tips">
+  <h2>평가 중 조심할 점 · 예상 꼬리 질문</h2>
+  <details class="faq" open><summary>시연할 때 함정 3가지</summary>
+    <ul>
+      <li><b>명령은 한 줄씩</b> — 붙여넣기로 한꺼번에 넣으면 시각이 같아져 <code>--sort-by=date</code>가 LOG와 같게 보입니다.</li>
+      <li><b>No path는 따로</b> — 첫 커밋 전에 <code>branch dev</code>를 만들어 뿌리 2개를 만든 뒤 <code>path c001 c002</code> (항목 1의 4번). 재시작 후 시연하면 hash가 c001부터라 깔끔합니다.</li>
+      <li><b>search는 단어 단위</b> — <code>search log</code>는 “login”을 못 찾습니다. 필요하면 “공백으로 쪼갠 단어 전체가 키”라는 최소 기준을 따랐다고 설명합니다.</li>
+    </ul></details>
+  <details class="faq"><summary>“왜 user, status, index 같은 명령이 있나요?”</summary>
+    <p>과제 요구에는 없는 <b>보조 명령</b>입니다. <code>INIT</code>이 저장소를 통째로 초기화해서, 한 저장소에서 작성자를 바꿔가며 커밋을 만들 방법이 필요해 <code>USER</code>를 추가했고, <code>STATUS</code>·<code>INDEX</code>는 시연과 디버깅용입니다. README에 보조 명령이라고 표시해 두었습니다.</p></details>
+  <details class="faq"><summary>“병합(merge) 커밋은 만들 수 있나요?”</summary>
+    <p>CLI에는 merge 명령이 없고(보너스 과제 범위 밖, README에 “포함 안 함” 명시), 커밋마다 부모는 1개라 그래프가 트리 모양으로 나옵니다. 다만 <code>Commit.parents</code>가 리스트이고 그래프 알고리즘은 부모가 여러 개인 경우를 처리하며, 단위 테스트에서 병합 커밋이 있는 그래프로 검증했습니다.</p></details>
+  <details class="faq"><summary>“테스트는 어떻게 돌리나요?”</summary>
+    <p><code>python -m unittest -v</code> → 41개가 통과합니다. 명령 동작, hash 유일성, 위상 정렬, ANCESTORS/PATH(brute force 비교), 정렬의 안정성, 역색인, <b>금지 규칙 검사</b>(<code>sorted</code>/<code>.sort</code>/그래프 라이브러리 미사용), docstring 존재까지 포함합니다.</p></details>
+  <details class="faq"><summary>모르는 질문을 받았을 때 말하는 틀</summary>
+    <ul>
+      <li>“<b>현재 구현은</b> ~입니다.”</li>
+      <li>“<b>한계는</b> ~입니다.” (예: 구두점 처리 안 함, 메모리에만 저장)</li>
+      <li>“<b>개선한다면</b> ~를 바꾸겠습니다.” (예: 공통 BFS 함수, PATH 조기 종료)</li>
+    </ul>
+    <p>끝까지 모르겠으면 “이 부분은 아직 정확히 설명 못 하겠습니다. 코드의 ~ 함수가 이 일을 한다는 것까지는 압니다”처럼 아는 범위를 분명히 말하는 편이 낫습니다.</p></details>
+  <footer>
+    <ul>
+      <li>코드·명령 출력: <code>본과정_과제/B5-2(진행중)/</code> (시연 출력은 가짜 시계로 시각을 고정해 생성)</li>
+      <li>성능 숫자: 직선 히스토리 10,000/100,000개에서 한 번씩 측정한 대략값 — 비례 관계를 설명하는 용도로만 사용하세요.</li>
+      <li>더 자세한 개념 설명과 코드 전문은 같은 폴더의 <code>동료평가_학습자료.html</code>을 참고하세요.</li>
+    </ul>
+  </footer>
+</section>
+
+</div>
+</body>
+</html>
